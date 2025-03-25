@@ -32,20 +32,21 @@
             <div class="col-lg-2 col-md-3 footer-links">
                 <h4>Learn More</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Pricing</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Licensing</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Terms of Use</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Privacy Policy</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('pricing-info') }}">Pricing</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('licencing') }}">Licensing</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('terms-of-use') }}">Terms of Use</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('privacy-policy') }}">Privacy Policy</a>
+                    </li>
                 </ul>
             </div>
 
             <div class="col-lg-2 col-md-3 footer-links">
                 <h4>Need Help?</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="contact.html">Contact Us</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="searchTips.html">Search Tips</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="faq.html">FAQ</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Technical</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('contact-us') }}">Contact Us</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('search-tips') }}">Search Tips</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('faq') }}">FAQ</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('technical') }}">Technical</a></li>
                 </ul>
             </div>
 
