@@ -5,7 +5,6 @@ use App\Http\Controllers\WebsiteController;
 
 
 
-
 Route::controller(WebsiteController::class)->group(function() {
     Route::get('/', 'index')->name('welcome');
     // header routes
@@ -18,12 +17,15 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('about-us', 'aboutUs')->name('about-us');
     Route::get('testimonials', 'testimonial')->name('testimonials');
     Route::get('image-research', 'imageResearch')->name('image-research');
+    Route::get('pricing-info', 'pricingTable')->name('pricing-info');
+    Route::get('licencing', 'licenceInfo')->name('licencing');
+    Route::get('terms-of-use', 'termsofUse')->name('terms-of-use');
+    Route::get('privacy-policy', 'privacyPolicy')->name('privacy-policy');
+    Route::get('contact-us', 'contactUs')->name('contact-us');
+    Route::get('search-tips', 'searchTips')->name('search-tips');
+    Route::get('faq', 'faqs')->name('faq');
+    Route::get('technical', 'technicals')->name('technical');
 });
-
-
-
-
-
 
 
 
