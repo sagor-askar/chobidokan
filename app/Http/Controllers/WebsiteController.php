@@ -60,9 +60,52 @@ class WebsiteController extends Controller
         return view('frontend.imageResearch');
     }
 
+    // pricing table
+    public function pricingTable()
+    {
+        return view('frontend.pricing');
+    }
 
+    // licencing
+    public function licenceInfo()
+    {
+        return view('frontend.licencing');
+    }
 
+    // terms of use 
+    public function termsofUse()
+    {
+        return view('frontend.termsofuse');
+    }
 
+    // privacy policy
+    public function privacyPolicy()
+    {
+        return view('frontend.privacypolicy');
+    }
 
+    // contact us
+    public function contactUs()
+    {
+        return view('frontend.contact');
+    }
+
+    // search tips
+    public function searchTips()
+    {
+        return view('frontend.searchtips');
+    }
+
+    // faq 
+    public function faqs()
+    {
+        return view('frontend.faq');
+    }
+
+    // technicals
+    public function technicals()
+    {
+        return view('frontend.technical');
+    }
 
 }
