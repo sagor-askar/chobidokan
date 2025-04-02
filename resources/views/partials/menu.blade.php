@@ -70,14 +70,14 @@
                     <li class="">
                         <a href="">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                            <span>Menu 1</span>
+                            <span>Contact Info</span>
                         </a>
                     </li>
 
-                    <li class="">
-                        <a href="">
+                    <li class="{{ request()->is("admin/faqs") || request()->is("admin/faqs/*") ? "active" : "" }}">
+                        <a href="{{ route("admin.faqs.index") }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                            <span>Menu 2</span>
+                            <span>FAQs</span>
                         </a>
                     </li>
 

@@ -1,4 +1,6 @@
 <?php
+// backend modules
+use App\Http\Controllers\Admin\FaqController;
 
 // frontend pages
 use App\Http\Controllers\WebsiteController;
@@ -51,6 +53,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::resource('users', 'UsersController');
+
+    // faqs
+    Route::resource('faqs', 'FaqController');
 
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {

@@ -15,97 +15,97 @@ class WebsiteController extends Controller
     // info page
     public function info()
     {
-        return view('frontend.info');
+        return view('frontend.menu.info');
     }
 
     // customization
     public function customization()
     {
-        return view('frontend.customize');
+        return view('frontend.menu.customize');
     }
 
     // signin
     public function signin()
     {
-        return view('frontend.signin');
+        return view('frontend.auth.signin');
     }
 
     // signup
     public function signup()
     {
-        return view('frontend.signup');
+        return view('frontend.auth.signup');
     }
 
     // uploads
     public function uploadImages()
     {
-        return view('frontend.upload');
+        return view('frontend.menu.upload');
     }
 
     // about us
     public function aboutUs()
     {
-        return view('frontend.about');
+        return view('frontend.footer.about');
     }
 
     // testimonial
     public function testimonial()
     {
-        return view('frontend.testimonial');
+        return view('frontend.footer.testimonial');
     }
 
     // image research
     public function imageResearch()
     {
-        return view('frontend.imageResearch');
+        return view('frontend.footer.imageResearch');
     }
 
     // pricing table
     public function pricingTable()
     {
-        return view('frontend.pricing');
+        return view('frontend.footer.pricing');
     }
 
     // licencing
     public function licenceInfo()
     {
-        return view('frontend.licencing');
+        return view('frontend.footer.licencing');
     }
 
     // terms of use 
     public function termsofUse()
     {
-        return view('frontend.termsofuse');
+        return view('frontend.footer.termsofuse');
     }
 
     // privacy policy
     public function privacyPolicy()
     {
-        return view('frontend.privacypolicy');
+        return view('frontend.footer.privacypolicy');
     }
 
     // contact us
     public function contactUs()
     {
-        return view('frontend.contact');
+        return view('frontend.footer.contact');
     }
 
     // search tips
     public function searchTips()
     {
-        return view('frontend.searchtips');
+        return view('frontend.footer.searchtips');
     }
 
     // faq 
     public function faqs()
     {
-        return view('frontend.faq');
+        return view('frontend.footer.faq');
     }
 
     // technicals
     public function technicals()
     {
-        return view('frontend.technical');
+        return view('frontend.footer.technical');
     }
 
 }
