@@ -25,42 +25,71 @@
         </div>
 
         <main class="container2">
-            <div class="item-1 item">
+            <div class="item item-1" onclick="openModal('Image 1', 'https://picsum.photos/500/300')">
                 <img class="img" src="https://picsum.photos/500/300" alt="">
                 <div class="overlay">Image 1</div>
             </div>
-            <div class="item-2 item">
+            <div class="item item-2" onclick="openModal('Image 2', 'https://picsum.photos/500/301')">
                 <img class="img" src="https://picsum.photos/500/301" alt="">
                 <div class="overlay">Image 2</div>
             </div>
-            <div class="item-3 item">
+            <div class="item item-3" onclick="openModal('Image 3', 'https://picsum.photos/500/302')">
                 <img class="img" src="https://picsum.photos/500/302" alt="">
                 <div class="overlay">Image 3</div>
             </div>
-            <div class="item-4 item">
+            <div class="item item-4" onclick="openModal('Image 4', 'https://picsum.photos/500/600')">
                 <img class="img" src="https://picsum.photos/500/600" alt="">
                 <div class="overlay">Image 4</div>
             </div>
-            <div class="item-5 item">
+            <div class="item item-5" onclick="openModal('Image 5', 'https://picsum.photos/500/800')">
                 <img class="img" src="https://picsum.photos/500/800" alt="">
                 <div class="overlay">Image 5</div>
             </div>
-            <div class="item-6 item">
+            <div class="item item-6" onclick="openModal('Image 6', 'https://picsum.photos/500/400')">
                 <img class="img" src="https://picsum.photos/500/400" alt="">
                 <div class="overlay">Image 6</div>
             </div>
-            <div class="item-7 item">
+            <div class="item item-7" onclick="openModal('Image 7', 'https://picsum.photos/500/304')">
                 <img class="img" src="https://picsum.photos/500/304" alt="">
                 <div class="overlay">Image 7</div>
             </div>
-            <div class="item-8 item">
+            <div class="item item-8" onclick="openModal('Image 8', 'https://picsum.photos/500/401')">
                 <img class="img" src="https://picsum.photos/500/401" alt="">
                 <div class="overlay">Image 8</div>
             </div>
         </main>
     </section>
 
+    <!-- Popup Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <img id="modalImage" src="" alt="">
+            <p id="modalDescription">Uploaded By: Sagor Askar.</p>
+        </div>
+    </div>
 
+    <script>
+        function openModal(title, imageUrl) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside the content
+        window.onclick = function(event) {
+            let modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+
+    </script>
 
     <!-- popular search -->
     <section class="section">
@@ -96,7 +125,7 @@
                     <i class="fa fa-usd text-danger"></i> Make Money Per Every Sell
                 </button>
             </div>
-            <a type="button" class="btn btn-dark" href="" style="font-size: medium; border-radius: 20px; padding: 8px 38px;">BECOME A SELLER</a>
+            <a type="button" class="btn btn-dark" href="{{ route('seller-registration') }}" style="font-size: medium; border-radius: 20px; padding: 8px 38px;">BECOME A SELLER</a>
         </div>
     </section>
 

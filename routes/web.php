@@ -27,6 +27,9 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('search-tips', 'searchTips')->name('search-tips');
     Route::get('faq', 'faqs')->name('faq');
     Route::get('technical', 'technicals')->name('technical');
+    // seller authentication
+    Route::get('seller-registration', 'sellerReg')->name('seller-registration');
+    Route::get('seller-login', 'sellerLog')->name('seller-login');
 });
 
 

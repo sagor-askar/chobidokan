@@ -108,4 +108,15 @@ class WebsiteController extends Controller
         return view('frontend.footer.technical');
     }
 
+    // seller registration
+    public function sellerReg()
+    {
+        return view('frontend.seller.registration');
+    }
+    // seller login
+    public function sellerLog()
+    {
+        return view('frontend.seller.login');
+    }
+
 }

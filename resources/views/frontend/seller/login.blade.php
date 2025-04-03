@@ -23,7 +23,7 @@
         <div class="col-md-5">
             <div class="card p-4">
                 <div class="text-center">
-                    <h3 class="fw-bold mb-3">Login to ChobiDokan</h3>
+                    <h3 class="fw-bold mb-3">Seller Login to ChobiDokan</h3>
                 </div>
                 <form>
                     <div class="form-group mb-3">
@@ -36,18 +36,10 @@
                         <input type="password" class="form-control" id="password" placeholder="Password">
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">Remember me</label>
-                        </div>
-                        <a href="#" class="text-muted">Forgot password?</a>
-                    </div>
-
                     <button type="submit" class="btn btn-primary btn-block w-100">Login</button>
 
                     <p class="text-center text-muted mt-3">
-                        Don't have an account? <a href="{{ route('signup') }}">Register</a>
+                        Don't have an account? <a href="{{ route('seller-registration') }}">Register</a>
                     </p>
                 </form>
             </div>
