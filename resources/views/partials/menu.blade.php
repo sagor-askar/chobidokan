@@ -81,6 +81,13 @@
                         </a>
                     </li>
 
+                    <li class="{{ request()->is("admin/testimonials") || request()->is("admin/testimonials/*") ? "active" : "" }}">
+                        <a href="{{ route("admin.testimonials.index") }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Testimonials</span>
+                        </a>
+                    </li>
+
                 </ul>
             </li>
 

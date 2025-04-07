@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
+
+use App\Models\Faq;
 
 class WebsiteController extends Controller
 {
@@ -99,7 +100,8 @@ class WebsiteController extends Controller
     // faq 
     public function faqs()
     {
-        return view('frontend.footer.faq');
+        $faq = Faq::all();
+        return view('frontend.footer.faq', compact('faq'));
     }
 
     // technicals

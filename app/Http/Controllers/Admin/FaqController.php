@@ -97,8 +97,19 @@ class FaqController extends Controller
      */
     public function destroy($id)
     {
-        $faq = Faq::findOrFail($id);
-        $faq->delete($id);
-        return redirect()->route('admin.faqs.index')->with('success', 'FAQ Deleted Successfully!');
+        try {
+            $faq = Faq::findOrFail($id);
+            $faq->delete(); 
+            return redirect()->route('admin.faqs.index')->with('success', 'FAQ Deleted Successfully!');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.faqs.index')->with('error', 'Failed to delete FAQ: ' . $e->getMessage());
+        }
     }
+
+    public function massDestroy(Request $request)
+    {
+        Faq::whereIn('id', $request->ids)->delete();
+        return response()->json(['message' => 'Selected FAQs deleted successfully'], 200);
+    }
+
 }

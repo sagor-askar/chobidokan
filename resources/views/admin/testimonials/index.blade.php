@@ -4,8 +4,8 @@
     @can('user_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.faqs.create') }}">
-                Add Faq
+            <a class="btn btn-success" href="{{ route('admin.testimonials.create') }}">
+                Add Testimonial
             </a>
         </div>
     </div>
@@ -14,11 +14,11 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Freequently Asked Questions
+                    Testimonials - User Review
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover datatable datatable-Faq">
+                        <table class="table table-bordered table-striped table-hover datatable datatable-Testimonial">
                             <thead>
                                 <tr>
                                     <th width="10"></th>
@@ -26,10 +26,13 @@
                                         ID
                                     </th>
                                     <th>
-                                        Question
+                                        Name
                                     </th>
                                     <th>
-                                        Answer
+                                        Designation
+                                    </th>
+                                    <th>
+                                        Speech
                                     </th>
                                     <th>
                                         &nbsp;
@@ -37,29 +40,32 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($faqs as $key => $faq)
-                                <tr data-entry-id="{{ $faq->id }}">
+                                @foreach($testimonial as $key => $testimonials)
+                                <tr data-entry-id="{{ $testimonials->id }}">
                                     <td></td>
                                     <td>
-                                        {{ $faq->id ?? '' }}
+                                        {{ $testimonials->id ?? '' }}
                                     </td>
                                     <td>
-                                        {{ $faq->question ?? '' }}
+                                        {{ $testimonials->name ?? '' }}
                                     </td>
                                     <td>
-                                        {{ $faq->answer ?? '' }}
+                                        {{ $testimonials->designation ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $testimonials->speech ?? '' }}
                                     </td>
                                     <td>
                                         {{-- view --}}
-                                        <a class="btn btn-xs btn-primary" href="{{ route('admin.faqs.show', $faq->id) }}">
+                                        <a class="btn btn-xs btn-primary" href="{{ route('admin.testimonials.show', $testimonials->id) }}">
                                             {{ trans('global.view') }}
                                         </a>
                                         {{-- edit --}}
-                                        <a class="btn btn-xs btn-info" href="{{ route('admin.faqs.edit', $faq->id) }}">
+                                        <a class="btn btn-xs btn-info" href="{{ route('admin.testimonials.edit', $testimonials->id) }}">
                                             {{ trans('global.edit') }}
                                         </a>
                                         {{-- delete --}}
-                                        <form action="{{ route('admin.faqs.destroy', $faq->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                        <form action="{{ route('admin.testimonials.destroy', $testimonials->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                             <input type="hidden" name="_method" value="DELETE">
                                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
@@ -91,7 +97,7 @@
         global.datatables.delete ') }}'
         let deleteButton = {
             text: deleteButtonTrans
-            , url: "{{ route('admin.faqs.massDestroy') }}"
+            , url: "{{ route('admin.testimonial.massDestroy') }}"
             , className: 'btn-danger'
             , action: function(e, dt, node, config) {
                 var ids = $.map(dt.rows({
@@ -135,7 +141,7 @@
             , pageLength: 100
         , });
 
-        let table = $('.datatable-Faq:not(.ajaxTable)').DataTable({
+        let table = $('.datatable-Testimonial:not(.ajaxTable)').DataTable({
             buttons: dtButtons
         });
 

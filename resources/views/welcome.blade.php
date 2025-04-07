@@ -66,7 +66,10 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
             <img id="modalImage" src="" alt="">
-            <p id="modalDescription">Uploaded By: Sagor Askar.</p>
+            <p id="modalDescription">
+                This is one of the most creative photo from the July event. Specially added by the designer.
+                Uploaded By: <a href="">Sagor Askar</a>.
+            </p>
         </div>
     </div>
 

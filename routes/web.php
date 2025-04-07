@@ -59,6 +59,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // faqs
     Route::resource('faqs', 'FaqController');
+    Route::delete('faqs/massDestroy', 'FaqController@massDestroy')->name('faqs.massDestroy');
+
+    // testimonials
+    Route::resource('testimonials', 'TestimonialController');
+    Route::delete('testimonials/massDestroy', 'TestimonialController@massDestroy')->name('testimonial.massDestroy');
 
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
