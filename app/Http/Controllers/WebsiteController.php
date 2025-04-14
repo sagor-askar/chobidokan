@@ -25,6 +25,18 @@ class WebsiteController extends Controller
         return view('frontend.menu.customize');
     }
 
+    // customization details
+    public function customizationDetail()
+    {
+        return view('frontend.menu.customizeDetails');
+    }
+
+    // designer's profile
+    public function designerProfile()
+    {
+        return view('frontend.profiles.designerProfile');
+    }
+
     // signin
     public function signin()
     {

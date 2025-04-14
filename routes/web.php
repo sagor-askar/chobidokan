@@ -5,13 +5,12 @@ use App\Http\Controllers\Admin\FaqController;
 // frontend pages
 use App\Http\Controllers\WebsiteController;
 
-
-
 Route::controller(WebsiteController::class)->group(function() {
     Route::get('/', 'index')->name('welcome');
     // header routes
     Route::get('info', 'info')->name('info');
     Route::get('customize', 'customization')->name('customize');
+    Route::get('customize-details', 'customizationDetail')->name('customize-details');
     Route::get('signin', 'signin')->name('signin');
     Route::get('signup', 'signup')->name('signup');
     Route::get('uploads', 'uploadImages')->name('uploads');
@@ -30,6 +29,8 @@ Route::controller(WebsiteController::class)->group(function() {
     // seller authentication
     Route::get('seller-registration', 'sellerReg')->name('seller-registration');
     Route::get('seller-login', 'sellerLog')->name('seller-login');
+    // designer profile
+    Route::get('designer-profile', 'designerProfile')->name('designer-profile');
 });
 
 
