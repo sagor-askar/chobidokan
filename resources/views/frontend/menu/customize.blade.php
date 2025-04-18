@@ -1,66 +1,186 @@
 @extends('includes.master')
 @section('content')
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
+<style>
+    .job-card {
+        border: 2px solid #00aaff;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 30px auto;
+        max-width: 1100px;
+        background-color: #fff;
+    }
+
+    .badge-custom {
+        background-color: #fff;
+        color: #333;
+        border: 1px solid #333;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        font-size: 13px;
+    }
+
+    .info-icon {
+        display: inline-block;
+        width: 20px;
+        margin-right: 8px;
+    }
+
+    .sidebar-info {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .sidebar-info i {
+        color: #666;
+    }
+
+    .job-status-icon {
+        height: 6rem;
+        width: auto;
+        margin-top: 2rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Custom for the right column */
+    .right {
+        border-left: 2px solid rgb(161, 165, 161);
+        padding-left: 15px;
+    }
+
+    /* 🔽 Mobile responsiveness from 380px to 500px */
+    @media (max-width: 500px) {
+        .job-card {
+            padding: 15px;
+            margin: 10px;
+        }
+
+        .job-status-icon {
+            height: 4rem;
+            margin-bottom: 10px;
+        }
+
+        .badge-custom {
+            font-size: 12px;
+            padding: 5px 8px;
+        }
+
+        h5 {
+            font-size: 16px;
+        }
+
+        .sidebar-info {
+            font-size: 13px;
+        }
+
+        .right {
+            border-left: none;
+            border-top: 1px solid #ccc;
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+    }
+
+</style>
 
 <main class="main">
 
-    <!-- Best Collection -->
+    <!-- Customize request -->
     <section class="section">
-
-        <div class="container my-5">
-            <div class="border-bottom pb-3 px-2 d-flex justify-content-between">
-                <div class="d-flex align-items-center">
-                    <svg height="30px" class="mr-2" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 495 495" style="enable-background:new 0 0 495 495;" xml:space="preserve">
-                        <g>
-                            <path d="M495,103.513V95.5c0-21.78-17.72-39.5-39.5-39.5h-416C17.72,56,0,73.72,0,95.5v303.997c0,0.003,0,0.005,0,0.008
-		C0.003,421.283,17.722,439,39.5,439h416c21.78,0,39.5-17.72,39.5-39.5V103.521C495,103.518,495,103.516,495,103.513z M39.5,71h416
-		c13.509,0,24.5,10.99,24.5,24.5v4.883c-35.121,34.963-92.85,92.464-140.721,140.289l-75.162-75.162
-		c-9.162-9.162-24.071-9.162-33.233,0L15,381.393V95.5C15,81.99,25.991,71,39.5,71z M455.5,424h-416
-		c-12.519,0-22.868-9.439-24.319-21.574L241.49,176.117c3.314-3.314,8.706-3.314,12.021,0l75.158,75.158
-		C289.26,290.67,258.813,321.249,257.5,323c-2.485,3.313-1.814,8.015,1.5,10.5c1.349,1.012,2.928,1.5,4.494,1.5
-		c2.187,0,4.349-0.953,5.822-2.764C275.075,325.77,412.962,188.308,480,121.551V399.5C480,413.01,469.009,424,455.5,424z" />
-                            <path d="M103.5,199c21.78,0,39.5-17.72,39.5-39.5S125.28,120,103.5,120S64,137.72,64,159.5S81.72,199,103.5,199z M103.5,135
-		c13.509,0,24.5,10.99,24.5,24.5S117.009,184,103.5,184S79,173.01,79,159.5S89.991,135,103.5,135z" />
-                        </g>
-                    </svg>
-                    <a href="#" style="color: #9B5DE5; font-size: 20px;" class="text-capitalize font-weight-bold mb-0">Customize Request</a>
+        <div class="container my-4">
+            <div class="row align-items-end gy-3 mt-5" id="search">
+                <h2 class="text-center">220 Open Jobs</h2>
+                <!-- Search Bar -->
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group position-relative">
+                        <label for="search-input">Search</label>
+                        <input type="text" id="search-input" class="form-control ps-4" placeholder="What are you looking for?">
+                        <span class="fa fa-search position-absolute" style="top: 36px; left: 5px; color: #aaa;"></span>
+                    </div>
                 </div>
-                <a href="#" class="btn btn-primary text-white">See All</a>
+
+                <!-- Category Select -->
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group position-relative">
+                        <label for="category-select">Categories</label>
+                        <select id="category-select" class="form-control pe-4">
+                            <option selected disabled>All Categories (202)</option>
+                            <option value="action">Action</option>
+                            <option value="another">Another action</option>
+                            <option value="something">Something else here</option>
+                        </select>
+                        <i class="fa fa-chevron-down position-absolute" style="top: 35px; right: 10px; pointer-events: none; color: #aaa;"></i>
+                    </div>
+                </div>
+
+                <!-- Job Status Select -->
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group position-relative">
+                        <label for="status-select">Job Status</label>
+                        <select id="status-select" class="form-control pe-4">
+                            <option selected disabled>Open Jobs (202)</option>
+                            <option value="action">Action</option>
+                            <option value="another">Another action</option>
+                            <option value="something">Something else here</option>
+                        </select>
+                        <i class="fa fa-chevron-down position-absolute" style="top: 35px; right: 10px; pointer-events: none; color: #aaa;"></i>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                {{-- item --}}
-                <div class="col-md-4 p-4">
-                    <a href="{{ route('customize-details') }}" class="text-decoration-none text-dark">
-                        <div style="box-shadow: 0 0 20px #ddd;">
-                            <div class="position-relative" style="height: 320px; background-image: url('https://images.pexels.com/photos/2040627/pexels-photo-2040627.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'); background-position: center; background-size: cover;">
-                                <div class="position-absolute px-3 py-4" style="background: rgba(0, 0, 0, .5); right: 0; bottom: 0; left: 0;">
-                                    <h3 class="h6">
-                                        <span class="text-white" style="line-height: 1.6;">
-                                            Lorem ipsum dolor consectetur adipisicing elit. Commodi, ad!
-                                        </span>
-                                    </h3>
 
-                                    <div class="mt-2 d-flex justify-content-between">
-                                        <span class="pl-2 text-white"><i class="fa fa-tasks"></i><small> Logo Design</small></span>
-                                    </div>
-                                </div>
-                            </div>
+            <hr />
 
-                            <div class="p-3">
-                                <div class="d-flex align-items-center gap-3 flex-wrap">
-                                    <span><i class="fa fa-clock-o text-info"></i> 5 days</span>
-                                    <span><i class="fa fa-dollar text-info"></i> 40 dollar</span>
-                                    <span><i class="fa fa-users text-info"></i> 20 designers</span>
-                                </div>
+            <p class="mt-3">
+                <strong>Categories:</strong> Logo & Branding, Web & App Design, Print & Advertising Design, Graphic & Vector
+                Design, Product & Merchandise,
+                Art & Illustration | <a href="#" class="text-decoration-underline">View Closed Jobs</a>
+            </p>
+
+            {{-- Job list --}}
+            <div class="job-card shadow-sm">
+                <a href="{{ route('customize-details') }}" class="text-dark">
+                    <div class="row">
+                        <!-- Left Side (responsive icon placement) -->
+                        <div class="col-md-2 col-12 text-center d-flex justify-content-center justify-content-md-start mb-3 mb-md-0 pt-md-2">
+                            {{-- if the job is open --}}
+                            <img class="job-status-icon" src="{{ asset('frontend_assets/img/open.png') }}" alt="">
+                            {{-- if the job is closed, display this --}}
+                            {{-- <img class="job-status-icon" src="{{ asset('frontend_assets/img/closed.png') }}" alt=""> --}}
+                        </div>
+
+                        <!-- Middle Content -->
+                        <div class="col-md-7 col-12">
+                            <h5><strong>Looking for a graphic designer to design a brochure-like introduction of our real estate business</strong></h5>
+                            <p><strong>AL QASR PROPERTIES LTD.</strong> is a new real estate investment business that is just starting. We are looking for the best graphic designer to present the company’s strategy to important stakeholders. This project is <strong>URGENT</strong>. See attachment.</p>
+                            <div class="d-flex flex-wrap">
+                                <span class="badge badge-custom">Graphic Design Job</span>
+                                <span class="badge badge-custom">Graphic Design Job</span>
+                                <span class="badge badge-custom">Graphic Design Job</span>
                             </div>
                         </div>
-                    </a>
-                </div>
 
-
-
+                        <!-- Right Side -->
+                        <div class="right col-md-3 col-12">
+                            <p class="sidebar-info"><i class="info-icon">&#x1F4B0;</i> US$110</p>
+                            <p class="sidebar-info"><i class="info-icon">&#x23F3;</i> 2 days left</p>
+                            <p class="sidebar-info"><i class="info-icon">&#x1F5BC;</i> 0 designs</p>
+                            <p class="sidebar-info"><i class="info-icon">&#x1F464;</i> 0 designers</p>
+                            <p class="sidebar-info"><i class="info-icon">&#x2B50;</i> 0 4+ star ratings</p>
+                        </div>
+                    </div>
+                </a>
             </div>
+
+
+
+
+
         </div>
+
+
+
+
 
     </section>
 

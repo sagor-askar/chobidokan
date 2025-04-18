@@ -95,8 +95,8 @@
             <p>Design Selected</p>
         </div>
         <div class="col-md-3">
-            <h4>95%</h4>
-            <p>Success Rate</p>
+            <h4>4.5</h4>
+            <p>Review</p>
         </div>
         <div class="col-md-3">
             <h4>$ 1050</h4>

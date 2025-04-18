@@ -20,7 +20,7 @@
         <nav id="navmenu" class="navmenu">
             <ul>
                 <li><a href="{{ route('info') }}">Info</a></li>
-                <li><a href="{{ route('customize') }}">Customize</a></li>
+                <li><a href="{{ route('customize') }}">Customize Jobs</a></li>
                 <li><a href="{{ route('uploads') }}">Upload</a></li>
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
