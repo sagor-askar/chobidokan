@@ -19,16 +19,34 @@ class WebsiteController extends Controller
         return view('frontend.menu.info');
     }
 
-    // customization
+    // customize jobs
     public function customization()
     {
         return view('frontend.menu.customize');
     }
 
-    // customization details
+    // customize job details
     public function customizationDetail()
     {
         return view('frontend.menu.customizeDetails');
+    }
+
+    // customize job submission
+    public function submission()
+    {
+        return view('frontend.menu.submission');
+    }
+
+    // closed customize jobs
+    public function closedJobs()
+    {
+        return view('frontend.menu.closedJobs');
+    }
+
+    // submission guideline
+    public function guidelines()
+    {
+        return view('frontend.menu.submissionGuideline');
     }
 
     // designer's profile

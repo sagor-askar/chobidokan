@@ -11,9 +11,12 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('info', 'info')->name('info');
     Route::get('customize', 'customization')->name('customize');
     Route::get('customize-details', 'customizationDetail')->name('customize-details');
+    Route::get('job-submission', 'submission')->name('job-submission');
+    Route::get('closed-jobs', 'closedJobs')->name('closed-jobs');
     Route::get('signin', 'signin')->name('signin');
     Route::get('signup', 'signup')->name('signup');
     Route::get('uploads', 'uploadImages')->name('uploads');
+    Route::get('submission-guidelines', 'guidelines')->name('submission-guidelines');
     // footer routes
     Route::get('about-us', 'aboutUs')->name('about-us');
     Route::get('testimonials', 'testimonial')->name('testimonials');

@@ -90,7 +90,7 @@
     <section class="section">
         <div class="container my-4">
             <div class="row align-items-end gy-3 mt-5" id="search">
-                <h2 class="text-center">220 Open Jobs</h2>
+                <h2 class="text-center">220 Closed Jobs</h2>
                 <!-- Search Bar -->
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="form-group position-relative">
@@ -134,7 +134,7 @@
             <p class="mt-3">
                 <strong>Categories:</strong> Logo & Branding, Web & App Design, Print & Advertising Design, Graphic & Vector
                 Design, Product & Merchandise,
-                Art & Illustration | <a href="{{ route('closed-jobs') }}" class="text-decoration-underline">View Closed Jobs</a>
+                Art & Illustration | <a href="{{ route('customize') }}" class="text-decoration-underline">View Open Jobs</a>
             </p>
 
             {{-- Job list --}}
@@ -143,10 +143,9 @@
                     <div class="row">
                         <!-- Left Side (responsive icon placement) -->
                         <div class="col-md-2 col-12 text-center d-flex justify-content-center justify-content-md-start mb-3 mb-md-0 pt-md-2">
-                            {{-- if the job is open --}}
-                            <img class="job-status-icon" src="{{ asset('frontend_assets/img/open.png') }}" alt="">
+
                             {{-- if the job is closed, display this --}}
-                            {{-- <img class="job-status-icon" src="{{ asset('frontend_assets/img/closed.png') }}" alt=""> --}}
+                            <img class="job-status-icon" src="{{ asset('frontend_assets/img/closed.png') }}" alt="">
                         </div>
 
                         <!-- Middle Content -->

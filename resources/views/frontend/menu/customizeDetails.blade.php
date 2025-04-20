@@ -69,6 +69,12 @@
 
             {{-- right nav --}}
             <div class="col-12 col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{{ route('job-submission') }}" class="btn btn-sm btn-primary">Submit Your Design</a>
+                    </div>
+                </div>
+                <br />
 
                 <div class="card">
                     <div class="card-body">
@@ -83,6 +89,7 @@
                     </div>
                 </div>
                 <br />
+
                 <div class="card">
                     <div class="card-body">
                         <h5>References</h5>
