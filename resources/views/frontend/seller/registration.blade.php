@@ -120,7 +120,23 @@
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
                                         <label for="bank_name">Bank Name</label>
-                                        <input type="text" class="form-control" id="bank_name" placeholder="Bank Name">
+                                        <input type="text" class="form-control" id="" placeholder="Bank Name">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="branch_name">Branch Name</label>
+                                        <input type="text" class="form-control" id="" placeholder="Branch Name">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="">Account Holder Name</label>
+                                        <input type="text" class="form-control" id="" placeholder="Account Holder Name">
                                     </div>
                                 </div>
 
@@ -135,15 +151,15 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="bkash">bKash No.</label>
-                                        <input type="number" class="form-control" id="bkash" placeholder="bKash No.">
+                                        <label for="">Routing No.</label>
+                                        <input type="number" class="form-control" id="" placeholder="Routing No.">
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="rocket">Rocket No.</label>
-                                        <input type="number" class="form-control" id="rocket" placeholder="Rocket No.">
+                                        <label for="">Mobile Banking No.</label>
+                                        <input type="number" class="form-control" id="" placeholder="Mobile Banking No.">
                                     </div>
                                 </div>
                             </div>
@@ -151,15 +167,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="nagad">Nagad No.</label>
-                                        <input type="number" class="form-control" id="nagad" placeholder="Nagad No.">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="upay">Upay No.</label>
-                                        <input type="number" class="form-control" id="upay" placeholder="Upay No.">
+                                        <label for="payment_method">Account Type</label>
+                                        <select class="form-control" id="payment_method" name="payment_method">
+                                            <option value="" disabled selected>Select Payment Method</option>
+                                            <option value="bkash">bKash</option>
+                                            <option value="rocket">Rocket</option>
+                                            <option value="rocket">Nagad</option>
+                                            <option value="rocket">Upay</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
