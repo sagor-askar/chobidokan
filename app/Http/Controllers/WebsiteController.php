@@ -150,5 +150,10 @@ class WebsiteController extends Controller
     {
         return view('frontend.seller.login');
     }
+    // seller dashboard
+    public function sellerDash()
+    {
+        return view('frontend.seller.dashboard');
+    }
 
 }
