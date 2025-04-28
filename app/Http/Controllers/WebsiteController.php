@@ -13,6 +13,12 @@ class WebsiteController extends Controller
         return view('welcome');
     }
 
+    // custom request
+    public function customRequest()
+    {
+        return view('frontend.customRequest');
+    }
+
     // info page
     public function info()
     {
@@ -103,7 +109,7 @@ class WebsiteController extends Controller
         return view('frontend.footer.licencing');
     }
 
-    // terms of use 
+    // terms of use
     public function termsofUse()
     {
         return view('frontend.footer.termsofuse');
@@ -127,7 +133,7 @@ class WebsiteController extends Controller
         return view('frontend.footer.searchtips');
     }
 
-    // faq 
+    // faq
     public function faqs()
     {
         $faq = Faq::all();

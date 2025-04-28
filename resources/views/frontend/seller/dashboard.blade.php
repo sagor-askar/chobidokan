@@ -1,5 +1,6 @@
 @extends('includes.master')
 @section('content')
+    {{-- custom css for this page --}}
     <style>
         .list-group-item.active {
             background: #06C167 !important;
