@@ -7,6 +7,7 @@ use App\Http\Controllers\WebsiteController;
 
 Route::controller(WebsiteController::class)->group(function() {
     Route::get('/', 'index')->name('welcome');
+    Route::get('custom-request', 'customRequest')->name('custom-request');
     // header routes
     Route::get('info', 'info')->name('info');
     Route::get('customize', 'customization')->name('customize');
