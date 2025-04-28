@@ -204,7 +204,12 @@
         if (index < subForms.length - 1) {
             index++;
             updateForm();
+        } else {
+            // This will take the user to dashboard
+            window.location.href = "{{ route('seller-dashboard') }}";
+
         }
+
     });
 
     document.getElementById("prev").addEventListener("click", (e) => {
