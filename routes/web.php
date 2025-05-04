@@ -39,13 +39,11 @@ Route::controller(WebsiteController::class)->group(function() {
 });
 
 
-Route::get('/home', function () {
-    if (session('status')) {
-        return redirect()->route('admin.home')->with('status', session('status'));
-    }
+ //user & seller Registration
+Route::post('/user/register', 'Auth\RegisterController@userRegister')->name('user.register');
+Route::post('/user-login', 'Auth\LoginController@customLogin')->name('customLogin');
+Route::post('/seller/register', 'Auth\RegisterController@sellerRegister')->name('seller.register');
 
-    return redirect()->route('admin.home');
-});
 
 Auth::routes(['register' => false]);
 

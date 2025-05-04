@@ -25,15 +25,16 @@
                 <div class="text-center">
                     <h3 class="fw-bold mb-3">Seller Login to ChobiDokan</h3>
                 </div>
-                <form>
+                <form method="POST" action="{{ route('customLogin') }}">
+                    @csrf
                     <div class="form-group mb-3">
-                        <label for="email">Email Address</label>
-                        <input type="email" class="form-control" id="email" placeholder="Enter email">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter email">
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password">
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-block w-100">Login</button>
