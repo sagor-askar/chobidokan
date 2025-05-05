@@ -88,7 +88,28 @@
                         </a>
                     </li>
 
+                    <li class="{{ request()->is('admin/privacy-policy') || request()->is('admin/privacy-policy/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.privacy.policy') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Privacy Policy</span>
+                        </a>
+                    </li>
+
+                    <li class="{{ request()->is('admin/terms-of-use') || request()->is('admin/terms-of-use/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.terms.use') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Terms of Use</span>
+                        </a>
+                    </li>
+
                 </ul>
+            </li>
+
+            <li class="{{ request()->is('admin/settings') || request()->is('admin/settings/*') ? 'active' : '' }}">
+                <a href="{{ route('admin.settings') }}">
+                    <i class='fa fa-cog'></i>
+                    <span>Website Settings</span>
+                </a>
             </li>
 
 
