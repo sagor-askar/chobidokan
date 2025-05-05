@@ -69,6 +69,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('testimonials', 'TestimonialController');
     Route::delete('testimonials/massDestroy', 'TestimonialController@massDestroy')->name('testimonial.massDestroy');
 
+    // Privacy & policy
+    Route::get('privacy-policy', 'SettingController@privacyPolicy')->name('privacy.policy');
+    Route::post('privacy-policy/store', 'SettingController@privacyPolicyStore')->name('privacy.store');
+
+    // Terms of Use
+    Route::get('terms-of-use', 'SettingController@termsOfUse')->name('terms.use');
+    Route::post('terms-of-use/store', 'SettingController@termsOfUseStore')->name('terms.use.store');
+
+    // software settings
+    Route::get('settings', 'SettingController@setting')->name('settings');
+    Route::post('settings/store', 'SettingController@store')->name('settings.store');
+
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password
