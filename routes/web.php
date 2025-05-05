@@ -1,6 +1,8 @@
 <?php
 // backend modules
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\SettingController;
 
 // frontend pages
 use App\Http\Controllers\WebsiteController;
