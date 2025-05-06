@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Setting;
 use App\Models\PrivacyPolicy;
 use App\Models\Terms;
+use App\Models\Licencing;
+use App\Models\SearchTips;
 use Image;
 
 class SettingController extends Controller
@@ -84,5 +86,47 @@ class SettingController extends Controller
         }
 
         return redirect()->back()->with('success', 'Terms of Uses Updated Successfully.');;
+    }
+
+    // Licencing Info
+    public function licencing()
+    {
+        $licencing =  Licencing::orderBy('id','DESC')->first();
+        return view('admin.licencing.index',compact('licencing'));
+    }
+
+    public function licencingStore(Request $request)
+    {
+        $data = $request->all();
+
+        $licencing = Licencing::orderBy('id','DESC')->first();
+        if ($licencing){
+            $licencing->update($data);
+        }else{
+            Licencing::create($data);
+        }
+
+        return redirect()->back()->with('success', 'Licencing Info Updated Successfully.');;
+    }
+
+    // Search Tips
+    public function searchTips()
+    {
+        $searchTips =  SearchTips::orderBy('id','DESC')->first();
+        return view('admin.searchTips.index',compact('searchTips'));
+    }
+
+    public function searchTipsStore(Request $request)
+    {
+        $data = $request->all();
+
+        $searchTips = SearchTips::orderBy('id','DESC')->first();
+        if ($searchTips){
+            $searchTips->update($data);
+        }else{
+            SearchTips::create($data);
+        }
+
+        return redirect()->back()->with('success', 'Search Tips Updated Successfully.');;
     }
 }

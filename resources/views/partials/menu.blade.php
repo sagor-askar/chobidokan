@@ -90,17 +90,35 @@
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/privacy-policy') || request()->is('admin/privacy-policy/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/privacy-policy') || request()->is('admin/privacy-policy/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.privacy.policy') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Privacy Policy</span>
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/terms-of-use') || request()->is('admin/terms-of-use/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/terms-of-use') || request()->is('admin/terms-of-use/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.terms.use') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Terms of Use</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/licencing') || request()->is('admin/licencing/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.licencing.info') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Licencing Info</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/search-tips') || request()->is('admin/search-tips/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.search.tips') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Search Tips</span>
                         </a>
                     </li>
 
