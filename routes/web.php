@@ -1,6 +1,8 @@
 <?php
 // backend modules
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\SettingController;
 
 // frontend pages
 use App\Http\Controllers\WebsiteController;
@@ -76,6 +78,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Terms of Use
     Route::get('terms-of-use', 'SettingController@termsOfUse')->name('terms.use');
     Route::post('terms-of-use/store', 'SettingController@termsOfUseStore')->name('terms.use.store');
+
+    // Licencing
+    Route::get('licencing', 'SettingController@licencing')->name('licencing.info');
+    Route::post('licencing/store', 'SettingController@licencingStore')->name('licencing.info.store');
+
+    // Search Tips
+    Route::get('search-tips', 'SettingController@searchTips')->name('search.tips');
+    Route::post('search-tips/store', 'SettingController@searchTipsStore')->name('search.tips.store');
 
     // software settings
     Route::get('settings', 'SettingController@setting')->name('settings');

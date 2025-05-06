@@ -11,9 +11,8 @@
                                     <i class="fa fa-map-marker"></i>
                                 </div>
                                 <div class="contact-info-text">
-                                    <h2>address</h2>
-                                    <span>1215 Lorem Ipsum, Ch 176080 </span>
-                                    <span>Chandigarh , INDIA</span>
+                                    <h2>Address</h2>
+                                    <span>{{ $settings->address ?? '' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -26,8 +25,7 @@
                                 </div>
                                 <div class="contact-info-text">
                                     <h2>E-mail</h2>
-                                    <span>info@LoremIpsum.com</span>
-                                    <span>yourmail@gmail.com</span>
+                                    <span>{{ $settings->email ?? '' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -39,9 +37,8 @@
                                     <i class="fa fa-clock-o"></i>
                                 </div>
                                 <div class="contact-info-text">
-                                    <h2>office time</h2>
-                                    <span>Mon - Thu 9:00 am - 4.00 pm</span>
-                                    <span>Thu - Mon 10.00 pm - 5.00 pm</span>
+                                    <h2>Phone</h2>
+                                    <span>{{ $settings->phone ?? '' }}</span>
                                 </div>
                             </div>
                         </div>

@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Faq;
+use App\Models\Testimonial;
+use App\Models\Setting;
+use App\Models\PrivacyPolicy;
+use App\Models\Terms;
+use App\Models\Licencing;
+use App\Models\SearchTips;
 
 class WebsiteController extends Controller
 {
     // homepage
     public function index()
     {
-        return view('welcome');
+        $settings = Setting::first();
+        return view('welcome', compact('settings'));
     }
 
     // custom request
@@ -106,31 +113,36 @@ class WebsiteController extends Controller
     // licencing
     public function licenceInfo()
     {
-        return view('frontend.footer.licencing');
+        $licencing = licencing::first();
+        return view('frontend.footer.licencing', compact('licencing'));
     }
 
     // terms of use
     public function termsofUse()
     {
-        return view('frontend.footer.termsofuse');
+        $terms = Terms::first();
+        return view('frontend.footer.termsofuse', compact('terms'));
     }
 
     // privacy policy
     public function privacyPolicy()
     {
-        return view('frontend.footer.privacypolicy');
+        $privacy = PrivacyPolicy::first();
+        return view('frontend.footer.privacypolicy', compact('privacy'));
     }
 
     // contact us
     public function contactUs()
     {
-        return view('frontend.footer.contact');
+        $settings = Setting::first();
+        return view('frontend.footer.contact', compact('settings'));
     }
 
     // search tips
     public function searchTips()
     {
-        return view('frontend.footer.searchtips');
+        $searchTips = SearchTips::first();
+        return view('frontend.footer.searchtips', compact('searchTips'));
     }
 
     // faq
