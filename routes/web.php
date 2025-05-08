@@ -1,6 +1,8 @@
 <?php
 // backend modules
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\SettingController;
 
 // frontend pages
 use App\Http\Controllers\WebsiteController;
@@ -78,6 +80,26 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // testimonials
     Route::resource('testimonials', 'TestimonialController');
     Route::delete('testimonials/massDestroy', 'TestimonialController@massDestroy')->name('testimonial.massDestroy');
+
+    // Privacy & policy
+    Route::get('privacy-policy', 'SettingController@privacyPolicy')->name('privacy.policy');
+    Route::post('privacy-policy/store', 'SettingController@privacyPolicyStore')->name('privacy.store');
+
+    // Terms of Use
+    Route::get('terms-of-use', 'SettingController@termsOfUse')->name('terms.use');
+    Route::post('terms-of-use/store', 'SettingController@termsOfUseStore')->name('terms.use.store');
+
+    // Licencing
+    Route::get('licencing', 'SettingController@licencing')->name('licencing.info');
+    Route::post('licencing/store', 'SettingController@licencingStore')->name('licencing.info.store');
+
+    // Search Tips
+    Route::get('search-tips', 'SettingController@searchTips')->name('search.tips');
+    Route::post('search-tips/store', 'SettingController@searchTipsStore')->name('search.tips.store');
+
+    // software settings
+    Route::get('settings', 'SettingController@setting')->name('settings');
+    Route::post('settings/store', 'SettingController@store')->name('settings.store');
 
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {

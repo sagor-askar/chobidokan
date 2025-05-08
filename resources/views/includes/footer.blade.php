@@ -7,14 +7,14 @@
                     <span class="sitename">Chobi Dokan</span>
                 </a>
                 <div class="footer-contact pt-3">
-                    <p><strong>Email:</strong> <span>info@chobidokan.com</span></p>
-                    <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
+                    <p><strong>Email:</strong> <span>{{ $settings->email ?? '' }}</span></p>
+                    <p class="mt-3"><strong>Phone:</strong> <span>{{ $settings->phone ?? '' }}</span></p>
                 </div>
                 <div class="social-links d-flex">
-                    <a href=""><i class="bi bi-twitter-x"></i></a>
-                    <a href=""><i class="bi bi-facebook"></i></a>
-                    <a href=""><i class="bi bi-instagram"></i></a>
-                    <a href=""><i class="bi bi-linkedin"></i></a>
+                    <a href="{{ $setting->twitter ?? '' }}"><i class="bi bi-twitter-x"></i></a>
+                    <a href="{{ $setting->facebook ?? '' }}"><i class="bi bi-facebook"></i></a>
+                    <a href="{{ $setting->instagram ?? '' }}"><i class="bi bi-instagram"></i></a>
+                    <a href="{{ $setting->linkedin ?? '' }}"><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
 
