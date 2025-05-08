@@ -61,6 +61,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::resource('users', 'UsersController');
 
+
+    // Categories
+    Route::delete('categories/destroy', 'CategoryController@massDestroy')->name('categories.massDestroy');
+    Route::resource('categories', 'CategoryController');
+
+
+    // Subscription
+    Route::delete('subscriptions/destroy', 'SubscriptionController@massDestroy')->name('subscriptions.massDestroy');
+    Route::resource('subscriptions', 'SubscriptionController');
+
     // faqs
     Route::resource('faqs', 'FaqController');
     Route::delete('faqs/massDestroy', 'FaqController@massDestroy')->name('faqs.massDestroy');

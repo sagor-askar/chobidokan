@@ -67,6 +67,23 @@
                 </a>
                 <ul class="treeview-menu">
 
+
+                    <li
+                        class="{{ request()->is('admin/categories') || request()->is('admin/categories/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.categories.index') }}">
+                            <i class='fas fa-arrow-circle-right'></i>
+                            <span>Category</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/subscriptions') || request()->is('admin/subscriptions/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.subscriptions.index') }}">
+                            <i class='fas fa-arrow-circle-right'></i>
+                            <span>Subscription Plans</span>
+                        </a>
+                    </li>
+
                     <li class="">
                         <a href="">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>

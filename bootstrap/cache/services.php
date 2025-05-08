@@ -36,10 +36,11 @@
     32 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
     33 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
     34 => 'Yajra\\DataTables\\DataTablesServiceProvider',
-    35 => 'App\\Providers\\AppServiceProvider',
-    36 => 'App\\Providers\\AuthServiceProvider',
-    37 => 'App\\Providers\\EventServiceProvider',
-    38 => 'App\\Providers\\RouteServiceProvider',
+    35 => 'Intervention\\Image\\ImageServiceProvider',
+    36 => 'App\\Providers\\AppServiceProvider',
+    37 => 'App\\Providers\\AuthServiceProvider',
+    38 => 'App\\Providers\\EventServiceProvider',
+    39 => 'App\\Providers\\RouteServiceProvider',
   ),
   'eager' => 
   array (
@@ -64,10 +65,11 @@
     18 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
     19 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
     20 => 'Yajra\\DataTables\\DataTablesServiceProvider',
-    21 => 'App\\Providers\\AppServiceProvider',
-    22 => 'App\\Providers\\AuthServiceProvider',
-    23 => 'App\\Providers\\EventServiceProvider',
-    24 => 'App\\Providers\\RouteServiceProvider',
+    21 => 'Intervention\\Image\\ImageServiceProvider',
+    22 => 'App\\Providers\\AppServiceProvider',
+    23 => 'App\\Providers\\AuthServiceProvider',
+    24 => 'App\\Providers\\EventServiceProvider',
+    25 => 'App\\Providers\\RouteServiceProvider',
   ),
   'deferred' => 
   array (
