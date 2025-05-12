@@ -9,6 +9,8 @@ use App\Models\PrivacyPolicy;
 use App\Models\Terms;
 use App\Models\Licencing;
 use App\Models\SearchTips;
+use App\Models\Technical;
+use App\Models\ImgResearch;
 use Image;
 
 class SettingController extends Controller
@@ -128,5 +130,47 @@ class SettingController extends Controller
         }
 
         return redirect()->back()->with('success', 'Search Tips Updated Successfully.');;
+    }
+
+    // Technical Info
+    public function technicalInfo()
+    {
+        $technicalInfo =  Technical::orderBy('id','DESC')->first();
+        return view('admin.technical.index',compact('technicalInfo'));
+    }
+
+    public function technicalInfoStore(Request $request)
+    {
+        $data = $request->all();
+
+        $technicalInfo = Technical::orderBy('id','DESC')->first();
+        if ($technicalInfo){
+            $technicalInfo->update($data);
+        }else{
+            Technical::create($data);
+        }
+
+        return redirect()->back()->with('success', 'Technical Info Updated Successfully.');;
+    }
+
+    // Research Image
+    public function imgResearch()
+    {
+        $imgResearch =  ImgResearch::orderBy('id','DESC')->first();
+        return view('admin.imageResearch.index',compact('imgResearch'));
+    }
+
+    public function imgResearchStore(Request $request)
+    {
+        $data = $request->all();
+
+        $imgResearch = ImgResearch::orderBy('id','DESC')->first();
+        if ($imgResearch){
+            $imgResearch->update($data);
+        }else{
+            ImgResearch::create($data);
+        }
+
+        return redirect()->back()->with('success', 'Research Info Updated Successfully.');;
     }
 }

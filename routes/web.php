@@ -97,6 +97,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('search-tips', 'SettingController@searchTips')->name('search.tips');
     Route::post('search-tips/store', 'SettingController@searchTipsStore')->name('search.tips.store');
 
+    // Technical
+    Route::get('technical-info', 'SettingController@technicalInfo')->name('technical.info');
+    Route::post('technical-info/store', 'SettingController@technicalInfoStore')->name('technical.info.store');
+
+    // Image Research
+    Route::get('image-research', 'SettingController@imgResearch')->name('img.research');
+    Route::post('image-research/store', 'SettingController@imgResearchStore')->name('img.research.store');
+
     // software settings
     Route::get('settings', 'SettingController@setting')->name('settings');
     Route::post('settings/store', 'SettingController@store')->name('settings.store');
