@@ -58,6 +58,11 @@
     <script src="frontend_assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
     <script src="frontend_assets/vendor/swiper/swiper-bundle.min.js"></script>
 
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jQuery (if not already included) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!-- Main JS File -->
     <script src="frontend_assets/js/main.js"></script>
 
@@ -72,6 +77,71 @@
         }
     </script>
 
+    <script>
+        $(document).ready(function() {
+            @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                animation: true,
+                text: "{{ session('success') }}",
+                position: 'top-right',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            @endif
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            @if (session('warning'))
+            Swal.fire({
+                icon: 'warning',
+                animation: true,
+                text: "{{ session('warning') }}",
+                position: 'top-right',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            @endif
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                animation: true,
+                text: "{{ session('error') }}",
+                position: 'top-right',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            @endif
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            @if (session('warning'))
+            Swal.fire({
+                icon: 'warning',
+                animation: true,
+                text: "{{ session('warning') }}",
+                position: 'top-right',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            @endif
+        });
+    </script>
 </body>
 
 </html>

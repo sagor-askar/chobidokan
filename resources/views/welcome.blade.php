@@ -111,6 +111,8 @@
         </section>
 
         <!-- become a seller section -->
+        @if (Auth::check() && Auth::user()->role_id == 2)
+        @else
         <section class="section">
             <div class="container">
                 <h3>Sell Your Photograph on ChobiDokan</h3>
@@ -131,6 +133,8 @@
                     style="font-size: medium; border-radius: 20px; padding: 8px 38px;">BECOME A SELLER</a>
             </div>
         </section>
+        @endif
+
 
         <!-- customized photo request section -->
         <section class="section">
@@ -146,6 +150,6 @@
                     style="font-size: medium; border-radius: 20px; padding: 8px 38px;">CUSTOM REQUEST</a>
             </div>
         </section>
-
     </main>
+
 @endsection

@@ -87,7 +87,8 @@
     <div class="container mt-5">
         <div class="card">
             <div class="card-body">
-                <form id="multiStepForm">
+                 <form method="POST" action="{{ route("project.store") }}" id="multiStepForm" enctype="multipart/form-data">
+                        @csrf
 
                     {{-- top level --}}
                     <!-- Progress Bar Visual -->
@@ -113,63 +114,15 @@
                         </div>
 
                         <div class="row g-3">
-
+                            @foreach($categories as $key=>$category)
                             <div class="col-md-3">
-                                <div class="design-card" onclick="selectCard(this)">
-                                    <img src="{{ asset('frontend_assets/img/requests/logo-design.png') }}" alt="Logo Design">
-                                    <h5 class="mt-2">Logo Design</h5>
+                                <div class="design-card" onclick="selectCard(this)" data-id="{{ $category->id }}">
+                                    <img src="{{ asset($category->logo) }}" alt="Logo Design">
+                                    <h5 class="mt-2">{{$category->name}}</h5>
                                 </div>
                             </div>
-
-                            <div class="col-md-3">
-                                <div class="design-card" onclick="selectCard(this)">
-                                    <img src="{{ asset('frontend_assets/img/requests/code.png') }}" alt="Web Design">
-                                    <h5 class="mt-2">Web Design</h5>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="design-card" onclick="selectCard(this)">
-                                    <img src="{{ asset('frontend_assets/img/requests/t-shirt.png') }}" alt="T-Shirt">
-                                    <h5 class="mt-2">T-Shirt Design</h5>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="design-card" onclick="selectCard(this)">
-                                    <img src="{{ asset('frontend_assets/img/requests/flyer.png') }}" alt="Flyer">
-                                    <h5 class="mt-2">Flyer Design</h5>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="design-card" onclick="selectCard(this)">
-                                    <img src="{{ asset('frontend_assets/img/requests/business-card-design.png') }}" alt="Business Card">
-                                    <h5 class="mt-2">Business Card Design</h5>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="design-card" onclick="selectCard(this)">
-                                    <img src="{{ asset('frontend_assets/img/requests/stationary.png') }}" alt="Stationery">
-                                    <h5 class="mt-2">Stationery Design</h5>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="design-card" onclick="selectCard(this)">
-                                    <img src="{{ asset('frontend_assets/img/requests/graphic.png') }}" alt="Graphic">
-                                    <h5 class="mt-2">Graphic Design</h5>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="design-card" onclick="selectCard(this)">
-                                    <img src="{{ asset('frontend_assets/img/requests/else.png') }}" alt="Other">
-                                    <h5 class="mt-2">Something else?</h5>
-                                </div>
-                            </div>
-
+                            @endforeach
+                                <input type="hidden" name="category_id" id="category_id">
                         </div>
 
                         <button type="button" class="mt-2 next btn btn-primary">Next</button>
@@ -185,7 +138,7 @@
                         <div class="row g-3">
                             <div class="mb-3">
                                 <label for="">Project Name</label>
-                                <input class="form-control" type="text" placeholder="Name of Your Project">
+                                <input class="form-control" type="text" name="name" placeholder="Name of Your Project">
                             </div>
                             <div class="mb-3">
                                 <label>Project Description</label>
@@ -193,11 +146,11 @@
                             </div>
                             <div class="mb-3">
                                 <label>Logo Text</label>
-                                <input type="text" class="form-control" name="logo_text" placeholder="Tell us about the logo">
+                                <input type="text" class="form-control" name="logo_description" placeholder="Tell us about the logo">
                             </div>
                             <div class="mb-3">
                                 <label>Upload files (Optional)</label>
-                                <input type="file" class="form-control" name="attached_files">
+                                <input type="file" class="form-control" name="project_file">
                             </div>
                         </div>
 
@@ -217,56 +170,28 @@
                             <section id="pricing">
 
                                 <div class="row">
-                                    <div class="pricing-column col-lg-4 col-md-6">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3>Basic</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <h2>৳ 10</h2>
-                                                <p>3 Designers</p>
-                                                <p>Expect 6+ Designs</p>
-                                                <p>Unlimited Revisions</p>
-                                                <p>Money Back Guarantee</p>
-                                                <p>Industry Standard Files</p>
-                                                <button class="btn btn-sm btn-block btn-dark" type="button">Select</button>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div class="pricing-column col-lg-4 col-md-6">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3>Standard</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <h2>৳ 20</h2>
-                                                <p>Unlimited Designers</p>
-                                                <p>Expect 50+ Designs</p>
-                                                <p>Unlimited Revisions</p>
-                                                <p>Money Back Guarantee</p>
-                                                <p>Industry Standard Files</p>
-                                                <button class="btn btn-sm btn-block btn-dark" type="button">Select</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @foreach($subscriptions as $key=>$subscription)
+                                        @php
+                                           $points = json_decode($subscription->points)
+                                        @endphp
+                                        <div class="pricing-column col-lg-4 col-md-6">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="text-center">{{$subscription->name}}</h3>
+                                                </div>
+                                                <div class="card-body text-center">
+                                                    <h2>৳ {{$subscription->price}}</h2>
 
-                                    <div class="pricing-column col-lg-4">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3>Premium</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <h2>৳ 30</h2>
-                                                <p>Unlimited Designers</p>
-                                                <p>Expect 100+ Designs</p>
-                                                <p>Unlimited Revisions</p>
-                                                <p>Money Back Guarantee</p>
-                                                <p>Industry Standard Files</p>
-                                                <button class="btn btn-sm btn-block btn-dark" type="button">Select</button>
+                                                    @foreach($points as $i=>$point)
+                                                    <p>{{$point}}</p>
+                                                    @endforeach
+
+                                                    <button class="btn btn-sm btn-block btn-dark" type="button">Select</button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endforeach
 
                                 </div>
 
@@ -433,11 +358,6 @@
             });
             return isValid;
         }
-
-        $("#multiStepForm").on('submit', function(e) {
-            e.preventDefault();
-            alert('Form submitted successfully!');
-        });
     });
 
 </script>
@@ -445,13 +365,12 @@
 {{-- for design type cards --}}
 <script>
     function selectCard(card) {
-        // Remove "selected" class from all cards
-        document.querySelectorAll('.design-card').forEach(function(c) {
-            c.classList.remove('selected');
-        });
-        // Add "selected" to the clicked one
-        card.classList.add('selected');
+    document.querySelectorAll('.design-card').forEach(function(c) {
+    c.classList.remove('selected');
+    });
+    card.classList.add('selected');
+    const categoryId = card.getAttribute('data-id');
+    document.getElementById('category_id').value = categoryId;
     }
-
 </script>
 @endsection
