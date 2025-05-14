@@ -5,11 +5,11 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\SettingController;
 
 // frontend pages
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\WebsiteController;
 
 Route::controller(WebsiteController::class)->group(function() {
     Route::get('/', 'index')->name('welcome');
-    Route::get('custom-request', 'customRequest')->name('custom-request');
     // header routes
     Route::get('info', 'info')->name('info');
     Route::get('customize', 'customization')->name('customize');
@@ -97,11 +97,26 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('search-tips', 'SettingController@searchTips')->name('search.tips');
     Route::post('search-tips/store', 'SettingController@searchTipsStore')->name('search.tips.store');
 
+    // Technical
+    Route::get('technical-info', 'SettingController@technicalInfo')->name('technical.info');
+    Route::post('technical-info/store', 'SettingController@technicalInfoStore')->name('technical.info.store');
+
+    // Image Research
+    Route::get('image-research', 'SettingController@imgResearch')->name('img.research');
+    Route::post('image-research/store', 'SettingController@imgResearchStore')->name('img.research.store');
+
     // software settings
     Route::get('settings', 'SettingController@setting')->name('settings');
     Route::post('settings/store', 'SettingController@store')->name('settings.store');
 
 });
+
+Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
+    Route::get('/custom-request', [WebsiteController::class, 'customRequest'])->name('custom-request');
+    Route::post('/project-store', [ProjectController::class, 'projectStore'])->name('project.store');
+
+});
+
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password
     if (file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php'))) {

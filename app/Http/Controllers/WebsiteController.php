@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Category;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 
 use App\Models\Faq;
@@ -23,7 +25,9 @@ class WebsiteController extends Controller
     // custom request
     public function customRequest()
     {
-        return view('frontend.customRequest');
+        $categories = Category::where('status',1)->get();
+        $subscriptions = Subscription::where('status',1)->get();
+        return view('frontend.customRequest',compact('categories','subscriptions'));
     }
 
     // info page

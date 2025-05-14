@@ -68,11 +68,10 @@
                 </a>
                 <ul class="treeview-menu">
 
-
                     <li
                         class="{{ request()->is('admin/categories') || request()->is('admin/categories/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.categories.index') }}">
-                            <i class='fas fa-arrow-circle-right'></i>
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Category</span>
                         </a>
                     </li>
@@ -80,15 +79,8 @@
                     <li
                         class="{{ request()->is('admin/subscriptions') || request()->is('admin/subscriptions/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.subscriptions.index') }}">
-                            <i class='fas fa-arrow-circle-right'></i>
-                            <span>Subscription Plans</span>
-                        </a>
-                    </li>
-
-                    <li class="">
-                        <a href="">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                            <span>Contact Info</span>
+                            <span>Subscription Plans</span>
                         </a>
                     </li>
 
@@ -136,6 +128,22 @@
                         <a href="{{ route('admin.search.tips') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Search Tips</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/technical-info') || request()->is('admin/technical-info/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.technical.info') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Technical Info</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/image-research') || request()->is('admin/image-research/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.img.research') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Image Research</span>
                         </a>
                     </li>
 
