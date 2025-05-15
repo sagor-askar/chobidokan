@@ -21,8 +21,7 @@ return new class extends Migration
             $table->integer('amount')->default(0);
             $table->string('card_type')->nullable();
             $table->string('bank_txn')->nullable();
-            $table->string('mer_txnid')->nullable();
-            $table->string('pg_txnid')->nullable();
+            $table->integer('status')->default(0)->comment('0=>Inproggress, 1=>Approved,2=Rejected');
             $table->timestamps();
         });
     }
