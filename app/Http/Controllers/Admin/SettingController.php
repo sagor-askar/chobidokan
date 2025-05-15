@@ -11,6 +11,7 @@ use App\Models\Licencing;
 use App\Models\SearchTips;
 use App\Models\Technical;
 use App\Models\ImgResearch;
+use App\Models\InfoSetup;
 use Image;
 
 class SettingController extends Controller
@@ -172,5 +173,26 @@ class SettingController extends Controller
         }
 
         return redirect()->back()->with('success', 'Research Info Updated Successfully.');;
+    }
+
+    // Info Setup
+    public function infoSetup()
+    {
+        $infoSetup =  InfoSetup::orderBy('id','DESC')->first();
+        return view('admin.info.index',compact('infoSetup'));
+    }
+
+    public function infoSetupStore(Request $request)
+    {
+        $data = $request->all();
+
+        $infoSetup = InfoSetup::orderBy('id','DESC')->first();
+        if ($infoSetup){
+            $infoSetup->update($data);
+        }else{
+            InfoSetup::create($data);
+        }
+
+        return redirect()->back()->with('success', 'Info Updated Successfully.');;
     }
 }

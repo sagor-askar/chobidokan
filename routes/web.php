@@ -63,11 +63,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::resource('users', 'UsersController');
 
-
     // Categories
     Route::delete('categories/destroy', 'CategoryController@massDestroy')->name('categories.massDestroy');
     Route::resource('categories', 'CategoryController');
-
 
     // Subscription
     Route::delete('subscriptions/destroy', 'SubscriptionController@massDestroy')->name('subscriptions.massDestroy');
@@ -108,6 +106,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // software settings
     Route::get('settings', 'SettingController@setting')->name('settings');
     Route::post('settings/store', 'SettingController@store')->name('settings.store');
+
+    // Info Setup
+    Route::get('info', 'SettingController@infoSetup')->name('info.setup');
+    Route::post('info/store', 'SettingController@infoSetupStore')->name('info.setup.store');
 
 });
 
