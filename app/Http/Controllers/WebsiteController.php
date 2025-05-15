@@ -12,6 +12,7 @@ use App\Models\PrivacyPolicy;
 use App\Models\Terms;
 use App\Models\Licencing;
 use App\Models\SearchTips;
+use App\Models\InfoSetup;
 
 class WebsiteController extends Controller
 {
@@ -33,7 +34,8 @@ class WebsiteController extends Controller
     // info page
     public function info()
     {
-        return view('frontend.menu.info');
+        $infoSetup = InfoSetup::first();
+        return view('frontend.menu.info', compact('infoSetup'));
     }
 
     // customize jobs
@@ -117,7 +119,7 @@ class WebsiteController extends Controller
     // licencing
     public function licenceInfo()
     {
-        $licencing = licencing::first();
+        $licencing = Licencing::first();
         return view('frontend.footer.licencing', compact('licencing'));
     }
 
