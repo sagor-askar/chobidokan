@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\Project;
 use App\Models\Story;
+use App\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -29,6 +31,16 @@ class ProjectController extends Controller
             $project->project_file = $filePath;
         }
         $project->save();
-        return redirect()->route('welcome')->with('success', 'Successfully Submitted!');
+
+        $subscription = Subscription::find($request->subscription_id);
+
+        Order::create([
+            'project_id' => $project->id,
+            'user_id' => Auth::user()->id,
+            'subscription_id' => $subscription->id,
+            'amount' => $subscription->price,
+        ]);
+
+        return redirect()->route('welcome')->with('success', 'Successfully Post Submitted!');
     }
 }
