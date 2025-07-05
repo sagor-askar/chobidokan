@@ -81,6 +81,36 @@
         margin-bottom: 10px;
     }
 
+    .colorful-checkbox {
+        width: 25px;
+        height: 25px;
+        border: 2px solid #0d6efd;
+        border-radius: 5px;
+        background-color: white;
+        transition: all 0.3s ease-in-out;
+        position: relative;
+        cursor: not-allowed; /* since it's disabled */
+    }
+
+    .colorful-checkbox:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .colorful-checkbox:checked::after {
+        content: "✓";
+        position: absolute;
+        top: 1px;
+        left: 5px;
+        font-size: 16px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .subscription-checkbox {
+        margin-bottom: 10px;
+    }
+
 </style>
 
 <section class="mt-5">
@@ -118,11 +148,11 @@
                             <div class="col-md-3">
                                 <div class="design-card" onclick="selectCard(this)" data-id="{{ $category->id }}">
                                     <img src="{{ asset($category->logo) }}" alt="Logo Design">
-                                    <h5 class="mt-2">{{$category->name}}</h5>
+                                    <h5 class="mt-2" id="categoryName">{{$category->name}}</h5>
                                 </div>
                             </div>
                             @endforeach
-                                <input type="hidden" name="category_id" id="category_id">
+                                <input type="hidden" name="category_id" id="category_id" required>
                         </div>
 
                         <button type="button" class="mt-2 next btn btn-primary">Next</button>
@@ -138,19 +168,19 @@
                         <div class="row g-3">
                             <div class="mb-3">
                                 <label for="">Project Name</label>
-                                <input class="form-control" type="text" name="name" placeholder="Name of Your Project">
+                                <input class="form-control" type="text" id="inputName" name="name" placeholder="Name of Your Project">
                             </div>
                             <div class="mb-3">
                                 <label>Project Description</label>
-                                <textarea class="form-control required" name="project_description" rows="4" placeholder="Tell us a bit about your requirements"></textarea>
+                                <textarea class="form-control required" id="project_description" name="project_description" rows="4" placeholder="Tell us a bit about your requirements"></textarea>
                             </div>
                             <div class="mb-3">
                                 <label>Logo Text</label>
-                                <input type="text" class="form-control" name="logo_description" placeholder="Tell us about the logo">
+                                <input type="text" class="form-control" id="logo_description" name="logo_description" placeholder="Tell us about the logo">
                             </div>
                             <div class="mb-3">
                                 <label>Upload files (Optional)</label>
-                                <input type="file" class="form-control" name="project_file">
+                                <input type="file" id="attachment" class="form-control" name="project_file">
                             </div>
                         </div>
 
@@ -168,38 +198,38 @@
 
                         <div class="row g-3">
                             <section id="pricing">
-
                                 <div class="row">
-
                                     @foreach($subscriptions as $key=>$subscription)
                                         @php
-                                           $points = json_decode($subscription->points)
+                                            $points = json_decode($subscription->points)
                                         @endphp
-                                        <div class="pricing-column col-lg-4 col-md-6">
+                                        <div class="pricing-column col-lg-4 col-md-6" data-id="{{ $subscription->id }}">
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <h3 class="text-center">{{$subscription->name}}</h3>
+                                                    <h3 class="text-center">{{ $subscription->name }}</h3>
                                                 </div>
                                                 <div class="card-body text-center">
-                                                    <h2>৳ {{$subscription->price}}</h2>
+                                                    <div class="form-check mt-2 subscription-checkbox d-flex justify-content-center" style="display: none;">
+                                                        <input class="form-check-input colorful-checkbox" type="checkbox" disabled>
+                                                    </div>
 
-                                                    @foreach($points as $i=>$point)
-                                                    <p>{{$point}}</p>
+                                                    <h2 id="price">৳ {{ $subscription->price }}</h2>
+                                                    @foreach($points as $i => $point)
+                                                        <p>{{ $point }}</p>
                                                     @endforeach
-
                                                     <button class="btn btn-sm btn-block btn-dark" type="button">Select</button>
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
-
+                                    <input type="hidden" name="subscription_id" id="subscription_id" required>
                                 </div>
 
                             </section>
                         </div>
 
                         <button type="button" class="previous btn btn-secondary">Previous</button>
-                        <button type="button" class="next btn btn-primary">Next</button>
+                        <button type="button" class="next btn btn-primary" onclick="showPreview()" >Next</button>
                     </fieldset>
 
                     <!-- Step 4: Payment Options -->
@@ -210,94 +240,108 @@
                         </div>
 
                         <div class="container mt-5">
-                            <div class="row justify-content-center">
+                            <div class="row">
+
                                 <div class="col-md-8">
                                     <table class="table text-center">
                                         <tbody>
                                             <tr>
                                                 <th class="text-start">Name</th>
-                                                <td class="text-start">display the project name here</td>
+                                                <td class="text-start" id="showName"></td>
                                             </tr>
                                             <tr>
-                                                <th class="text-start">Design Required</th>
-                                                <td class="text-start">Logo</td>
+                                                <th class="text-start">Design Category</th>
+                                                <td class="text-start" id="showCategory"></td>
                                             </tr>
                                             <tr>
-                                                <th class="text-start">Project Cost</th>
-                                                <td class="text-start">$20</td>
+                                                <th class="text-start">Description</th>
+                                                <td class="text-start" id="showDescription"></td>
                                             </tr>
+
+                                            <tr>
+                                                <th class="text-start">Logo Text</th>
+                                                <td class="text-start" id="showLogoText"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-start"> Subscription </th>
+                                                <td class="text-start" id="showPrice"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-start">Attachment</th>
+                                                <td class="text-start" id="showAttachment"></td>
+                                            </tr>
+
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="text-center headerTop">
-                            <h4>Payment Method</h4>
-                            <h5>Select a payment option to continue</h5>
-                        </div>
-
-
-                        <div class="row">
-                            <!-- Payment Form -->
-                            <div class="col-md-8">
-                                <div class="card p-4">
-                                    <div class="form-group">
-
-                                        {{-- cards images will be displayed here --}}
-                                        <div class="mb-3">
-                                            <img src="{{ asset('frontend_assets/payments/bkash.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">
-                                            <img src="{{ asset('frontend_assets/payments/rocket.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">
-                                            <img src="{{ asset('frontend_assets/payments/nagad.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">
-                                            <img src="{{ asset('frontend_assets/payments/upay.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">
-                                            <img src="{{ asset('frontend_assets/payments/tap.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">
-                                            <img src="{{ asset('frontend_assets/payments/wallet.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">
-                                            <img src="{{ asset('frontend_assets/payments/dbbl.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">
-                                            <img src="{{ asset('frontend_assets/payments/master_card.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">
-                                            <img src="{{ asset('frontend_assets/payments/visa.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">
-
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-12 form-group">
-                                                <label>Card Number</label>
-                                                <input type="text" class="form-control" placeholder="Your credit card number">
-                                            </div>
-
-                                            <div class="col-md-6 form-group">
-                                                <label>Expiry Date</label>
-                                                <input type="text" class="form-control" placeholder="mm / yy">
-                                            </div>
-
-                                            <div class="col-md-6 form-group">
-                                                <label>CVV</label>
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" placeholder="CVV">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text" data-toggle="tooltip" title="The 3 digits on the back of your card">?</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-                                        <button class="btn btn-primary btn-primary btn-block mt-4">SUBMIT PAYMENT</button>
+                                <div class="col-md-4">
+                                    <div class="text-center">
+                                        <img src="{{ asset('frontend_assets/img/requests/money-back.jpg') }}" alt="Money Back Guarantee" class="img-fluid" style="max-height:10rem; width: auto;">
+                                        <h6 class="mt-3">Money Back Guarantee</h6>
+                                        <p class="small">Get the design you want or your money back. Conditions apply - <a href="#">see our refund policy</a>.</p>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Side Info -->
-                            <div class="col-md-4">
-                                <div class="text-center">
-                                    <img src="{{ asset('frontend_assets/img/requests/money-back.jpg') }}" alt="Money Back Guarantee" class="img-fluid" style="max-height:10rem; width: auto;">
-                                    <h6 class="mt-3">Money Back Guarantee</h6>
-                                    <p class="small">Get the design you want or your money back. Conditions apply - <a href="#">see our refund policy</a>.</p>
-                                </div>
                             </div>
                         </div>
 
+{{--                        <div class="text-center headerTop">--}}
+{{--                            <h4>Payment Method</h4>--}}
+{{--                            <h5>Select a payment option to continue</h5>--}}
+{{--                        </div>--}}
 
+
+{{--                        <div class="row">--}}
+                            <!-- Payment Form -->
+{{--                            <div class="col-md-8">--}}
+{{--                                <div class="card p-4">--}}
+{{--                                    <div class="form-group">--}}
+
+{{--                                        --}}{{-- cards images will be displayed here --}}
+{{--                                        <div class="mb-3">--}}
+{{--                                            <img src="{{ asset('frontend_assets/payments/bkash.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">--}}
+{{--                                            <img src="{{ asset('frontend_assets/payments/rocket.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">--}}
+{{--                                            <img src="{{ asset('frontend_assets/payments/nagad.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">--}}
+{{--                                            <img src="{{ asset('frontend_assets/payments/upay.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">--}}
+{{--                                            <img src="{{ asset('frontend_assets/payments/tap.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">--}}
+{{--                                            <img src="{{ asset('frontend_assets/payments/wallet.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">--}}
+{{--                                            <img src="{{ asset('frontend_assets/payments/dbbl.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">--}}
+{{--                                            <img src="{{ asset('frontend_assets/payments/master_card.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">--}}
+{{--                                            <img src="{{ asset('frontend_assets/payments/visa.jpg') }}" alt="Cards" class="img-fluid" style="max-height: 4rem;">--}}
+
+{{--                                        </div>--}}
+
+{{--                                        <div class="row">--}}
+{{--                                            <div class="col-md-12 form-group">--}}
+{{--                                                <label>Card Number</label>--}}
+{{--                                                <input type="text" class="form-control" placeholder="Your credit card number">--}}
+{{--                                            </div>--}}
+
+{{--                                            <div class="col-md-6 form-group">--}}
+{{--                                                <label>Expiry Date</label>--}}
+{{--                                                <input type="text" class="form-control" placeholder="mm / yy">--}}
+{{--                                            </div>--}}
+
+{{--                                            <div class="col-md-6 form-group">--}}
+{{--                                                <label>CVV</label>--}}
+{{--                                                <div class="input-group">--}}
+{{--                                                    <input type="text" class="form-control" placeholder="CVV">--}}
+{{--                                                    <div class="input-group-append">--}}
+{{--                                                        <span class="input-group-text" data-toggle="tooltip" title="The 3 digits on the back of your card">?</span>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+
+
+
+{{--                                        <button class="btn btn-primary btn-primary btn-block mt-4">SUBMIT PAYMENT</button>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+
+                            <!-- Side Info -->
+{{--                        </div>--}}
                         <button type="button" class="mt-2 previous btn btn-secondary">Previous</button>
                         <button type="submit" class="mt-2 btn btn-success">Submit</button>
                     </fieldset>
@@ -348,7 +392,7 @@
 
         function validateFields() {
             var isValid = true;
-            $(steps[currentStep]).find(".required").each(function() {
+            $(steps[currentStep]).find(".required").each(function () {
                 if ($(this).val().trim() === "") {
                     $(this).addClass("is-invalid");
                     isValid = false;
@@ -356,6 +400,27 @@
                     $(this).removeClass("is-invalid");
                 }
             });
+            if (currentStep === 0 && $('#category_id').val().trim() === "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Category Required!',
+                    text: 'Please select a design category before proceeding.',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+                isValid = false;
+            }
+
+            if (currentStep === 2 && $('#subscription_id').val().trim() === "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Subscription Required!',
+                    text: 'Please select a subscription package before continuing.',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+                isValid = false;
+            }
             return isValid;
         }
     });
@@ -371,6 +436,61 @@
     card.classList.add('selected');
     const categoryId = card.getAttribute('data-id');
     document.getElementById('category_id').value = categoryId;
+    }
+</script>
+
+<script>
+    document.querySelectorAll('.btn-dark').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const allCheckboxWrappers = document.querySelectorAll('.subscription-checkbox');
+            const allCheckboxInputs = document.querySelectorAll('.subscription-checkbox input');
+            const allCards = document.querySelectorAll('.pricing-column');
+
+            allCards.forEach(card => card.classList.remove('selected'));
+            allCheckboxWrappers.forEach(cb => cb.style.display = 'none');
+            allCheckboxInputs.forEach(input => input.checked = false);
+
+            let currentColumn = this.closest('.pricing-column');
+            let checkboxWrapper = currentColumn.querySelector('.subscription-checkbox');
+            let checkboxInput = checkboxWrapper.querySelector('input');
+
+            checkboxWrapper.style.display = 'flex';
+            checkboxInput.checked = true;
+            currentColumn.classList.add('selected');
+
+            document.getElementById('subscription_id').value = currentColumn.getAttribute('data-id');
+        });
+    });
+</script>
+<script>
+    function showPreview() {
+        document.getElementById('showName').innerText = document.getElementById('inputName').value;
+        document.getElementById('showLogoText').innerText = document.getElementById('logo_description').value;
+
+        const selectedCategory = document.querySelector('.design-card.selected h5');
+        document.getElementById('showCategory').innerText = selectedCategory ? selectedCategory.innerText : '';
+
+        const selectedSubscription = document.querySelector('.pricing-column.selected');
+        if (selectedSubscription) {
+            const name = selectedSubscription.querySelector('.card-header h3').innerText;
+            const price = selectedSubscription.querySelector('h2').innerText;
+            document.getElementById('showPrice').innerText = `${name} - ${price}`;
+        } else {
+            document.getElementById('showPrice').innerText = '';
+        }
+
+        let description = document.getElementById('project_description').value.trim();
+        if (description.length > 400) {
+            description = description.substring(0, 400) + '...';
+        }
+        document.getElementById('showDescription').innerText = description;
+
+        const attachmentInput = document.getElementById('attachment');
+        if (attachmentInput.files.length > 0) {
+            document.getElementById('showAttachment').innerText = attachmentInput.files[0].name;
+        } else {
+            document.getElementById('showAttachment').innerText = '';
+        }
     }
 </script>
 @endsection
