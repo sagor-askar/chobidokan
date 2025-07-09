@@ -141,7 +141,7 @@
 
 <!-- Bio Section -->
 <div class="container bio text-center">
-    <h2 class="mb-2">Mr. Sagor Vai</h2>
+    <h2 class="mb-2">{{ Auth::user()->name }}</h2>
     <p class="text-muted">Software Developer at Polock Group | Ultimate Designer | Photographer</p>
 </div>
 

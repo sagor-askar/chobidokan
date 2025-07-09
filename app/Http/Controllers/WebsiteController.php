@@ -68,10 +68,10 @@ class WebsiteController extends Controller
         return view('frontend.menu.submissionGuideline');
     }
 
-    // designer's profile
+    // user's profile
     public function designerProfile()
     {
-        return view('frontend.profiles.designerProfile');
+        return view('frontend.profiles.userProfile');
     }
 
     // signin
