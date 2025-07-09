@@ -40,8 +40,12 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('designer-profile', 'designerProfile')->name('designer-profile');
 });
 
+// user dashboard route
+Route::get('/user-dashboard', function () {
+    return view('frontend.profiles.userProfile');
+})->name('dashboard');
 
- //user & seller Registration
+//user & seller Registration
 Route::post('/user/register', 'Auth\RegisterController@userRegister')->name('user.register');
 Route::post('/user-login', 'Auth\LoginController@customLogin')->name('customLogin');
 Route::post('/seller/register', 'Auth\RegisterController@sellerRegister')->name('seller.register');

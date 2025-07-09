@@ -45,9 +45,8 @@
 
             <!-- Dropdown Menu -->
             <div id="dropdownMenu" style="display: none; position: absolute; top: 40px; left: 0; background-color: white; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-                <a href="#" style="display: block; padding: 10px; text-decoration: none; color: black; width: 8rem;">
+                <a href="{{ route('dashboard') }}" style="display: block; padding: 10px; text-decoration: none; color: black; width: 8rem;">
                     <i class="fa fa-list"></i> {{ trans('global.dashboard') }}
-
                 </a>
                 <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                     @csrf
