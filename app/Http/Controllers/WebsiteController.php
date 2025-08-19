@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Category;
+use App\Models\Project;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 
@@ -41,7 +42,11 @@ class WebsiteController extends Controller
     // customize jobs
     public function customization()
     {
-        return view('frontend.menu.customize');
+
+        $categories = Category::where('status',1)->get();
+        $projects = Project::with(['order', 'subscription'])->where('status', 1)->get();
+
+        return view('frontend.menu.customize',compact('categories','projects'));
     }
 
     // customize job details
@@ -59,7 +64,9 @@ class WebsiteController extends Controller
     // closed customize jobs
     public function closedJobs()
     {
-        return view('frontend.menu.closedJobs');
+        $categories = Category::where('status',1)->get();
+        $projects = Project::with(['order', 'subscription'])->where('status', 2)->get();
+        return view('frontend.menu.closedJobs',compact('categories','projects'));
     }
 
     // submission guideline

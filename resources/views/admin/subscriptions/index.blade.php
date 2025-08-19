@@ -31,6 +31,7 @@
                                     <th>Name</th>
                                     <th>Points</th>
                                     <th>Price</th>
+                                    <th>Days</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -50,6 +51,7 @@
                                             @endforeach
                                         </td>
                                         <td>{{ $subscription->price }} Tk</td>
+                                        <td>{{ $subscription->days }} days</td>
                                         @if($subscription->status == 1)
                                         <td>
                                             <span class="badge badge-danger" style="background-color: green">Active</span>

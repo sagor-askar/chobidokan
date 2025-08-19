@@ -22,6 +22,7 @@ class Project extends Model
         'logo_description',
         'project_file',
         'publish_date',
+        'expire_date',
         'user_id',
         'status',
         'created_at',
@@ -37,4 +38,22 @@ class Project extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'project_id');
+    }
+
+    public function subscription()
+    {
+        return $this->hasOneThrough(
+            Subscription::class,
+            Order::class,
+            'project_id',
+            'id',
+            'id',
+            'subscription_id'
+        );
+    }
+
 }

@@ -40,4 +40,9 @@ class Order extends Model
     {
         return $this->belongsTo(Subscription::class, 'subscription_id');
     }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
 }
