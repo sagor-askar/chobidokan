@@ -57,6 +57,14 @@
                                 </div>
                             </div>
 
+                            <div class="form-group {{ $errors->has('days') ? 'has-error' : '' }}">
+                                <label for="price">Days</label>
+                                <input class="form-control" type="number" placeholder="Enter Days" name="days" id="days" value="{{ old('days', '') }}">
+                                @if($errors->has('days'))
+                                    <span class="help-block" role="alert">{{ $errors->first('days') }}</span>
+                                @endif
+                            </div>
+
                         </div>
 
                         <div class="col-md-12 col-sm-3">

@@ -16,10 +16,13 @@ class ProjectController extends Controller
 {
     public function projectStore(Request $request)
     {
+        $subscription = Subscription::find($request->subscription_id);
+
         $data = $request->all();
         $data['user_id'] =  Auth::user()->id;
         $data['status'] =  1;
         $data['publish_date'] =Carbon::now()->format('Y-m-d');
+        $data['expire_date'] = Carbon::now()->addDays($subscription->days)->format('Y-m-d');
 
         $project = Project::create($data);
 
@@ -32,7 +35,7 @@ class ProjectController extends Controller
         }
         $project->save();
 
-        $subscription = Subscription::find($request->subscription_id);
+
 
         Order::create([
             'project_id' => $project->id,
