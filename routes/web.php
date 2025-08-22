@@ -7,14 +7,23 @@ use App\Http\Controllers\Admin\SettingController;
 // frontend pages
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\WebsiteController;
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/cache-clear', function () {
+    Artisan::call('cache:clear');        // cache clear
+    Artisan::call('config:clear');       // config clear
+    Artisan::call('route:clear');        // route clear
+    Artisan::call('view:clear');         // view clear
+
+    return "All cache cleared!";
+});
+
 
 Route::controller(WebsiteController::class)->group(function() {
     Route::get('/', 'index')->name('welcome');
     // header routes
     Route::get('info', 'info')->name('info');
     Route::get('customize', 'customization')->name('customize');
-    Route::get('customize-details', 'customizationDetail')->name('customize-details');
-    Route::get('job-submission', 'submission')->name('job-submission');
     Route::get('closed-jobs', 'closedJobs')->name('closed-jobs');
     Route::get('signin', 'signin')->name('signin');
     Route::get('signup', 'signup')->name('signup');
@@ -37,7 +46,7 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('seller-login', 'sellerLog')->name('seller-login');
     Route::get('seller-dashboard', 'sellerDash')->name('seller-dashboard');
     // designer profile
-    Route::get('designer-profile', 'designerProfile')->name('designer-profile');
+    Route::get('designer-profile/{id}', 'designerProfile')->name('designer-profile');
 });
 
 // user dashboard route
@@ -120,6 +129,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('/custom-request', [WebsiteController::class, 'customRequest'])->name('custom-request');
     Route::post('/project-store', [ProjectController::class, 'projectStore'])->name('project.store');
+    Route::get('/custom-job/search', [WebsiteController::class, 'CustomJobSearch'])->name('custom-job.search');
+    Route::get('customize-details/{id}', [ProjectController::class, 'customizationDetail'])->name('customize-details');
+    Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
+    Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
 
 });
 

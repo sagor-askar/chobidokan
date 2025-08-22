@@ -12,57 +12,44 @@
 
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">Request Title</h5>
+                        <h5 class="card-title">{{$project?->name}}</h5>
                         <hr>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer. (This is the short description)</p>
-                        <p class="card-text"><small class="text-muted">Posted On: 12-12-2025</small></p>
+                        <p class="card-text">{!! $project->project_description !!}</p>
+                        <p class="card-text"><small class="text-muted">Posted On: {{\Carbon\Carbon::parse($project->publish_date)->format('d-m-Y')}}</small></p>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <!-- Image at the top -->
-                                    <img src="https://cdn.pixabay.com/photo/2014/08/11/11/50/moon-415501_1280.jpg" alt="Request Image" class="img-fluid mb-1 rounded">
-                                </div>
 
-                                <!-- Card footer with designer name and post date -->
-                                <div class="card-footer d-flex justify-content-between bg-white border-top">
-                                    <small class="text-muted">👤 <a href="{{ route('designer-profile') }}">John Doe</a></small>
-                                    <small class="text-muted">📅 12-12-2025</small>
+                        @foreach($project->uploads as $key=>$uploadData)
+                            <div class="col-md-4">
+                                <div class="card mb-3 h-100" style="min-height: 260px; max-height: 260px;">
+                                    <div class="card-body p-2 d-flex justify-content-center align-items-center" style="height: 180px; overflow: hidden;">
+                                        <!-- Fixed size Image -->
+                                        <img src="{{ asset($uploadData->file_path) }}"
+                                             alt="Request Image"
+                                             class="img-fluid rounded"
+                                             style="height: 100%; width: auto; object-fit: cover; max-height: 150px;">
+                                    </div>
+
+                                    <!-- Card footer with designer name and post date -->
+                                    <div class="card-footer bg-white border-top text-center">
+                                        <div>
+                                            👤 <a href="{{ route('designer-profile',$uploadData->projectSubmit?->user?->id) }}">
+                                                {{ $uploadData->projectSubmit?->user?->name }}
+                                            </a>
+                                        </div>
+                                        <div>
+                                            📅 {{ \Carbon\Carbon::parse($uploadData->projectSubmit?->submit_date)->format('d-m-Y') }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <!-- Image at the top -->
-                                    <img src="https://cdn.pixabay.com/photo/2014/08/11/11/50/moon-415501_1280.jpg" alt="Request Image" class="img-fluid mb-1 rounded">
-                                </div>
+                        @endforeach
 
-                                <!-- Card footer with designer name and post date -->
-                                <div class="card-footer d-flex justify-content-between bg-white border-top">
-                                    <small class="text-muted">👤 John Doe</small>
-                                    <small class="text-muted">📅 12-12-2025</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <!-- Image at the top -->
-                                    <img src="https://cdn.pixabay.com/photo/2014/08/11/11/50/moon-415501_1280.jpg" alt="Request Image" class="img-fluid mb-1 rounded">
-                                </div>
 
-                                <!-- Card footer with designer name and post date -->
-                                <div class="card-footer d-flex justify-content-between bg-white border-top">
-                                    <small class="text-muted">👤 John Doe</small>
-                                    <small class="text-muted">📅 12-12-2025</small>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -71,19 +58,34 @@
             <div class="col-12 col-md-4">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('job-submission') }}" class="btn btn-sm btn-primary">Submit Your Design</a>
+                        <a href="{{ route('job-submission',$project->id) }}" class="btn btn-sm btn-primary">Submit Your Design</a>
                     </div>
                 </div>
                 <br />
+
+
+                @php
+                    $expireDate = \Carbon\Carbon::parse($project->expire_date)->startOfDay();
+                        $today = \Carbon\Carbon::now()->startOfDay();
+
+                        $daysLeft = $today->gt($expireDate)
+                            ? 'Expired'
+                            : $today->diffInDays($expireDate);
+                        $subscriptions = json_decode($project->subscription?->points);
+                @endphp
 
                 <div class="card">
                     <div class="card-body">
                         <h5>Statistics</h5>
                         <hr />
                         <div class="d-flex flex-column gap-1">
-                            <span><b>Budget:</b> 40 Dollars</span>
-                            <span><b>Time:</b> 5 Days</span>
-                            <span><b>Total Designers:</b> 20 designers</span>
+                            <span><b>Budget:</b> {{$project->order?->amount}} Tk</span>
+                            <span><b>Time:</b> {{$daysLeft}} days left</span>
+                            @if(count($subscriptions) > 0)
+                                @foreach($subscriptions as $val)
+                                    <span><b>Total Designers:</b> {{$val}}</span>
+                                @endforeach
+                            @endif
                             <span><b>Total Designs:</b> 50 designs</span>
                         </div>
                     </div>

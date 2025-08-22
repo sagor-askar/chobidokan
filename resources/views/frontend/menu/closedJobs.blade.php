@@ -89,48 +89,52 @@
     <!-- Customize request -->
     <section class="section">
         <div class="container my-4">
-            <div class="row align-items-end gy-3 mt-5" id="search">
-                <h2 class="text-center">{{count($projects)}} Closed @if(count($projects) > 1)  Jobs @else Job @endif</h2>
-                <!-- Search Bar -->
-                <div class="col-lg-6 col-md-6 col-sm-12">
-                    <div class="form-group position-relative">
-                        <label for="search-input">Search</label>
-                        <input type="text" id="search-input" class="form-control ps-4" placeholder="What are you looking for?">
-                        <span class="fa fa-search position-absolute" style="top: 36px; left: 5px; color: #aaa;"></span>
+            <form action="{{ route('custom-job.search') }}" method="GET">
+                <div class="row align-items-end gy-3 mt-5" id="search">
+                    <h2 class="text-center">{{count($projects)}} Open  @if(count($projects) > 1)  Jobs @else Job @endif </h2>
+                    <!-- Search Bar -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group position-relative">
+                            <label for="search-input">Search</label>
+                            <input type="text" id="search-input" name="search" class="form-control ps-4" placeholder="What are you looking for?">
+                            <span class="fa fa-search position-absolute" style="top: 36px; left: 5px; color: #aaa;"></span>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Category Select -->
-                <div class="col-lg-3 col-md-3 col-sm-6">
-                    <div class="form-group position-relative">
-                        <label for="category-select">Categories</label>
-                        <select id="category-select" class="form-control pe-4">
-                            <option selected disabled>All Categories ({{count($categories)}})</option>
-                            @foreach($categories as $key=>$category)
-                                <option value="{{$category->id}}">{{$category->name}}</option>
-                            @endforeach
-                        </select>
-                        <i class="fa fa-chevron-down position-absolute" style="top: 35px; right: 10px; pointer-events: none; color: #aaa;"></i>
+                    <!-- Category Select -->
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group position-relative">
+                            <label for="category-select">Categories</label>
+                            <select id="category-select" name="category_id" class="form-control pe-4">
+                                <option selected disabled>All Categories ({{count($categories)}})</option>
+                                @foreach($categories as $key=>$category)
+                                    <option value="{{$category->id}}">{{$category->name}}</option>
+                                @endforeach
+                            </select>
+                            <i class="fa fa-chevron-down position-absolute" style="top: 35px; right: 10px; pointer-events: none; color: #aaa;"></i>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Job Status Select -->
-                <div class="col-lg-3 col-md-3 col-sm-6">
-                    <div class="form-group position-relative">
-                        <label for="status-select">Job Status</label>
-                        <select id="status-select" class="form-control pe-4">
-                            <option selected disabled>Open Jobs ({{count($projects)}})</option>
-                            <option value="action">Action</option>
-                            <option value="another">Another action</option>
-                            <option value="something">Something else here</option>
-                        </select>
-                        <i class="fa fa-chevron-down position-absolute" style="top: 35px; right: 10px; pointer-events: none; color: #aaa;"></i>
+                    <!-- Job Status Select -->
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group position-relative">
+                            <label>Job Status</label>
+                            <select name="status" class="form-control pe-4">
+                                <option value="1" {{ $status == 1 ? 'selected' : '' }}>Open Jobs</option>
+                                <option value="0" {{ $status == 0 ? 'selected' : '' }}>Close Jobs</option>
+                                <option value="2" {{ $status == 2 ? 'selected' : '' }}>Completed Jobs</option>
+                            </select>
+                            <i class="fa fa-chevron-down position-absolute" style="top: 35px; right: 10px; pointer-events: none; color: #aaa;"></i>
+                        </div>
                     </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-12">
+                        <button type="submit" class="btn btn-success">Search</button>
+                    </div>
+
+                    <hr />
                 </div>
-            </div>
-
-            <hr />
-
+            </form>
             <p class="mt-3">
                 <strong>Categories:</strong>
                 @foreach($categories as $index => $category)
@@ -142,7 +146,7 @@
             @foreach($projects as $key=>$project)
 
                 <div class="job-card shadow-sm">
-                    <a href="{{ route('customize-details') }}" class="text-dark">
+                    <a href="{{ route('customize-details',$project->id) }}" class="text-dark">
                         <div class="row">
                             <!-- Left Side (responsive icon placement) -->
                             <div class="col-md-2 col-12 text-center d-flex justify-content-center justify-content-md-start mb-3 mb-md-0 pt-md-2">
@@ -157,21 +161,23 @@
                                 <h5><strong>{!! $project->project_description !!}</strong></h5>
                                 <p>{!! $project->logo_description !!}</p>
                                 <div class="d-flex flex-wrap">
-                                    <span class="badge badge-custom">{{$project->category?->name}} Job</span>
+                                    <span class="badge badge-custom">{{$project->category?->name}}</span>
                                 </div>
                             </div>
-
-                            <!-- Right Side -->
-
                                    @php
                                         $expireDate = \Carbon\Carbon::parse($project->expire_date);
                                         $today = \Carbon\Carbon::now();
                                         $daysLeft = $today->diffInDays($expireDate, false);
+                                         $subscriptions = json_decode($project->subscription?->points);
                                    @endphp
                             <div class="right col-md-3 col-12">
                                 <p class="sidebar-info"><i class="info-icon">&#x1F4B0;</i>{{$project->order?->amount}} Tk</p>
                                 <p class="sidebar-info"><i class="info-icon">&#x23F3;</i> {{$daysLeft}} days left</p>
-                                <p class="sidebar-info"><i class="info-icon">&#x1F5BC;</i> 0 designs</p>
+                                @if(count($subscriptions) > 0)
+                                    @foreach($subscriptions as $val)
+                                        <p class="sidebar-info"><i class="info-icon">&#x1F5BC;</i> {{$val}}</p>
+                                    @endforeach
+                                @endif
                                 <p class="sidebar-info"><i class="info-icon">&#x1F464;</i> 0 designers</p>
                             </div>
                         </div>

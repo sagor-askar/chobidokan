@@ -95,10 +95,10 @@
         <div class="row">
             <!-- Left Panel -->
             <div class="col-md-4 left-section text-center">
-                <img src="{{ asset('frontend_assets/img/team/team-1.jpg') }}" class="profile-img mb-3" alt="User Image" />
-                <h4>John Doe</h4>
-                <p>Email: john.doe@example.com</p>
-                <p>Phone: +880123456789</p>
+                <img src="{{ asset($user->image ?? 'frontend_assets/img/team/team-1.jpg') }}" class="profile-img mb-3" alt="User Image" />
+                <h4>{{$user->name}}</h4>
+                <p>Email: {{$user->email}}</p>
+                <p>Phone: {{$user->phone}}</p>
 
                 <!-- Tabs below basic info -->
                 <ul class="nav nav-tabs flex-column mt-4" id="profileTabs" role="tablist">
@@ -125,22 +125,21 @@
                         <h5>About Me</h5>
                         <hr />
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-                            ut mauris eget lorem malesuada fermentum.
+                            {!! $user->bio  !!}
                         </p>
                         <table class="table">
                             <tbody>
                                 <tr>
                                     <th scope="row">Full Name</th>
-                                    <td>John Doe</td>
+                                    <td>{{ $user->name }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Email</th>
-                                    <td>john@example.com</td>
+                                    <td>{{ $user->email }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Phone</th>
-                                    <td>+880123456789</td>
+                                    <td>{{ $user->phone }}</td>
                                 </tr>
                             </tbody>
                         </table>
