@@ -56,4 +56,13 @@ class Project extends Model
         );
     }
 
+    public function projectSubmits()
+    {
+        return $this->hasMany(ProjectSubmit::class, 'project_id');
+    }
+    public function uploads()
+    {
+        return $this->hasMany(Upload::class, 'project_id');
+    }
+
 }

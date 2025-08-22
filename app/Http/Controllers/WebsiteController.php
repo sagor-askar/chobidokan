@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Project;
 use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use App\Models\Faq;
@@ -42,31 +43,26 @@ class WebsiteController extends Controller
     // customize jobs
     public function customization()
     {
-
+        $status = 1;
         $categories = Category::where('status',1)->get();
         $projects = Project::with(['order', 'subscription'])->where('status', 1)->get();
 
-        return view('frontend.menu.customize',compact('categories','projects'));
+        return view('frontend.menu.customize',compact('status','categories','projects'));
     }
 
-    // customize job details
-    public function customizationDetail()
-    {
-        return view('frontend.menu.customizeDetails');
-    }
 
-    // customize job submission
-    public function submission()
-    {
-        return view('frontend.menu.submission');
-    }
+
+
+
 
     // closed customize jobs
     public function closedJobs()
     {
+        $status = 0;
         $categories = Category::where('status',1)->get();
         $projects = Project::with(['order', 'subscription'])->where('status', 2)->get();
-        return view('frontend.menu.closedJobs',compact('categories','projects'));
+
+        return view('frontend.menu.closedJobs',compact('status','categories','projects'));
     }
 
     // submission guideline
@@ -76,9 +72,10 @@ class WebsiteController extends Controller
     }
 
     // user's profile
-    public function designerProfile()
+    public function designerProfile($id)
     {
-        return view('frontend.profiles.userProfile');
+        $user = User::find($id);
+        return view('frontend.profiles.userProfile',compact('user'));
     }
 
     // signin
@@ -186,5 +183,37 @@ class WebsiteController extends Controller
     {
         return view('frontend.seller.dashboard');
     }
+
+    public function CustomJobSearch(Request $request)
+    {
+
+        $search      = $request->query('search');
+        $category_id = $request->query('category_id');
+        $status      = (int)$request->query('status');
+        $query = Project::with(['order', 'subscription']);
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('project_description', 'like', "%{$search}%");
+            });
+        }
+        if ($category_id) {
+            $query->where('category_id', $category_id);
+        }
+        if ($status !== null) {
+            $query->where('status', $status);
+        }
+        $projects = $query->get();
+        $categories = Category::where('status',1)->get();
+        if ($status == 1){
+            return view('frontend.menu.customize',compact('status','categories','projects'));
+        }else{
+            return view('frontend.menu.closedJobs',compact('status','categories','projects'));
+        }
+
+
+    }
+
 
 }
