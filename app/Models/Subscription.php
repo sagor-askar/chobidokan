@@ -19,6 +19,8 @@ class Subscription extends Model
         'name',
         'points',
         'price',
+        'designer',
+        'design',
         'days',
         'status',
         'start_date',

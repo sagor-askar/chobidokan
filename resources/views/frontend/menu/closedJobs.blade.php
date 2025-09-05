@@ -91,7 +91,7 @@
         <div class="container my-4">
             <form action="{{ route('custom-job.search') }}" method="GET">
                 <div class="row align-items-end gy-3 mt-5" id="search">
-                    <h2 class="text-center">{{count($projects)}} Open  @if(count($projects) > 1)  Jobs @else Job @endif </h2>
+                    <h2 class="text-center">{{$totalProjects}} Close  @if($totalProjects > 1)  Jobs @else Job @endif </h2>
                     <!-- Search Bar -->
                     <div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="form-group position-relative">
@@ -143,47 +143,61 @@
             </p>
 
             @if(count($projects) > 0)
-            @foreach($projects as $key=>$project)
+                @foreach($projects as $key=>$project)
 
-                <div class="job-card shadow-sm">
-                    <a href="{{ route('customize-details',$project->id) }}" class="text-dark">
-                        <div class="row">
-                            <!-- Left Side (responsive icon placement) -->
-                            <div class="col-md-2 col-12 text-center d-flex justify-content-center justify-content-md-start mb-3 mb-md-0 pt-md-2">
-                                {{-- if the job is open --}}
-                                <img class="job-status-icon" src="{{ asset('frontend_assets/img/open.png') }}" alt="">
-                                {{-- if the job is closed, display this --}}
-                                {{-- <img class="job-status-icon" src="{{ asset('frontend_assets/img/closed.png') }}" alt=""> --}}
-                            </div>
+                    <div class="job-card shadow-sm">
+                        <a href="{{ route('customize-details',$project->id) }}" class="text-dark">
+                            <div class="row">
+                                <!-- Left Side (responsive icon placement) -->
+                                <div class="col-md-2 col-12 text-center d-flex justify-content-center justify-content-md-start mb-3 mb-md-0 pt-md-2">
+                                    {{-- if the job is open --}}
+                                    <img class="job-status-icon" src="{{ asset('frontend_assets/img/open.png') }}" alt="">
+                                    {{-- if the job is closed, display this --}}
+                                    {{-- <img class="job-status-icon" src="{{ asset('frontend_assets/img/closed.png') }}" alt=""> --}}
+                                </div>
 
-                            <!-- Middle Content -->
-                            <div class="col-md-7 col-12">
-                                <h5><strong>{!! $project->project_description !!}</strong></h5>
-                                <p>{!! $project->logo_description !!}</p>
-                                <div class="d-flex flex-wrap">
-                                    <span class="badge badge-custom">{{$project->category?->name}}</span>
+                                <!-- Middle Content -->
+                                <div class="col-md-7 col-12">
+                                    <h5><strong>{!! $project->project_description !!}</strong></h5>
+                                    <p>{!! $project->logo_description !!}</p>
+                                    <div class="d-flex flex-wrap">
+                                        <span class="badge badge-custom">{{$project->category?->name}}</span>
+                                    </div>
+                                </div>
+
+                                @php
+                                    $expireDate = \Carbon\Carbon::parse($project->expire_date)->startOfDay();
+                                        $today = \Carbon\Carbon::now()->startOfDay();
+
+                                        $daysLeft = $today->gt($expireDate)
+                                            ? 'Expired'
+                                            : $today->diffInDays($expireDate);
+                                        $subscriptions = json_decode($project->subscription?->points);
+                                @endphp
+
+                                    <!-- Right Side -->
+                                <div class="right col-md-3 col-12">
+                                    <p class="sidebar-info"><i class="info-icon">&#x1F4B0;</i> Budget : <strong>{{$project->order?->amount}} Tk.</strong></p>
+                                    @if($daysLeft == 'Expired')
+                                        <p class="sidebar-info"><i class="info-icon">&#x23F3;</i> Submit Time : <strong class="text-danger">Expired</strong> </p>
+                                    @else
+                                        <p class="sidebar-info"><i class="info-icon">&#x23F3;</i> Submit Time : <strong>{{$daysLeft}}</strong> days left</p>
+                                    @endif
+                                    @if(count($subscriptions) > 0)
+                                        @foreach($subscriptions as $val)
+                                            <p class="sidebar-info"><i class="info-icon">&#x1F5BC;</i> {{$val}}</p>
+                                        @endforeach
+                                    @endif
+                                    <p class="sidebar-info"><i class="info-icon">&#x1F464;</i> Designer :  <strong>{{$project->total_designer ?? '0'}}</strong> </p>
+                                    <p class="sidebar-info">  <i class="info-icon fa fa-file-image-o"></i>Total design :  <strong>{{$project->total_submitted_design ?? '0'}}</strong></p>
                                 </div>
                             </div>
-                                   @php
-                                        $expireDate = \Carbon\Carbon::parse($project->expire_date);
-                                        $today = \Carbon\Carbon::now();
-                                        $daysLeft = $today->diffInDays($expireDate, false);
-                                         $subscriptions = json_decode($project->subscription?->points);
-                                   @endphp
-                            <div class="right col-md-3 col-12">
-                                <p class="sidebar-info"><i class="info-icon">&#x1F4B0;</i>{{$project->order?->amount}} Tk</p>
-                                <p class="sidebar-info"><i class="info-icon">&#x23F3;</i> {{$daysLeft}} days left</p>
-                                @if(count($subscriptions) > 0)
-                                    @foreach($subscriptions as $val)
-                                        <p class="sidebar-info"><i class="info-icon">&#x1F5BC;</i> {{$val}}</p>
-                                    @endforeach
-                                @endif
-                                <p class="sidebar-info"><i class="info-icon">&#x1F464;</i> 0 designers</p>
-                            </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
+                @endforeach
+                <div class="pagination-wrapper d-flex justify-content-center mt-4">
+                    {{ $projects->withQueryString()->links('pagination.custom') }}
                 </div>
-            @endforeach
             @else
                 <div class="text-center">
                     <h3 class="text-warning">No jobs Available</h3>

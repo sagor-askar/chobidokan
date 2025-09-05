@@ -15,6 +15,7 @@ use App\Models\Terms;
 use App\Models\Licencing;
 use App\Models\SearchTips;
 use App\Models\InfoSetup;
+use Illuminate\Support\Facades\DB;
 
 class WebsiteController extends Controller
 {
@@ -45,13 +46,20 @@ class WebsiteController extends Controller
     {
         $status = 1;
         $categories = Category::where('status',1)->get();
-        $projects = Project::with(['order', 'subscription'])->where('status', 1)->get();
+        $projects = Project::with(['user', 'order', 'subscription'])
+            ->withCount([
+                'projectSubmits as total_designer' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                },
+                'uploads as total_submitted_design'
+            ])
+            ->where('status', 1)
+            ->paginate(2);
+        $totalProjects = $projects->total();
 
-        return view('frontend.menu.customize',compact('status','categories','projects'));
+
+        return view('frontend.menu.customize', compact('status','categories','projects','totalProjects'));
     }
-
-
-
 
 
 
@@ -60,9 +68,18 @@ class WebsiteController extends Controller
     {
         $status = 0;
         $categories = Category::where('status',1)->get();
-        $projects = Project::with(['order', 'subscription'])->where('status', 2)->get();
+        $projects = Project::with(['user', 'order', 'subscription'])
+            ->withCount([
+                'projectSubmits as total_designer' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                },
+                'uploads as total_submitted_design'
+            ])
+            ->where('status', 2)
+            ->paginate(2);
+        $totalProjects = $projects->total();
 
-        return view('frontend.menu.closedJobs',compact('status','categories','projects'));
+        return view('frontend.menu.closedJobs',compact('status','categories','projects','totalProjects'));
     }
 
     // submission guideline
@@ -190,7 +207,14 @@ class WebsiteController extends Controller
         $search      = $request->query('search');
         $category_id = $request->query('category_id');
         $status      = (int)$request->query('status');
-        $query = Project::with(['order', 'subscription']);
+
+        $query = Project::with(['user', 'order', 'subscription'])
+            ->withCount([
+                'projectSubmits as total_designer' => function ($q) {
+                    $q->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                },
+                'uploads as total_submitted_design'
+            ]);
 
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -198,19 +222,25 @@ class WebsiteController extends Controller
                     ->orWhere('project_description', 'like', "%{$search}%");
             });
         }
+
         if ($category_id) {
             $query->where('category_id', $category_id);
         }
+
         if ($status !== null) {
             $query->where('status', $status);
         }
-        $projects = $query->get();
-        $categories = Category::where('status',1)->get();
+
+        $projects = $query->paginate(2);
+
+        $totalProjects = $projects->total();
+        $categories = Category::where('status', 1)->get();
         if ($status == 1){
-            return view('frontend.menu.customize',compact('status','categories','projects'));
+            return view('frontend.menu.customize', compact('status','categories','projects','totalProjects'));
         }else{
-            return view('frontend.menu.closedJobs',compact('status','categories','projects'));
+            return view('frontend.menu.closedJobs', compact('status','categories','projects','totalProjects'));
         }
+
 
 
     }
