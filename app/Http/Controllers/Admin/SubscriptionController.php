@@ -40,7 +40,8 @@ class SubscriptionController extends Controller
         $request->validate([
             'name' => 'required|string',
             'price' => 'required|numeric',
-            'points' => 'required',
+            'designer' => 'required',
+            'days' => 'required',
         ]);
 
         $data = $request->all();
@@ -83,7 +84,8 @@ class SubscriptionController extends Controller
         $request->validate([
             'name' => 'required|string',
             'price' => 'required|numeric',
-            'points' => 'required',
+            'designer' => 'required',
+            'days' => 'required',
         ]);
 
         $data = $request->all();

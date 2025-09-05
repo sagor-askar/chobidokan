@@ -52,7 +52,22 @@ class ProjectController extends Controller
 
     public function customizationDetail($id)
     {
-        $project = Project::with(['user','order', 'subscription','projectSubmits','uploads'])->where('id', $id)->first();
+//        $project = Project::with(['user','order', 'subscription','projectSubmits','uploads'])->where('id', $id)->first();
+        $project = Project::with([
+            'user',
+            'order',
+            'subscription',
+            'projectSubmits',
+            'uploads'
+        ])
+            ->withCount([
+                'projectSubmits as total_designer' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                },
+                'uploads as total_submitted_design'
+            ])
+            ->where('id', $id)
+            ->first();
         return view('frontend.menu.customizeDetails',compact('project'));
     }
 

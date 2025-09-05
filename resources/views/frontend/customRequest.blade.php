@@ -214,6 +214,10 @@
                                                     </div>
 
                                                     <h2 id="price">৳ {{ $subscription->price }}</h2>
+                                                    <p> <strong>{{ $subscription->designer }} </strong>designer</p>
+                                                    @if($subscription->design)
+                                                    <p><strong>{{ $subscription->design }} </strong> design</p>
+                                                    @endif
                                                     @foreach($points as $i => $point)
                                                         <p>{{ $point }}</p>
                                                     @endforeach
