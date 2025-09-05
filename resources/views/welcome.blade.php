@@ -34,7 +34,7 @@
     <!-- Best Collection -->
     <section class="section">
         <div class="container section-title" data-aos="fade-up">
-            <p>Best Collection<br></p>
+            <p>Premium Collection<br></p>
         </div>
 
         <main class="container2">

@@ -27,7 +27,7 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('closed-jobs', 'closedJobs')->name('closed-jobs');
     Route::get('signin', 'signin')->name('signin');
     Route::get('signup', 'signup')->name('signup');
-    Route::get('uploads', 'uploadImages')->name('uploads');
+    Route::get('file-upload', 'uploadImages')->name('file-upload');
     Route::get('submission-guidelines', 'guidelines')->name('submission-guidelines');
     // footer routes
     Route::get('about-us', 'aboutUs')->name('about-us');
@@ -47,6 +47,9 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('seller-dashboard', 'sellerDash')->name('seller-dashboard');
     // designer profile
     Route::get('designer-profile/{id}', 'designerProfile')->name('designer-profile');
+    Route::get('/public-profile', function() {
+        return view('frontend.profiles.publicProfile');
+    })->name('public-profile');
 });
 
 // user dashboard route

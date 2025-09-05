@@ -95,6 +95,12 @@ class WebsiteController extends Controller
         return view('frontend.profiles.userProfile',compact('user'));
     }
 
+    // user profile - public view
+    public function publicProfile()
+    {
+        return view('frontend.profiles.publicProfile');
+    }
+
     // signin
     public function signin()
     {
@@ -110,7 +116,7 @@ class WebsiteController extends Controller
     // uploads
     public function uploadImages()
     {
-        return view('frontend.menu.upload');
+        return view('frontend.menu.fileUpload');
     }
 
     // about us
