@@ -56,37 +56,50 @@
 
             {{-- right nav --}}
             <div class="col-12 col-md-4">
+
+                @php
+                    $subscriptions = json_decode($project->subscription?->points);
+                    $subscriptionDesigner = $project->subscription->designer;
+
+                     $expireDate = \Carbon\Carbon::parse($project->expire_date)->startOfDay();
+                     $today = \Carbon\Carbon::now()->startOfDay();
+                     $daysLeft = $today->gt($expireDate)? 'Expired': $today->diffInDays($expireDate);
+
+
+                    $expireSubmitDate = \Carbon\Carbon::parse($project->expire_date);
+                    $currentDate = \Carbon\Carbon::now();
+                @endphp
+                @if($project->user->role_id == 3 && $currentDate->lte($expireSubmitDate) && $subscriptionDesigner > $project->total_designer)
                 <div class="card">
                     <div class="card-body">
                         <a href="{{ route('job-submission',$project->id) }}" class="btn btn-sm btn-primary">Submit Your Design</a>
                     </div>
                 </div>
+                @else
+                    <div class="card">
+                        <div class="card-body">
+                    <button class="btn btn-sm btn-secondary" disabled style="cursor: not-allowed; opacity: 0.7;">
+                        Submission Closed
+                    </button>
+                        </div>
+                    </div>
+                @endif
                 <br />
-
-
-                @php
-                    $expireDate = \Carbon\Carbon::parse($project->expire_date)->startOfDay();
-                        $today = \Carbon\Carbon::now()->startOfDay();
-
-                        $daysLeft = $today->gt($expireDate)
-                            ? 'Expired'
-                            : $today->diffInDays($expireDate);
-                        $subscriptions = json_decode($project->subscription?->points);
-                @endphp
-
                 <div class="card">
                     <div class="card-body">
                         <h5>Statistics</h5>
                         <hr />
                         <div class="d-flex flex-column gap-1">
-                            <span><b>Budget:</b> {{$project->order?->amount}} Tk</span>
-                            <span><b>Time:</b> {{$daysLeft}} days left</span>
-                            @if(count($subscriptions) > 0)
-                                @foreach($subscriptions as $val)
-                                    <span><b>Total Designers:</b> {{$val}}</span>
-                                @endforeach
+                            <span>Budget: <b>{{$project->order?->amount}} Tk</b></span>
+
+                            @if($daysLeft == 'Expired')
+                                <span>Time: <strong class="text-danger"> Expired</strong> </span>
+                            @else
+                                <span>Time:  <strong>{{$daysLeft}}</strong>  days left</span>
                             @endif
-                            <span><b>Total Designs:</b> 50 designs</span>
+
+                            <span>Total Designers:  <b>{{$project->total_designer ?? '0'}}</b></span>
+                            <span>Total Designs: <b>{{$project->total_submitted_design ?? '0'}}</b></span>
                         </div>
                     </div>
                 </div>

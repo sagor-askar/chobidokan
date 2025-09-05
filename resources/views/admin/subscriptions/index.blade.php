@@ -29,9 +29,11 @@
                                 <tr>
                                     <th></th>
                                     <th>Name</th>
-                                    <th>Points</th>
+                                    <th>Designer</th>
+                                    <th>Design</th>
                                     <th>Price</th>
                                     <th>Days</th>
+                                    <th>Points</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -44,14 +46,17 @@
                                     <tr>
                                         <td></td>
                                         <td>{{ $subscription->name }}</td>
+                                        <td>{{ $subscription->designer }}</td>
+                                        <td>{{ $subscription->design }}</td>
 
-                                        <td>
-                                            @foreach($decodePoints as $keyPoints)
-                                             <li>{{$keyPoints}}</li>
-                                            @endforeach
-                                        </td>
+
                                         <td>{{ $subscription->price }} Tk</td>
                                         <td>{{ $subscription->days }} days</td>
+                                        <td>
+                                            @foreach($decodePoints as $keyPoints)
+                                                <li>{{$keyPoints}}</li>
+                                            @endforeach
+                                        </td>
                                         @if($subscription->status == 1)
                                         <td>
                                             <span class="badge badge-danger" style="background-color: green">Active</span>

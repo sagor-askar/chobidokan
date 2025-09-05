@@ -31,6 +31,14 @@
                                 <span class="help-block">{{ trans('cruds.category.fields.name_helper') }}</span>
                             </div>
 
+                            <div class="form-group {{ $errors->has('days') ? 'has-error' : '' }}">
+                                <label  class="required" for="price">Days</label>
+                                <input class="form-control" type="number" placeholder="Enter Days" name="days" id="days" value="{{ old('days', $subscription->days ?? '') }}"  required>
+                                @if($errors->has('days'))
+                                    <span class="help-block" role="alert">{{ $errors->first('days') }}</span>
+                                @endif
+                            </div>
+
                             <div class="form-group {{ $errors->has('status') ? 'has-error' : '' }}">
                                 <label class="required">Status</label>
                                 <select class="form-control " name="status" id="status">
@@ -42,16 +50,33 @@
                         </div>
 
                         <div class="col-md-6">
+
+                            <div class="form-group {{ $errors->has('designer') ? 'has-error' : '' }}">
+                                <label class="required" for="price">Designer</label>
+                                <input class="form-control" type="number" placeholder="Enter designer" name="designer" id="designer" value="{{ old('designer', $subscription->designer ?? '') }}" required>
+                                @if($errors->has('designer'))
+                                    <span class="help-block" role="alert">{{ $errors->first('designer') }}</span>
+                                @endif
+                            </div>
+
+                            <div class="form-group {{ $errors->has('design') ? 'has-error' : '' }}">
+                                <label  for="price">Design</label>
+                                <input class="form-control" type="number" placeholder="Enter design" name="design" id="design" value="{{ old('design', $subscription->design ?? '') }}">
+                                @if($errors->has('design'))
+                                    <span class="help-block" role="alert">{{ $errors->first('design') }}</span>
+                                @endif
+                            </div>
+
                             <div class="form-group">
                                 <div id="items-container">
-                                    <label class="required" >Points (English)</label>
+                                    <label >Points (English)</label>
                                     @if(isset($subscription) && is_array(json_decode($subscription->points)))
                                         <button type="button" class="btn btn-primary add-item">+</button>
                                         @foreach (json_decode($subscription->points) as $point)
                                             <div class="item-group d-flex align-items-center" style="margin-bottom: 10px;">
                                                 <div class="row">
                                                     <div class="col-md-10">
-                                                        <input type="text" name="points[]" value="{{ $point }}" class="form-control" required>
+                                                        <input type="text" name="points[]" value="{{ $point }}" class="form-control">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <button type="button" class="btn btn-danger remove-item">-</button>
@@ -63,14 +88,6 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="form-group {{ $errors->has('days') ? 'has-error' : '' }}">
-                                <label  for="price">Days</label>
-                                <input class="form-control" type="number" placeholder="Enter Days" name="days" id="days" value="{{ old('days', $subscription->days ?? '') }}">
-                                @if($errors->has('days'))
-                                    <span class="help-block" role="alert">{{ $errors->first('days') }}</span>
-                                @endif
-                            </div>
-
                         </div>
 
                         <div class="col-md-12">
