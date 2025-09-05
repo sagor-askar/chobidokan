@@ -15,6 +15,7 @@ use App\Models\Terms;
 use App\Models\Licencing;
 use App\Models\SearchTips;
 use App\Models\InfoSetup;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class WebsiteController extends Controller
@@ -89,16 +90,17 @@ class WebsiteController extends Controller
     }
 
     // user's profile
-    public function designerProfile($id)
+    public function sellerDashboard()
     {
-        $user = User::find($id);
-        return view('frontend.profiles.userProfile',compact('user'));
+        $user = User::find(Auth::id());
+        return view('frontend.profiles.dashboard',compact('user'));
     }
 
     // user profile - public view
-    public function publicProfile()
+    public function designerProfile($id)
     {
-        return view('frontend.profiles.publicProfile');
+        $user = User::find($id);
+        return view('frontend.profiles.designerProfile',compact('user'));
     }
 
     // signin
