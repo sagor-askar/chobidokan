@@ -1,10 +1,12 @@
 @extends('includes.master')
 @section('content')
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
 
 <style>
+    a {
+        text-decoration: none !important;
+    }
     .profile-img {
         width: 150px;
         height: 150px;
@@ -13,7 +15,7 @@
 
     .left-section {
         border-right: 2px solid #dee2e6;
-        background-color: #f2f2f2;
+        background-color: #ffffff;
         padding: 10px;
     }
 
@@ -90,7 +92,7 @@
         font-size: 18px;
     }
     .card-subtitle {
-        font-size: 15px;
+        font-size: 12px;
     } 
     .card-body {
         padding: 7px;
