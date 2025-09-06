@@ -23,11 +23,8 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('/', 'index')->name('welcome');
     // header routes
     Route::get('info', 'info')->name('info');
-    Route::get('customize', 'customization')->name('customize');
-    Route::get('closed-jobs', 'closedJobs')->name('closed-jobs');
     Route::get('signin', 'signin')->name('signin');
     Route::get('signup', 'signup')->name('signup');
-    Route::get('file-upload', 'uploadImages')->name('file-upload');
     Route::get('submission-guidelines', 'guidelines')->name('submission-guidelines');
     // footer routes
     Route::get('about-us', 'aboutUs')->name('about-us');
@@ -44,18 +41,9 @@ Route::controller(WebsiteController::class)->group(function() {
     // seller authentication
     Route::get('seller-registration', 'sellerReg')->name('seller-registration');
     Route::get('seller-login', 'sellerLog')->name('seller-login');
-    Route::get('seller-dashboard', 'sellerDash')->name('seller-dashboard');
     // designer profile
     Route::get('designer-profile/{id}', 'designerProfile')->name('designer-profile');
-    Route::get('/public-profile', function() {
-        return view('frontend.profiles.publicProfile');
-    })->name('public-profile');
 });
-
-// user dashboard route
-Route::get('/user-dashboard', function () {
-    return view('frontend.profiles.userProfile');
-})->name('dashboard');
 
 //user & seller Registration
 Route::post('/user/register', 'Auth\RegisterController@userRegister')->name('user.register');
@@ -130,12 +118,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 });
 
 Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
+    Route::get('/seller-dashboard', [WebsiteController::class, 'sellerDashboard'])->name('seller-dashboard');
+    Route::get('customize', [WebsiteController::class,'customization'])->name('customize');
+    Route::get('closed-jobs',  [WebsiteController::class, 'closedJobs'])->name('closed-jobs');
     Route::get('/custom-request', [WebsiteController::class, 'customRequest'])->name('custom-request');
     Route::post('/project-store', [ProjectController::class, 'projectStore'])->name('project.store');
     Route::get('/custom-job/search', [WebsiteController::class, 'CustomJobSearch'])->name('custom-job.search');
     Route::get('customize-details/{id}', [ProjectController::class, 'customizationDetail'])->name('customize-details');
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
     Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
+    Route::get('/project-upload',        [WebsiteController::class, 'uploadImages'])->name('project-upload');
+
 
 });
 
