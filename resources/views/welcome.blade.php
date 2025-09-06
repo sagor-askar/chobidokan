@@ -40,35 +40,35 @@
         <main class="container2">
             <div class="item item-1" onclick="openModal('Image 1', 'https://picsum.photos/500/300')">
                 <img class="img" src="https://picsum.photos/500/300" alt="">
-                <div class="overlay">Image 1</div>
+                <div class="overlay">Image 1 | Tk 200</div>
             </div>
             <div class="item item-2" onclick="openModal('Image 2', 'https://picsum.photos/500/301')">
                 <img class="img" src="https://picsum.photos/500/301" alt="">
-                <div class="overlay">Image 2</div>
+                <div class="overlay">Image 2 | Tk 250</div>
             </div>
             <div class="item item-3" onclick="openModal('Image 3', 'https://picsum.photos/500/302')">
                 <img class="img" src="https://picsum.photos/500/302" alt="">
-                <div class="overlay">Image 3</div>
+                <div class="overlay">Image 3 | Tk 250</div>
             </div>
             <div class="item item-4" onclick="openModal('Image 4', 'https://picsum.photos/500/600')">
                 <img class="img" src="https://picsum.photos/500/600" alt="">
-                <div class="overlay">Image 4</div>
+                <div class="overlay">Image 4 | Tk 300</div>
             </div>
             <div class="item item-5" onclick="openModal('Image 5', 'https://picsum.photos/500/800')">
                 <img class="img" src="https://picsum.photos/500/800" alt="">
-                <div class="overlay">Image 5</div>
+                <div class="overlay">Image 5 | Tk 200</div>
             </div>
             <div class="item item-6" onclick="openModal('Image 6', 'https://picsum.photos/500/400')">
                 <img class="img" src="https://picsum.photos/500/400" alt="">
-                <div class="overlay">Image 6</div>
+                <div class="overlay">Image 6 | Tk 500</div>
             </div>
             <div class="item item-7" onclick="openModal('Image 7', 'https://picsum.photos/500/304')">
                 <img class="img" src="https://picsum.photos/500/304" alt="">
-                <div class="overlay">Image 7</div>
+                <div class="overlay">Image 7 | Tk 280</div>
             </div>
             <div class="item item-8" onclick="openModal('Image 8', 'https://picsum.photos/500/401')">
                 <img class="img" src="https://picsum.photos/500/401" alt="">
-                <div class="overlay">Image 8</div>
+                <div class="overlay">Image 8 | Tk 1000</div>
             </div>
         </main>
     </section>
@@ -80,8 +80,13 @@
             <h2 id="modalTitle"></h2>
             <img id="modalImage" src="" alt="">
             <p id="modalDescription">
-                This is one of the most creative photo from the July event. Specially added by the designer.
-                Uploaded By: <a href="">Sagor Askar</a>.
+                This is one of the most creative photo from the July event. Specially added by the designer. This is one of the most creative photo from the July event. Specially added by the designer. 
+                
+                Designer: <a href="">Sagor Askar</a>.
+                <br>
+                <br>
+
+                <a href="" class="btn btn-sm btn-primary" style="width: 20%;">Buy Now</a>
             </p>
         </div>
     </div>

@@ -1176,7 +1176,7 @@ section,
     grid-template-columns: repeat(3, 1fr);
     margin: 0 auto;
     max-width: 90%;
-    padding: 3rem 0;
+    padding: 1rem 0;
 }
 
 .item {
@@ -1230,7 +1230,6 @@ section,
 .modal-content {
     background: white;
     padding: 20px;
-    text-align: center;
     max-width: 500px;
     width: 90%;
     border-radius: 10px;
