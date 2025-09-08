@@ -23,6 +23,11 @@ class ProjectSubmit extends Model
         'stock' => 'boolean',
     ];
 
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
+
     public function uploads()
     {
         return $this->hasMany(Upload::class, 'project_submit_id');

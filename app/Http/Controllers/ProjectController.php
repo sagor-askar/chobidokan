@@ -52,7 +52,6 @@ class ProjectController extends Controller
 
     public function customizationDetail($id)
     {
-//        $project = Project::with(['user','order', 'subscription','projectSubmits','uploads'])->where('id', $id)->first();
         $project = Project::with([
             'user',
             'order',
