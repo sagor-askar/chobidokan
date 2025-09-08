@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Project;
+use App\Models\ProjectSubmit;
 use App\Models\Subscription;
+use App\Models\Upload;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -47,18 +49,21 @@ class WebsiteController extends Controller
     {
         $status = 1;
         $categories = Category::where('status',1)->get();
-        $projects = Project::with(['user', 'order', 'subscription'])
+        $user = Auth::user();
+        $projectsQuery = Project::with(['user', 'order', 'subscription'])
             ->withCount([
                 'projectSubmits as total_designer' => function ($query) {
                     $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
                 },
                 'uploads as total_submitted_design'
             ])
-            ->where('status', 1)
-            ->paginate(2);
+            ->where('status', 1);
+
+        if ($user->role_id == 3) {
+            $projectsQuery->where('user_id', $user->id);
+        }
+        $projects = $projectsQuery->paginate(2);
         $totalProjects = $projects->total();
-
-
         return view('frontend.menu.customize', compact('status','categories','projects','totalProjects'));
     }
 
@@ -69,17 +74,20 @@ class WebsiteController extends Controller
     {
         $status = 0;
         $categories = Category::where('status',1)->get();
-        $projects = Project::with(['user', 'order', 'subscription'])
+        $user = Auth::user();
+        $projectsQuery = Project::with(['user', 'order', 'subscription'])
             ->withCount([
                 'projectSubmits as total_designer' => function ($query) {
                     $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
                 },
                 'uploads as total_submitted_design'
             ])
-            ->where('status', 2)
-            ->paginate(2);
+            ->where('status', 2);
+        if ($user->role_id == 3) {
+            $projectsQuery->where('user_id', $user->id);
+        }
+        $projects = $projectsQuery->paginate(2);
         $totalProjects = $projects->total();
-
         return view('frontend.menu.closedJobs',compact('status','categories','projects','totalProjects'));
     }
 
@@ -99,9 +107,21 @@ class WebsiteController extends Controller
     // user profile - public view
     public function designerProfile($id)
     {
-        $user = User::find($id);
-        return view('frontend.profiles.designerProfile',compact('user'));
+        $user = User::findOrFail($id);
+
+        $uploads = Upload::with(['projectSubmit', 'project'])
+            ->whereHas('projectSubmit', function ($q) use ($id) {
+                $q->where('user_id', $id);
+            })
+            ->paginate(6);
+        $totalSubmit = $uploads->total();
+        $totalProject = ProjectSubmit::where('user_id', $id)
+            ->distinct('project_id')
+            ->count('project_id');
+
+        return view('frontend.profiles.designerProfile', compact(   'user','uploads','totalProject','totalSubmit'));
     }
+
 
     // signin
     public function signin()
@@ -216,6 +236,7 @@ class WebsiteController extends Controller
         $category_id = $request->query('category_id');
         $status      = (int)$request->query('status');
 
+        $user = Auth::user();
         $query = Project::with(['user', 'order', 'subscription'])
             ->withCount([
                 'projectSubmits as total_designer' => function ($q) {
@@ -223,6 +244,10 @@ class WebsiteController extends Controller
                 },
                 'uploads as total_submitted_design'
             ]);
+
+        if ($user->role_id == 3) {
+            $query->where('user_id', $user->id); // 🔹 user logic
+        }
 
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -240,7 +265,6 @@ class WebsiteController extends Controller
         }
 
         $projects = $query->paginate(2);
-
         $totalProjects = $projects->total();
         $categories = Category::where('status', 1)->get();
         if ($status == 1){

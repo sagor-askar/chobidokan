@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\SettingController;
 
 // frontend pages
+use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Artisan;
@@ -128,6 +129,12 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
     Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
     Route::get('/project-upload',        [WebsiteController::class, 'uploadImages'])->name('project-upload');
+
+
+    Route::prefix('designer')->group(function() {
+        Route::get('/about/{id}', [DesignerController::class, 'about'])->name('designer.about');
+        Route::get('/submitted-works/{id}', [DesignerController::class, 'submittedWorks'])->name('designer.submittedWorks');
+    });
 
 
 });
