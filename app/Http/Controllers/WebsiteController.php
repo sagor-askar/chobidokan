@@ -57,7 +57,8 @@ class WebsiteController extends Controller
                 },
                 'uploads as total_submitted_design'
             ])
-            ->where('status', 1);
+            ->where('status', 1)
+            ->orderBy('id', 'desc');
 
         if ($user->role_id == 3) {
             $projectsQuery->where('user_id', $user->id);
@@ -82,7 +83,8 @@ class WebsiteController extends Controller
                 },
                 'uploads as total_submitted_design'
             ])
-            ->where('status', 2);
+            ->where('status', 2)
+            ->orderBy('id', 'desc');
         if ($user->role_id == 3) {
             $projectsQuery->where('user_id', $user->id);
         }

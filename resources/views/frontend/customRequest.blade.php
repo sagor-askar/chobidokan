@@ -117,7 +117,7 @@
     <div class="container mt-5">
         <div class="card">
             <div class="card-body">
-                 <form method="POST" action="{{ route("project.store") }}" id="multiStepForm" enctype="multipart/form-data">
+                 <form method="POST" action="{{ route("project.order") }}" id="multiStepForm" enctype="multipart/form-data">
                         @csrf
 
                     {{-- top level --}}
