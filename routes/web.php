@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\SettingController;
 
 // frontend pages
+use App\Http\Controllers\DesignerController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Artisan;
@@ -122,7 +124,6 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('customize', [WebsiteController::class,'customization'])->name('customize');
     Route::get('closed-jobs',  [WebsiteController::class, 'closedJobs'])->name('closed-jobs');
     Route::get('/custom-request', [WebsiteController::class, 'customRequest'])->name('custom-request');
-    Route::post('/project-store', [ProjectController::class, 'projectStore'])->name('project.store');
     Route::get('/custom-job/search', [WebsiteController::class, 'CustomJobSearch'])->name('custom-job.search');
     Route::get('customize-details/{id}', [ProjectController::class, 'customizationDetail'])->name('customize-details');
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
@@ -130,7 +131,19 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('/project-upload',        [WebsiteController::class, 'uploadImages'])->name('project-upload');
 
 
+    Route::prefix('designer')->group(function() {
+        Route::get('/about/{id}', [DesignerController::class, 'about'])->name('designer.about');
+        Route::get('/submitted-works/{id}', [DesignerController::class, 'submittedWorks'])->name('designer.submittedWorks');
+    });
+    Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
+
 });
+
+Route::post('order/success', [PaymentController::class,'orderSuccess'])->name('order.success');
+Route::match(['get', 'post'], 'order/fail', [PaymentController::class, 'orderFail'])->name('order.fail');
+Route::match(['get', 'post'], 'order/cancel', [PaymentController::class, 'orderCancel'])->name('order.cancel');
+
+
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

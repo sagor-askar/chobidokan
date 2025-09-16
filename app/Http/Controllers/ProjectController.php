@@ -16,43 +16,39 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-    public function projectStore(Request $request)
-    {
-        $subscription = Subscription::find($request->subscription_id);
-
-        $data = $request->all();
-        $data['user_id'] =  Auth::user()->id;
-        $data['status'] =  1;
-        $data['publish_date'] =Carbon::now()->format('Y-m-d');
-        $data['expire_date'] = Carbon::now()->addDays($subscription->days)->format('Y-m-d');
-
-        $project = Project::create($data);
-
-        if ($request->hasFile('project_file')) {
-            $file = $request->file('project_file');
-            $fileName = time() . rand(1000, 9999) . '.' . $file->getClientOriginalExtension();
-            $filePath = 'uploads/project/' . $fileName;
-            $file->move(public_path('uploads/project'), $fileName);
-            $project->project_file = $filePath;
-        }
-        $project->save();
-
-
-
-        Order::create([
-            'project_id' => $project->id,
-            'user_id' => Auth::user()->id,
-            'subscription_id' => $subscription->id,
-            'amount' => $subscription->price,
-        ]);
-
-        return redirect()->route('welcome')->with('success', 'Successfully Post Submitted!');
-    }
+//    public function projectStore(Request $request)
+//    {
+//        $subscription = Subscription::find($request->subscription_id);
+//        $data = $request->all();
+//        $data['user_id'] =  Auth::user()->id;
+//        $data['status'] =  1;
+//        $data['publish_date'] =Carbon::now()->format('Y-m-d');
+//        $data['expire_date'] = Carbon::now()->addDays($subscription->days)->format('Y-m-d');
+//
+//        $project = Project::create($data);
+//
+//        if ($request->hasFile('project_file')) {
+//            $file = $request->file('project_file');
+//            $fileName = time() . rand(1000, 9999) . '.' . $file->getClientOriginalExtension();
+//            $filePath = 'uploads/project/' . $fileName;
+//            $file->move(public_path('uploads/project'), $fileName);
+//            $project->project_file = $filePath;
+//        }
+//        $project->save();
+//
+//        Order::create([
+//            'project_id' => $project->id,
+//            'user_id' => Auth::user()->id,
+//            'subscription_id' => $subscription->id,
+//            'amount' => $subscription->price,
+//        ]);
+//
+//        return redirect()->route('welcome')->with('success', 'Successfully Post Submitted!');
+//    }
 
 
     public function customizationDetail($id)
     {
-//        $project = Project::with(['user','order', 'subscription','projectSubmits','uploads'])->where('id', $id)->first();
         $project = Project::with([
             'user',
             'order',
