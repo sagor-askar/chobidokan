@@ -24,4 +24,16 @@ class DesignerController extends Controller
 //        return view('frontend.profiles.tabs.submittedWorks', compact('user', 'uploads'));
 //    }
 
+    public function manageProfile($id)
+    {
+        $user = User::findOrFail($id);
+        return view('frontend.profiles.manageProfile', compact('user'));
+    }
+
+    public function changePassword($id)
+    {
+        $user = User::findOrFail($id);
+        return view('frontend.profiles.changePassword', compact('user'));
+    }
+
 }
