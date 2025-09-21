@@ -141,6 +141,8 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::prefix('designer')->group(function() {
         Route::get('/about/{id}', [DesignerController::class, 'about'])->name('designer.about');
         Route::get('/submitted-works/{id}', [DesignerController::class, 'submittedWorks'])->name('designer.submittedWorks');
+        Route::get('/manage-profile/{id}', [DesignerController::class, 'manageProfile'])->name('designer.manageprofile');
+        Route::get('/change-password/{id}', [DesignerController::class, 'changePassword'])->name('designer.changePassword');
     });
     Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
 
