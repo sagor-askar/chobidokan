@@ -10,6 +10,12 @@
             </div>
         </div>
     @endcan
+
+        @if(session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
@@ -34,13 +40,16 @@
                                         {{ trans('cruds.user.fields.email') }}
                                     </th>
                                     <th>
-                                        {{ trans('cruds.user.fields.email_verified_at') }}
+                                      Phone
                                     </th>
                                     <th>
                                         {{ trans('cruds.user.fields.roles') }}
                                     </th>
                                     <th>
-                                        &nbsp;
+                                       Status
+                                    </th>
+                                    <th>
+                                        &nbsp;Action
                                     </th>
                                 </tr>
                             </thead>
@@ -60,34 +69,45 @@
                                             {{ $user->email ?? '' }}
                                         </td>
                                         <td>
-                                            {{ $user->email_verified_at ?? '' }}
+                                            {{ $user->phone ?? '' }}
                                         </td>
                                         <td>
-                                            @foreach($user->roles as $key => $item)
-                                                <span class="label label-info label-many">{{ $item->title }}</span>
-                                            @endforeach
+                                            @if($user->role_id == 1)
+                                                <span class="label label-info label-many">Admin</span>
+                                            @elseif($user->role_id == 2)
+                                                <span class="label label-success label-many">Designer </span>
+                                            @else
+                                                 <span class="label label-primary label-many">Customer </span>
+                                            @endif
                                         </td>
+
                                         <td>
-                                            @can('user_show')
+                                            @if($user->is_banned == 1)
+                                                <span class="label label-danger label-many">Banned</span>
+                                            @else
+                                                <span class="label label-success label-many">Active </span>
+                                            @endif
+                                        </td>
+
+
+                                        <td>
+                                            @if($user->role_id != 1)
+                                                <a class="btn btn-xs btn-primary" href="{{ route('admin.users.changeStatus', $user->id) }}">
+                                                   Change status
+                                                </a>
+                                            @endif
                                                 <a class="btn btn-xs btn-primary" href="{{ route('admin.users.show', $user->id) }}">
                                                     {{ trans('global.view') }}
                                                 </a>
-                                            @endcan
 
-                                            @can('user_edit')
                                                 <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $user->id) }}">
                                                     {{ trans('global.edit') }}
                                                 </a>
-                                            @endcan
-
-                                            @can('user_delete')
                                                 <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                     <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
                                                 </form>
-                                            @endcan
-
                                         </td>
 
                                     </tr>
@@ -149,7 +169,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

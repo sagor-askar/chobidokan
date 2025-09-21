@@ -68,6 +68,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::resource('users', 'UsersController');
+    Route::get('users/change-status/{id}', 'UsersController@changeStatus')->name('users.changeStatus');
 
     // Categories
     Route::delete('categories/destroy', 'CategoryController@massDestroy')->name('categories.massDestroy');
@@ -116,6 +117,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Info Setup
     Route::get('info', 'SettingController@infoSetup')->name('info.setup');
     Route::post('info/store', 'SettingController@infoSetupStore')->name('info.setup.store');
+
+    // Project
+    Route::get('project-list', 'ProjectController@projectList')->name('project.list');
+    Route::get('project-details/{id}', 'ProjectController@projectDetails')->name('project.details');
+    Route::get('project-details/{project_id}/{designer_id}', 'ProjectController@designerSubmitDetails')->name('project.design-submit-show');
+    Route::delete('project/delete/{id}', 'ProjectController@projectDelete')->name('project.delete');
 
 });
 
