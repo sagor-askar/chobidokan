@@ -92,8 +92,8 @@
     <section style="margin-top: 4rem;">
         <div class="container">
             <div class="row d-flex align-items-start">
-                @include('partials.designer_menu')
-                <div class="col-lg-9 col-xl-9">
+                @include('partials.user_menu')
+                <div class="col-lg-8 col-xl-8">
                     @yield('panel_content')
                 </div>
             </div>

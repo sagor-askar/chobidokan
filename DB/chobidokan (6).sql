@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 22, 2025 at 10:35 PM
+-- Generation Time: Sep 24, 2025 at 08:50 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.29
 
@@ -155,7 +155,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (22, '2025_05_15_203625_create_info_setups_table', 1),
 (23, '2025_08_20_021101_add_expire_date_to_projects_table', 2),
 (26, '2025_08_22_231135_create_project_submits_table', 3),
-(27, '2025_08_23_030900_create_uploads_table', 3);
+(27, '2025_08_23_030900_create_uploads_table', 3),
+(28, '2025_09_05_180219_add_columns_to_subscriptions_table', 4),
+(30, '2025_09_22_010012_add_status_to_uploads_table', 5);
 
 -- --------------------------------------------------------
 
@@ -182,7 +184,9 @@ CREATE TABLE `orders` (
 
 INSERT INTO `orders` (`id`, `project_id`, `subscription_id`, `user_id`, `amount`, `card_type`, `bank_txn`, `status`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 3, 100, NULL, NULL, 0, '2025-08-19 17:29:25', '2025-08-19 17:29:25'),
-(2, 2, 1, 3, 100, NULL, NULL, 0, '2025-08-19 20:19:08', '2025-08-19 20:19:08');
+(2, 2, 1, 3, 100, NULL, NULL, 0, '2025-08-19 20:19:08', '2025-08-19 20:19:08'),
+(3, 3, 1, 3, 100, NULL, NULL, 0, '2025-09-05 12:42:44', '2025-09-05 12:42:44'),
+(9, 66, 1, 3, 100, 'bKash-bKash', '1030000972407', 0, '2025-09-15 19:19:16', '2025-09-15 19:19:16');
 
 -- --------------------------------------------------------
 
@@ -326,8 +330,10 @@ CREATE TABLE `projects` (
 --
 
 INSERT INTO `projects` (`id`, `name`, `category_id`, `project_description`, `logo_description`, `project_file`, `publish_date`, `expire_date`, `user_id`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Demo Project', 1, 'Looking for a graphic designer to design a brochure-like introduction of our real estate business', '<strong>AL QASR PROPERTIES LTD.</strong> is a new real estate investment business that is just starting. We are looking for the best graphic designer to present the company’s strategy to important stakeholders. This project is <strong>URGENT</strong>. See attachment.', 'uploads/project/17556245658294.jpg', '2025-08-19', '2025-08-26', 3, 1, '2025-08-19 17:29:25', '2025-08-19 17:29:25'),
-(2, 'test', 2, 'test', 'test', 'uploads/project/17556347482431.png', '2025-08-20', '2025-08-27', 3, 1, '2025-08-19 20:19:08', '2025-08-19 20:19:08');
+(1, 'Demo Project', 1, 'Looking for a graphic designer to design a brochure-like introduction of our real estate business', '<strong>AL QASR PROPERTIES LTD.</strong> is a new real estate investment business that is just starting. We are looking for the best graphic designer to present the company’s strategy to important stakeholders. This project is <strong>URGENT</strong>. See attachment.', 'uploads/project/17556245658294.jpg', '2025-08-19', '2025-09-26', 3, 1, '2025-08-19 17:29:25', '2025-09-21 19:14:15'),
+(2, 'test', 2, 'test', 'test', 'uploads/project/17556347482431.png', '2025-08-20', '2025-08-27', 3, 1, '2025-08-19 20:19:08', '2025-08-19 20:19:08'),
+(3, 'Roary Carrillo', 1, 'Tempore aspernatur', 'Quia cupidatat porro', 'uploads/project/17570761647002.pdf', '2025-09-05', '2025-09-12', 3, 1, '2025-09-05 12:42:44', '2025-09-21 19:56:29'),
+(66, 'Leandra Castaneda', 2, 'Labore officia cupid', 'Similique cupidatat', 'uploads/project/17579639511052.pdf', '2025-09-16', '2025-09-23', 3, 1, '2025-09-15 19:19:11', '2025-09-15 19:19:11');
 
 -- --------------------------------------------------------
 
@@ -352,7 +358,13 @@ CREATE TABLE `project_submits` (
 --
 
 INSERT INTO `project_submits` (`id`, `project_id`, `title`, `visibility`, `stock`, `submit_date`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, 1, 'test logo project file', 1, 1, '2025-08-23', 2, '2025-08-22 21:55:48', '2025-08-22 21:55:48');
+(1, 1, 'test logo project file', 1, 1, '2025-08-23', 2, '2025-08-22 21:55:48', '2025-08-22 21:55:48'),
+(3, 1, 'fgfgfdg', 1, 1, '2025-09-05', 4, '2025-09-05 13:41:30', '2025-09-05 13:41:30'),
+(4, 1, 'vcxv', 1, 1, '2025-09-05', 4, '2025-09-05 14:01:00', '2025-09-05 14:01:00'),
+(5, 3, 'fdsfdsf', 1, 1, '2025-09-05', 4, '2025-09-05 14:02:43', '2025-09-05 14:02:43'),
+(6, 1, 'latest submited', 1, 1, '2025-09-21', 2, '2025-09-21 17:47:44', '2025-09-21 17:47:44'),
+(7, 1, 'fdsfdsfsdf', 1, 1, '2025-09-21', 2, '2025-09-21 17:48:40', '2025-09-21 17:48:40'),
+(8, 1, 'gh', 1, 1, '2025-09-22', 2, '2025-09-21 18:32:28', '2025-09-21 18:32:28');
 
 -- --------------------------------------------------------
 
@@ -455,7 +467,9 @@ CREATE TABLE `subscriptions` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `points` json DEFAULT NULL,
   `price` int NOT NULL,
+  `designer` int DEFAULT NULL,
   `days` int DEFAULT NULL,
+  `design` int DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `status` int NOT NULL DEFAULT '1' COMMENT '1=>Active, 0=>Inactive',
@@ -467,8 +481,8 @@ CREATE TABLE `subscriptions` (
 -- Dumping data for table `subscriptions`
 --
 
-INSERT INTO `subscriptions` (`id`, `name`, `points`, `price`, `days`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Weekly Package', '[\"3 designers\"]', 100, 7, NULL, NULL, 1, '2025-08-19 15:31:19', '2025-08-21 19:41:50');
+INSERT INTO `subscriptions` (`id`, `name`, `points`, `price`, `designer`, `days`, `design`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Weekly Package', '[\"Premium Design\", \"Quality Desgin\"]', 100, 5, 7, 15, NULL, NULL, 1, '2025-08-19 15:31:19', '2025-09-05 12:21:08');
 
 -- --------------------------------------------------------
 
@@ -526,6 +540,7 @@ CREATE TABLE `uploads` (
   `file_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `file_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `file_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` int NOT NULL DEFAULT '0' COMMENT '0=>Pending, 1=>Approved',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -534,9 +549,19 @@ CREATE TABLE `uploads` (
 -- Dumping data for table `uploads`
 --
 
-INSERT INTO `uploads` (`id`, `project_submit_id`, `project_id`, `file_path`, `file_name`, `file_type`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 'uploads/project/submit-file/1755899748_68a8e764cbfd0.png', '1755899748_68a8e764cbfd0.png', 'image/png', '2025-08-22 21:55:48', '2025-08-22 21:55:48'),
-(2, 1, 1, 'uploads/project/submit-file/1755899748_68a8e764d32b6.jpg', '1755899748_68a8e764d32b6.jpg', 'image/jpeg', '2025-08-22 21:55:48', '2025-08-22 21:55:48');
+INSERT INTO `uploads` (`id`, `project_submit_id`, `project_id`, `file_path`, `file_name`, `file_type`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'uploads/project/submit-file/1755899748_68a8e764cbfd0.png', '1755899748_68a8e764cbfd0.png', 'image/png', 0, '2025-08-22 21:55:48', '2025-08-22 21:55:48'),
+(2, 1, 1, 'uploads/project/submit-file/1755899748_68a8e764d32b6.jpg', '1755899748_68a8e764d32b6.jpg', 'image/jpeg', 0, '2025-08-22 21:55:48', '2025-08-22 21:55:48'),
+(4, 3, 1, 'uploads/project/submit-file/1757079690_68bae88a3dadb.png', '1757079690_68bae88a3dadb.png', 'image/png', 0, '2025-09-05 13:41:30', '2025-09-05 13:41:30'),
+(5, 3, 1, 'uploads/project/submit-file/1757079690_68bae88a8b104.jpg', '1757079690_68bae88a8b104.jpg', 'image/jpeg', 0, '2025-09-05 13:41:30', '2025-09-05 13:41:30'),
+(6, 4, 1, 'uploads/project/submit-file/1757080860_68baed1c83d90.png', '1757080860_68baed1c83d90.png', 'image/png', 0, '2025-09-05 14:01:00', '2025-09-05 14:01:00'),
+(7, 5, 3, 'uploads/project/submit-file/1757080963_68baed8333dcd.png', '1757080963_68baed8333dcd.png', 'image/png', 1, '2025-09-05 14:02:43', '2025-09-21 19:56:29'),
+(8, 5, 3, 'uploads/project/submit-file/1757080963_68baed8386a79.jpg', '1757080963_68baed8386a79.jpg', 'image/jpeg', 0, '2025-09-05 14:02:43', '2025-09-05 14:02:43'),
+(9, 6, 1, 'uploads/project/submit-file/1758476864_68d03a40aefc4.png', '1758476864_68d03a40aefc4.png', 'image/png', 0, '2025-09-21 17:47:45', '2025-09-21 17:47:45'),
+(10, 7, 1, 'uploads/project/submit-file/1758476920_68d03a78353cd.png', '1758476920_68d03a78353cd.png', 'image/png', 0, '2025-09-21 17:48:40', '2025-09-21 17:48:40'),
+(11, 7, 1, 'uploads/project/submit-file/1758476920_68d03a783b5bc.jpg', '1758476920_68d03a783b5bc.jpg', 'image/jpeg', 0, '2025-09-21 17:48:40', '2025-09-21 17:48:40'),
+(12, 7, 1, 'uploads/project/submit-file/1758476920_68d03a783f5e8.jpeg', '1758476920_68d03a783f5e8.jpeg', 'image/jpeg', 0, '2025-09-21 17:48:40', '2025-09-21 17:48:40'),
+(13, 8, 1, 'uploads/project/submit-file/1758479548_68d044bc34e45.jpg', '1758479548_68d044bc34e45.jpg', 'image/jpeg', 1, '2025-09-21 18:32:28', '2025-09-21 19:14:15');
 
 -- --------------------------------------------------------
 
@@ -577,8 +602,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `verification_code`, `is_verified`, `role_id`, `is_banned`, `email_verified_at`, `password`, `remember_token`, `address`, `image`, `bio`, `bank_name`, `branch_name`, `account_holder_name`, `account_number`, `routing_no`, `account_type`, `mobile_banking_no`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1, 'Admin', 'admin@admin.com', NULL, NULL, 0, 1, 0, NULL, '$2y$10$qEjQZHdTBu9EGW8wilQiFuZUyTS888bUSMnCnFagFr49uu5uBOwcC', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 'Md. Shamim Al-Deen', 'shamimaldeen@gmail.com', '01738298666', NULL, 0, 2, 0, NULL, '$2y$10$DfJ8PFPV70BYWe/HDiqLbe4I.4azC4VrnaXavBydPjHFM9QDkoAqG', NULL, '15-Dhanmondhi,dhaka-1200,Bangladesh', NULL, NULL, 'fdgf', 'gfdgdfg', 'gfhgfhgfh', NULL, NULL, NULL, NULL, '2025-08-18 19:35:11', '2025-08-18 19:35:11', NULL),
-(3, 'Al-Deen', 'aldeen298666@gmail.com', '01738298667', NULL, 0, 3, 0, NULL, '$2y$10$rZFWnfgeFFIWfyd0X4SI1eiPnbKUIyHZpn4EZBiEag0oVh2BMt3qy', NULL, '15-Dhanmondhi,dhaka-1200,Bangladesh', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-08-18 19:37:44', '2025-08-18 19:37:44', NULL);
+(2, 'Md. Shamim Al-Deen', 'shamimaldeen@gmail.com', '01738298666', NULL, 0, 2, 0, NULL, '$2y$10$DfJ8PFPV70BYWe/HDiqLbe4I.4azC4VrnaXavBydPjHFM9QDkoAqG', NULL, '15-Dhanmondhi,dhaka-1200,Bangladesh', NULL, NULL, 'fdgf', 'gfdgdfg', 'gfhgfhgfh', NULL, NULL, NULL, NULL, '2025-08-18 19:35:11', '2025-09-18 19:58:10', NULL),
+(3, 'Al-Deen', 'aldeen298666@gmail.com', '01738298667', NULL, 0, 3, 0, NULL, '$2y$10$rZFWnfgeFFIWfyd0X4SI1eiPnbKUIyHZpn4EZBiEag0oVh2BMt3qy', NULL, '15-Dhanmondhi,dhaka-1200,Bangladesh', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-08-18 19:37:44', '2025-08-18 19:37:44', NULL),
+(4, 'designer1', 'designer1@gmail.com', '01738455455', NULL, 0, 2, 0, NULL, '$2y$10$e192oASPePQ.3kHXAFvVG.mqC52vyQc5To1la123I2uyLXFkIWQeu', NULL, '15-Dhanmondhi,dhaka-1200,Bangladesh', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-05 13:38:24', '2025-09-05 13:38:24', NULL);
 
 --
 -- Indexes for dumped tables
@@ -783,13 +809,13 @@ ALTER TABLE `media`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -813,13 +839,13 @@ ALTER TABLE `privacy_policies`
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `project_submits`
 --
 ALTER TABLE `project_submits`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `research_imgs`
@@ -873,13 +899,13 @@ ALTER TABLE `testimonials`
 -- AUTO_INCREMENT for table `uploads`
 --
 ALTER TABLE `uploads`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
