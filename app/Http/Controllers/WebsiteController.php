@@ -99,20 +99,14 @@ class WebsiteController extends Controller
         return view('frontend.menu.submissionGuideline');
     }
 
-    // user's profile
-    public function sellerDashboard()
-    {
-        $user = User::find(Auth::id());
-        return view('frontend.profiles.dashboard',compact('user'));
-    }
 
     // user profile - public view
     public function designerProfile($id)
     {
         $user = User::findOrFail($id);
 
-        $uploads = Upload::with(['projectSubmit', 'project'])
-            ->whereHas('projectSubmit', function ($q) use ($id) {
+        $uploads = Upload::with(['projectSubmits', 'project'])
+            ->whereHas('projectSubmits', function ($q) use ($id) {
                 $q->where('user_id', $id);
             })
             ->paginate(6);

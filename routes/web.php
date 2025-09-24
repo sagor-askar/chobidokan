@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Artisan;
 
@@ -127,22 +128,35 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 });
 
 Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
-    Route::get('/seller-dashboard', [WebsiteController::class, 'sellerDashboard'])->name('seller-dashboard');
     Route::get('customize', [WebsiteController::class,'customization'])->name('customize');
     Route::get('closed-jobs',  [WebsiteController::class, 'closedJobs'])->name('closed-jobs');
     Route::get('/custom-request', [WebsiteController::class, 'customRequest'])->name('custom-request');
     Route::get('/custom-job/search', [WebsiteController::class, 'CustomJobSearch'])->name('custom-job.search');
     Route::get('customize-details/{id}', [ProjectController::class, 'customizationDetail'])->name('customize-details');
+    Route::get('project/submitted-file-view-all/{id}', [ProjectController::class, 'submittedFileViewAll'])->name('submitted-file-view-all');
+    Route::get('project/submitted-file-confirm/{id}', [ProjectController::class, 'submittedFileConfirm'])->name('project.submitted-file.confirm');
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
     Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
     Route::get('/project-upload',        [WebsiteController::class, 'uploadImages'])->name('project-upload');
 
 
-    Route::prefix('designer')->group(function() {
-        Route::get('/about/{id}', [DesignerController::class, 'about'])->name('designer.about');
-        Route::get('/submitted-works/{id}', [DesignerController::class, 'submittedWorks'])->name('designer.submittedWorks');
-        Route::get('/manage-profile/{id}', [DesignerController::class, 'manageProfile'])->name('designer.manageprofile');
-        Route::get('/change-password/{id}', [DesignerController::class, 'changePassword'])->name('designer.changePassword');
+    Route::group(['prefix' => 'designer', 'as' => 'designer.'], function () {
+        Route::get('/dashboard', [DesignerController::class, 'dashboard'])->name('dashboard');
+        Route::get('/about/{id}', [DesignerController::class, 'about'])->name('about');
+        Route::get('/orders', [DesignerController::class, 'orders'])->name('orders');
+        Route::get('/order-delivery/{id}', [DesignerController::class, 'orderDelivery'])->name('order-delivery');
+        Route::get('/order-history', [DesignerController::class, 'orderHistory'])->name('order-history');
+        Route::get('/submitted-works/{id}', [DesignerController::class, 'submittedWorks'])->name('submittedWorks');
+        Route::get('/manage-profile/{id}', [DesignerController::class, 'manageProfile'])->name('manageprofile');
+        Route::get('/change-password/{id}', [DesignerController::class, 'changePassword'])->name('changePassword');
+    });
+
+    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+        Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+        Route::get('/about/{id}', [UserController::class, 'about'])->name('about');
+        Route::get('/submitted-works/{id}', [UserController::class, 'submittedWorks'])->name('submittedWorks');
+        Route::get('/manage-profile/{id}', [UserController::class, 'manageProfile'])->name('manageprofile');
+        Route::get('/change-password/{id}', [UserController::class, 'changePassword'])->name('changePassword');
     });
     Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
 
