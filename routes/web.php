@@ -145,6 +145,10 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::get('/about/{id}', [DesignerController::class, 'about'])->name('about');
         Route::get('/orders', [DesignerController::class, 'orders'])->name('orders');
         Route::get('/order-delivery/{id}', [DesignerController::class, 'orderDelivery'])->name('order-delivery');
+        Route::post('/order-submit/{id}', [DesignerController::class, 'orderSubmit'])->name('order.submit');
+
+        Route::get('/rejected-orders', [DesignerController::class, 'rejectedOrders'])->name('rejected-orders');
+
         Route::get('/order-history', [DesignerController::class, 'orderHistory'])->name('order-history');
         Route::get('/submitted-works/{id}', [DesignerController::class, 'submittedWorks'])->name('submittedWorks');
         Route::get('/manage-profile/{id}', [DesignerController::class, 'manageProfile'])->name('manageprofile');
@@ -154,6 +158,10 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
         Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
         Route::get('/about/{id}', [UserController::class, 'about'])->name('about');
+        Route::get('/orders', [UserController::class, 'orders'])->name('orders');
+        Route::get('/order/submitted-file/{id}', [UserController::class, 'submittedOrderFile'])->name('order.submitted-file');
+        Route::put('/order/project-approve/{id}', [UserController::class, 'projectApprove'])->name('order.project.approve');
+        Route::put('/order/submission-reject/{id}', [UserController::class, 'submissionReject'])->name('order.submission.reject');
         Route::get('/submitted-works/{id}', [UserController::class, 'submittedWorks'])->name('submittedWorks');
         Route::get('/manage-profile/{id}', [UserController::class, 'manageProfile'])->name('manageprofile');
         Route::get('/change-password/{id}', [UserController::class, 'changePassword'])->name('changePassword');

@@ -10,17 +10,68 @@
         }
 
         .upload-box {
-            border: 2px dashed #ccc;
-            border-radius: 10px;
+            border: 2px dashed #0d6efd;
+            border-radius: 12px;
             text-align: center;
-            padding: 30px;
+            padding: 40px 20px;
             margin-bottom: 20px;
             color: #6c757d;
+            background: #f9fafc;
+            transition: 0.3s ease;
         }
 
         .upload-box:hover {
-            background-color: #f1f1f1;
+            background-color: #eef5ff;
+            border-color: #0a58ca;
+            color: #0a58ca;
         }
+
+        .upload-box p {
+            margin: 0;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .upload-box small {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        .btn-primary {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+
+        .modal-preview-img {
+            max-width: 70%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .modal-dialog {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .watermark-text {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.5);
+            pointer-events: none;
+        }
+
 
     </style>
 
@@ -31,58 +82,110 @@
                 {{ session('success') }}
             </div>
         @endif
-                <div class="form-section">
-                    <h4>Upload Design File</h4>
 
-                    @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
-
-                    <form action="{{route('job.submit',$project->id)}}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="upload-box border p-3 text-center"
-                             id="drop-area"
-                             style="cursor: pointer; background: #f8f9fa;">
-
-                            <p>
-                                Drop your files here or
-                                <a href="#" onclick="document.getElementById('design_file').click();return false;">
-                                    click to upload
-                                </a>
-                            </p>
-
-                            <input type="file" name="design_file[]" id="design_file"
-                                   class="d-none" accept=".png,.jpg,.jpeg,.gif,.zip" multiple>
-
-                            <small>We accept PNG, JPG, JPEG, GIF, ZIP</small>
-
-                            <div id="preview" class="d-flex flex-wrap mt-3"></div>
-
-                            @error('design_file.*')
-                            <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group mt-3">
-                            <div class="border p-3 bg-light">
-                                <p><strong>Your submission must adhere to the following guidelines:</strong></p>
-                                <ul>
-                                    <li>Submissions must not be blank or placeholder designs.</li>
-                                    <li>Submissions must follow the project's brief.</li>
-                                    <li>Must adhere to User Agreement and Quality Standards.</li>
-                                    <li>All work must be original and owned by you.</li>
-                                </ul>
-                            </div>
-                            <div class="form-check mt-2">
-                                <input type="checkbox" class="form-check-input"  required>
-                                <label class="form-check-label">Yes, I understand and accept <a href="{{ route('submission-guidelines') }}">submission guidelines</a>.</label>
-                                @error('agree') <span class="text-danger">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-sm btn-primary btn-block mt-3">SUBMIT ORDER</button>
-                    </form>
+            <div class="form-section">
+                <div class="card-header">
+                    <h4>{{$selectedImages[0]->project?->name}} (Selected Image)</h4>
                 </div>
+                <div class="card-body">
+                    <div class="row g-3">
+
+
+                        @if(count($selectedImages) > 0 )
+                            @foreach($selectedImages as $key=>$uploadData)
+                                <div class="col-md-4">
+                                    <div class="card h-100 border shadow-sm rounded-4 hover-card overflow-hidden">
+
+                                        <!-- Image + Overlay -->
+                                        <div class="position-relative">
+                                            <div class="card-body  d-flex justify-content-center align-items-center bg-light"
+                                                 style="height: 200px; overflow: hidden;">
+                                                <img src="{{ asset($uploadData->file_path) }}"
+                                                     alt="Request Image"
+                                                     class="img-fluid rounded-3"
+                                                     style="max-height: 180px; object-fit: cover;">
+                                            </div>
+
+                                            <!-- Center Overlay Icon -->
+                                            <button class="btn btn-light rounded-circle shadow position-absolute top-50 start-50 translate-middle"
+                                                    style="color: #0d6efd; font-size: 1.5rem;"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#imageModal{{ $key }}">
+                                                <i class="bi bi-arrows-fullscreen"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="imageModal{{ $key }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                                        <div class="modal-content bg-dark border-0 rounded-3 shadow-lg">
+                                            <div class="modal-header border-0">
+                                                <h5 class="modal-title text-white">Preview</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body d-flex justify-content-center align-items-center bg-black"
+                                                 style="padding: 15px;">
+
+                                                <!-- Image -->
+                                                <img src="{{ asset($uploadData->file_path) }}"
+                                                     class="modal-preview-img"
+                                                     alt="Preview">
+
+                                                <!-- Watermark -->
+                                                <div class="watermark-text">Chobi Dokan</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            @endforeach
+                        @else
+                            <div class="col-12 text-center py-4">
+                                <p class="mb-0 text-danger">No submissions available yet.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-section">
+                <h4 class="mb-3"><i class="bi bi-upload me-2 text-success"></i>Upload Original File</h4>
+                <form action="{{ route('designer.order.submit',$selectedImages[0]->project_id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="upload-box" id="drop-area">
+                        <p>
+                            <i class="bi bi-cloud-arrow-up text-primary me-2"></i>
+                            Drop your files here or
+                            <a href="#" onclick="document.getElementById('design_file').click();return false;">click to upload</a>
+                        </p>
+                        <small>We accept PNG, JPG, JPEG, GIF, ZIP</small>
+                        <input type="file" name="design_file[]" id="design_file"
+                               class="d-none" accept=".png,.jpg,.jpeg,.gif,.zip" multiple>
+                        <div id="preview" class="d-flex flex-wrap mt-3"></div>
+                        @error('design_file.*')
+                        <span class="text-danger d-block mt-2">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-check mt-3">
+                        <input type="checkbox" class="form-check-input" required>
+                        <label class="form-check-label">
+                            Yes, I understand and accept <a href="{{ route('submission-guidelines') }}" target="_blank">submission guidelines</a>.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-4">
+                        <i class="bi bi-send-check me-1"></i> SUBMIT ORDER
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
     </div>
     </div>
 
