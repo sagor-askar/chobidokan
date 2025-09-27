@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Order;
+use App\Models\OrderDetails;
 use App\Models\Project;
 use App\Models\ProjectSubmit;
 use App\Models\Upload;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Intervention\Image\Facades\Image;
 
 class DesignerController extends Controller
 {
@@ -61,8 +66,13 @@ class DesignerController extends Controller
 
     public function orderDelivery($id)
     {
-       $project = Project::find($id);
-        return view('frontend.seller.order-delivery',compact('project'));
+       $selectedImages = Upload::with('project')
+                           ->whereHas('projectSubmits', function ($q) {
+                               $q->where('user_id', Auth::id());
+                           })
+                           ->where('project_id', $id)->where('status',1)->get();
+
+        return view('frontend.seller.order-delivery',compact('selectedImages'));
     }
 
     public function orderHistory()
@@ -73,8 +83,91 @@ class DesignerController extends Controller
                 $q->where('user_id', Auth::id());
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(1);
+            ->paginate(10);
         return view('frontend.seller.order-history',compact('orderHistories'));
+    }
+
+    public function orderSubmit(Request $request, $id)
+    {
+        $request->validate(
+            [
+                'design_file.*' => 'required|mimes:jpg,jpeg,png,gif,zip',
+            ],
+            [
+                'design_file.*.mimes' => 'Only JPG, JPEG, PNG, GIF, ZIP formats are allowed.',
+            ]
+        );
+
+        try {
+            DB::beginTransaction();
+
+            $order = Order::where('project_id', $id)->first();
+
+            if ($request->hasFile('design_file')) {
+                foreach ($request->file('design_file') as $file) {
+
+                    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $cleanName = preg_replace('/\s+/', '_', $originalName);
+                    $filename = $cleanName . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+                    $destinationPath = public_path('uploads/project/approved-file/' . $filename);
+
+                    if ($file->getClientOriginalExtension() !== 'zip') {
+                        // Image resize
+                        $img = Image::make($file->getRealPath());
+                        $img->resize(1200, null, function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        })->save($destinationPath, 90);
+                    } else {
+                        // ZIP save as-is
+                        $file->move(public_path('uploads/project/approved-file/'), $filename);
+                    }
+
+                    $type = $file->getClientMimeType();
+                    if ($type === 'application/x-zip-compressed') {
+                        $type = 'application/zip';
+                    }
+
+                    // Save in database
+                    OrderDetails::create([
+                        'project_id' => $id,
+                        'order_id' => $order->id,
+                        'user_id' => Auth::id(),
+                        'file_path' => 'uploads/project/approved-file/' . $filename,
+                        'file_name' => $filename,
+                        'file_type' => $type,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return back()->with('success', 'Order Submitted Successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Order Submission failed: ' . $e->getMessage());
+        }
+    }
+
+    public function rejectedOrders()
+    {
+
+        return ' Incomplete' ;
+
+//        $orderProjects = Project::with(['orderDetails'])
+//            ->where('status', 1)
+//            ->whereHas('orderDetails', function ($q) {
+//                $q->where('user_id', Auth::id());
+//            })
+//            ->orderBy('created_at', 'desc')
+//            ->get();
+//
+//        foreach ($orderProjects as $orderProject) {
+//
+//            $rejectedOrders = Comment::where('project_id', $orderProject->id)->get();
+//        }
+//
+//        return view('frontend.seller.order-history',compact('orderHistories'));
     }
 
 

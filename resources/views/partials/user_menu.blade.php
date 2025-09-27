@@ -1,4 +1,8 @@
-<div class="col-md-4">
+<div class="col-md-3">
+    @php
+        use Illuminate\Support\Facades\Auth;
+        $user= Auth::user();
+    @endphp
     <div class="card text-center shadow-sm mb-4">
         <div class="card-body">
             <img src="{{ asset($user->image ?? 'frontend_assets/img/team/team-1.jpg') }}"
@@ -18,8 +22,8 @@
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-user mr-2"></i> About
         </a>
-        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-            <i class="fa fa-folder-open mr-2"></i> Submitted Works
+        <a href="{{ route('user.orders') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+            <i class="fa fa-folder-open mr-2"></i> Orders
         </a>
         <a href="{{ route('designer.manageprofile', $user->id) }}"
             class="list-group-item list-group-item-action d-flex align-items-center">

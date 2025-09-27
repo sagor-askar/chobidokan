@@ -24,7 +24,12 @@
         </a>
         <a href="{{ route('designer.orders') }}"
            class="list-group-item list-group-item-action d-flex align-items-center">
-            <i class="fa fa-folder-open mr-2"></i> Confirm Orders
+            <i class="fa fa-folder-open mr-2"></i>Orders
+        </a>
+
+        <a href="{{ route('designer.rejected-orders') }}"
+           class="list-group-item list-group-item-action d-flex align-items-center">
+            <i class="fa fa-folder-open mr-2"></i>Rejected Orders
         </a>
 
         <a href="{{ route('designer.order-history') }}"
