@@ -25,19 +25,26 @@
         <a href="{{ route('user.orders') }}" class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-folder-open mr-2"></i> Orders
         </a>
-        <a href="{{ route('designer.manageprofile', $user->id) }}"
+
+        <a href="{{ route('user.order-history') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+            <i class="fa fa-folder-open mr-2"></i> Order History
+        </a>
+
+        <a href="{{ route('user.manage.profile') }}"
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-cog mr-2"></i> Manage Profile
         </a>
-        <a href="{{ route('designer.changePassword', $user->id) }}"
+        <a href="{{ route('user.change.password') }}"
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-key mr-2"></i> Change Password
         </a>
-
-        <a href="{{ route('logout') }}"
-            class="list-group-item list-group-item-action d-flex align-items-center text-danger">
-            <i class="fa fa-sign-out mr-2"></i> Log Out
-        </a>
+        
+        <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+            @csrf
+            <button type="submit" class="list-group-item list-group-item-action d-flex align-items-center text-danger" style="display: block; width: 100%; padding: 10px; background: none; border: none; text-align: left; cursor: pointer; color: black;">
+                <i class="fa fa-sign-out"></i> {{ trans('global.logout') }}
+            </button>
+        </form>
     </div>
 </div>
 

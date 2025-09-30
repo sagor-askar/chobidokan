@@ -161,10 +161,13 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::get('/orders', [UserController::class, 'orders'])->name('orders');
         Route::get('/order/submitted-file/{id}', [UserController::class, 'submittedOrderFile'])->name('order.submitted-file');
         Route::put('/order/project-approve/{id}', [UserController::class, 'projectApprove'])->name('order.project.approve');
-        Route::put('/order/submission-reject/{id}', [UserController::class, 'submissionReject'])->name('order.submission.reject');
+       // Route::put('/order/submission-reject/{id}', [UserController::class, 'submissionReject'])->name('order.submission.reject');
+        Route::get('/order-history', [UserController::class, 'orderHistory'])->name('order-history');
         Route::get('/submitted-works/{id}', [UserController::class, 'submittedWorks'])->name('submittedWorks');
-        Route::get('/manage-profile/{id}', [UserController::class, 'manageProfile'])->name('manageprofile');
-        Route::get('/change-password/{id}', [UserController::class, 'changePassword'])->name('changePassword');
+        Route::get('/manage-profile', [UserController::class, 'manageProfile'])->name('manage.profile');
+        Route::put('/profile-update', [UserController::class, 'updateProfile'])->name('profile.update');
+        Route::get('/change-password', [UserController::class, 'changePassword'])->name('change.password');
+        Route::put('/update-password', [UserController::class, 'updatePassword'])->name('updatePassword');
     });
     Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
 

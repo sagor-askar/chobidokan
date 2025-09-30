@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\OrderDetails;
 use App\Models\Project;
+use App\Models\Upload;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -55,17 +58,6 @@ class UserController extends Controller
 
     public function projectApprove(Request $request ,$id)
     {
-        $request->validate([
-            'comment' => 'required|string',
-        ]);
-
-        Comment::create([
-            'project_id' => $id,
-            'user_id'    => Auth::id(),
-            'comment'    => $request->comment,
-            'parent_id'  => null,
-        ]);
-
         $project = Project::find($id);
         $project->status = 2;
         $project->save();
@@ -89,15 +81,62 @@ class UserController extends Controller
 
     }
 
-    public function manageProfile($id)
+    public function orderHistory()
     {
-        $user = User::findOrFail($id);
+        $orderHistoryProjects = Project::with(['orderDetails','order'])
+            ->where('status', '!=',1)
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return view('frontend.user.order-history', compact('orderHistoryProjects'));
+    }
+
+    public function manageProfile()
+    {
+        $user = User::findOrFail( Auth::id());
         return view('frontend.user.manageProfile', compact('user'));
     }
 
-    public function changePassword($id)
+    public function updateProfile(Request $request)
     {
-        $user = User::findOrFail($id);
+        $user = User::findOrFail(Auth::id());
+        $data = $request->except('image');
+        $user->update($data);
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/user/'), $filename);
+            $user->image = 'uploads/user/' . $filename;
+            $user->save();
+        }
+
+        return redirect()->back()->with('success', 'User Profile Updated Successfully.');
+    }
+
+
+    public function changePassword()
+    {
+        $user = User::findOrFail(Auth::id());
         return view('frontend.user.changePassword', compact('user'));
+    }
+
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = User::findOrFail(Auth::id());
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->with('error', 'Your current password is incorrect.');
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password updated successfully!');
     }
 }

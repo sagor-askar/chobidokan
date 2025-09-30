@@ -22,6 +22,7 @@
                                         <th>Project Name</th>
                                         <th>Category</th>
                                         <th>Image</th>
+                                        <th>Amount</th>
                                         <th>Publish Date</th>
                                         <th>Expire Date</th>
                                         <th>Submission Status</th>
@@ -42,6 +43,7 @@
                                             @else
                                                 <td><span class="badge badge-danger">No Logo Attached!</span></td>
                                             @endif
+                                            <td>{{ $orderProject?->order->amount }} TK.</td>
                                             <td>{{ \Carbon\Carbon::parse($orderProject->publish_date)->format('d M, Y') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($orderProject->expire_date)->format('d M, Y') }}</td>
 
