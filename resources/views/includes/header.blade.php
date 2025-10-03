@@ -26,7 +26,7 @@
                 <li><a href="{{ route('customize') }}">Customize Jobs</a></li>
 
                 @if(Auth::user()->role_id == 2)
-                <li><a href="{{ route('project-upload') }}">Upload</a></li>
+                <li><a href="{{ route('designer.upload') }}">Upload</a></li>
                 @endif
                 @endif
             </ul>

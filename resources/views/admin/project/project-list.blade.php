@@ -14,7 +14,7 @@
                     </div>
                     <div class="panel-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable datatable-SubCompany" id="subCompany-dataTable">
+                            <table class="table table-bordered table-striped table-hover datatable datatable-SubCompany" id="project-dataTable">
                                 <thead>
                                 <tr>
                                     <th>
@@ -144,7 +144,7 @@
     @parent
     <script>
         $(function() {
-            let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
+            let dtButtons = $.extend(true, [], defaultButtons);
             @can('category_delete')
             let deleteButtonTrans = '{{ trans('
         global.datatables.delete ') }}'
@@ -188,20 +188,7 @@
             dtButtons.push(deleteButton)
             @endcan
 
-            $.extend(true, $.fn.dataTable.defaults, {
-                orderCellsTop: true
-                , order: [
-                    [1, 'desc']
-                ]
-                , pageLength: 100
-                , });
-            let table = $('.datatable-SubCompany:not(.ajaxTable)').DataTable({
-                buttons: dtButtons
-            })
-            $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e) {
-                $($.fn.dataTable.tables(true)).DataTable()
-                    .columns.adjust();
-            });
+            initDataTable('#project-dataTable', dtButtons);
 
         })
 

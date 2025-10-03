@@ -14,11 +14,11 @@
     </div>
 
     <div class="list-group shadow-sm">
-        <a href="{{ route('designer.dashboard') }}"
+        <a href="{{ route('user.dashboard') }}"
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-tachometer mr-2"></i> Dashboard
         </a>
-        <a href="{{ route('designer.about', $user->id) }}"
+        <a href="{{ route('user.about') }}"
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-user mr-2"></i> About
         </a>
@@ -38,7 +38,7 @@
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-key mr-2"></i> Change Password
         </a>
-        
+
         <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
             @csrf
             <button type="submit" class="list-group-item list-group-item-action d-flex align-items-center text-danger" style="display: block; width: 100%; padding: 10px; background: none; border: none; text-align: left; cursor: pointer; color: black;">

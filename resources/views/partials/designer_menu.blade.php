@@ -18,7 +18,7 @@
            class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-tachometer mr-2"></i>Dashboard
         </a>
-        <a href="{{ route('designer.about', $user->id) }}"
+        <a href="{{ route('designer.about') }}"
            class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-user mr-2"></i> About
         </a>
@@ -27,28 +27,40 @@
             <i class="fa fa-folder-open mr-2"></i>Orders
         </a>
 
+        <a href="{{ route('designer.order-history') }}"
+           class="list-group-item list-group-item-action d-flex align-items-center">
+            <i class="fa fa-tachometer mr-2"></i>Order History
+        </a>
+
+
         <a href="{{ route('designer.rejected-orders') }}"
            class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-folder-open mr-2"></i>Rejected Orders
         </a>
 
-        <a href="{{ route('designer.order-history') }}"
+
+        <a href="{{ route('designer.product-list') }}"
            class="list-group-item list-group-item-action d-flex align-items-center">
-            <i class="fa fa-tachometer mr-2"></i>Order History
+            <i class="fa fa-upload mr-2"></i>Upload Products
         </a>
-        <a href="{{ route('designer.manageprofile', $user->id) }}"
+
+        <a href="{{ route('designer.manage.profile') }}"
            class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-cog mr-2"></i> Manage Profile
         </a>
-        <a href="{{ route('designer.changePassword', $user->id) }}"
+        <a href="{{ route('designer.change.password') }}"
            class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-key mr-2"></i> Change Password
         </a>
+        <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+            @csrf
+            <button type="submit"
+                    class="list-group-item list-group-item-action d-flex align-items-center text-danger"
+                    style="background: none; border: none; text-align: left; width: 100%; cursor: pointer;">
+                <i class="fa fa-sign-out mr-2"></i> {{ trans('global.logout') }}
+            </button>
+        </form>
 
-        <a href="{{ route('logout') }}"
-           class="list-group-item list-group-item-action d-flex align-items-center text-danger">
-            <i class="fa fa-sign-out mr-2"></i> Log Out
-        </a>
     </div>
 </div>
 
