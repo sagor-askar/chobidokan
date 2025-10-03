@@ -21,7 +21,7 @@
                                     <th>#</th>
                                     <th>Project Name</th>
                                     <th>Category</th>
-                                    <th>Total Submissions</th>
+                                    <th>Amount</th>
                                     <th>Publish Date</th>
                                     <th>Expire Date</th>
                                     <th>Status</th>
@@ -34,22 +34,21 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $project->name }}</td>
                                             <td>{{ $project->category?->name ?? 'N/A' }}</td>
-                                            <td>{{ $project->project_submits_count }}</td>
+                                            <td>{{ $project?->order?->amount }} TK.</td>
                                             <td>{{ \Carbon\Carbon::parse($project->publish_date)->format('d M, Y') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($project->expire_date)->format('d M, Y') }}</td>
                                             <td>
-                                                @if($project->status == 1)
-                                                    <span class="badge bg-success">Active</span>
+                                                @if($project->status == 2)
+                                                    <span class="badge bg-success">Completed</span>
                                                 @else
-                                                    <span class="badge bg-secondary">Inactive</span>
+                                                    <span class="badge bg-secondary">Failed</span>
                                                 @endif
                                             </td>
 
                                             <td>
-                                                <a class="btn btn-xs btn-info" href="">
-                                                    {{ trans('global.edit') }}
+                                                <a class="btn btn-xs btn-info" href="{{ route('designer.order.submitted-file',$project->id) }}">
+                                                    <i class="fa fa-eye mr-2"></i>
                                                 </a>
-
                                             </td>
 
                                         </tr>

@@ -20,9 +20,9 @@ class UserController extends Controller
         return view('frontend.user.dashboard',compact('user'));
     }
 
-    public function about($id)
+    public function about()
     {
-        $user = User::findOrFail($id);
+        $user = User::findOrFail(Auth::id());
         return view('frontend.user.about', compact('user'));
     }
 
@@ -52,7 +52,7 @@ class UserController extends Controller
         $orderSubmittedFiles = OrderDetails::with(['project','user'])
             ->where('project_id', $id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10);
         return view('frontend.user.order-submitted', compact('orderSubmittedFiles'));
     }
 

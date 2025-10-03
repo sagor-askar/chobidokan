@@ -1,4 +1,4 @@
-@extends('layouts.user_panel')
+@extends('layouts.designer_panel')
 @section('panel_content')
     <style>
         .form-section {
@@ -35,20 +35,11 @@
             <div class="form-section">
 
                 @if(count($orderSubmittedFiles) > 0 )
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <div>
-                        <h4>{{$orderSubmittedFiles[0]->project?->name}} (Original Image)</h4>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4>{{$orderSubmittedFiles[0]->project?->name}} (Original Image)</h4>
+                        </div>
                     </div>
-
-                    @if($orderSubmittedFiles[0]->project?->status == 1)
-
-                    <div class="approve-reject-btns">
-                        <button class="btn btn-sm btn-success btn-lg" data-bs-toggle="modal"
-                                data-bs-target="#approveModal">Approve</button>
-{{--                        <button class="btn btn-sm btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>--}}
-                    </div>
-                    @endif
-                </div>
                 @endif
                 <div class="card-body">
                     <div class="row g-3">
@@ -135,59 +126,7 @@
                         @endif
                     </div>
                 </div>
-
-
             </div>
-
-                <!-- Approve Modal -->
-                @if(count($orderSubmittedFiles) > 0 )
-                <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <form action="{{ route('user.order.project.approve', $orderSubmittedFiles[0]->project_id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-content" style="width: 180%">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="approveModalLabel">Confirm Approval</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-success">Approve</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                @endif
-
-
-                <!-- Reject Modal -->
-
-{{--                <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">--}}
-{{--                    <div class="modal-dialog">--}}
-{{--                        <form action="{{ route('user.order.submission.reject', $orderSubmittedFiles[0]->project_id) }}" method="POST">--}}
-{{--                            @csrf--}}
-{{--                            @method('PUT')--}}
-{{--                            <div class="modal-content" style="width: 180%">--}}
-{{--                                <div class="modal-header">--}}
-{{--                                    <h5 class="modal-title" id="rejectModalLabel">Confirm Rejection </h5>--}}
-{{--                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>--}}
-{{--                                </div>--}}
-{{--                                <div class="modal-body">--}}
-{{--                                    <label for="reason" class="form-label required">Reason for rejection (<small>Mandatory</small>)</label>--}}
-{{--                                    <textarea name="comment" id="reason" class="form-control" rows="6" required></textarea>--}}
-{{--                                </div>--}}
-{{--                                <div class="modal-footer">--}}
-{{--                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>--}}
-{{--                                    <button type="submit" class="btn btn-danger">Reject</button>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </form>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-
-
 
         </div>
     </div>
