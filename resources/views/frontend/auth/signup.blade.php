@@ -145,7 +145,6 @@
                         </button>
                     </div>
 
-
                     <div class="text-center mt-3 small" style="color:#6b7280;">
                         Already have an account? <a href="{{ route('signin') }}" class="small-link">Login</a>
                     </div>

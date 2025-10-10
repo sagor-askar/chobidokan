@@ -1,5 +1,6 @@
 @extends('layouts.designer_panel')
 @section('panel_content')
+    <br>
     <h5>About Me</h5>
     <hr />
     <p>{!! $user->bio !!}</p>
