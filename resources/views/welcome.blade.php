@@ -38,39 +38,28 @@
         </div>
 
         <main class="container2">
-            <div class="item item-1" onclick="openModal('Image 1', 'https://picsum.photos/500/300')">
-                <img class="img" src="https://picsum.photos/500/300" alt="">
-                <div class="overlay">Image 1 | Tk 200</div>
-            </div>
-            <div class="item item-2" onclick="openModal('Image 2', 'https://picsum.photos/500/301')">
-                <img class="img" src="https://picsum.photos/500/301" alt="">
-                <div class="overlay">Image 2 | Tk 250</div>
-            </div>
-            <div class="item item-3" onclick="openModal('Image 3', 'https://picsum.photos/500/302')">
-                <img class="img" src="https://picsum.photos/500/302" alt="">
-                <div class="overlay">Image 3 | Tk 250</div>
-            </div>
-            <div class="item item-4" onclick="openModal('Image 4', 'https://picsum.photos/500/600')">
-                <img class="img" src="https://picsum.photos/500/600" alt="">
-                <div class="overlay">Image 4 | Tk 300</div>
-            </div>
-            <div class="item item-5" onclick="openModal('Image 5', 'https://picsum.photos/500/800')">
-                <img class="img" src="https://picsum.photos/500/800" alt="">
-                <div class="overlay">Image 5 | Tk 200</div>
-            </div>
-            <div class="item item-6" onclick="openModal('Image 6', 'https://picsum.photos/500/400')">
-                <img class="img" src="https://picsum.photos/500/400" alt="">
-                <div class="overlay">Image 6 | Tk 500</div>
-            </div>
-            <div class="item item-7" onclick="openModal('Image 7', 'https://picsum.photos/500/304')">
-                <img class="img" src="https://picsum.photos/500/304" alt="">
-                <div class="overlay">Image 7 | Tk 280</div>
-            </div>
-            <div class="item item-8" onclick="openModal('Image 8', 'https://picsum.photos/500/401')">
-                <img class="img" src="https://picsum.photos/500/401" alt="">
-                <div class="overlay">Image 8 | Tk 1000</div>
-            </div>
+            @foreach($products as $key=>$product)
+                @php
+                    $description = strip_tags($product->description);
+                    $designer = $product->user->name;
+                    $designer_id = $product->user->id;
+                @endphp
+
+                <div class="item item-{{$key}}"
+                     data-title="{{ $product->title }}"
+                     data-image="{{ asset($product->file_path) }}"
+                     data-description="{{ $description }}"
+                     data-designer="{{ $designer }}"
+                     data-designer_id="{{ $designer_id }}"
+                     onclick="openModal(this)">
+                    <img class="img" src="{{ asset($product->file_path) }}" alt="">
+                    <div class="overlay">{{ $product->title }} | Tk {{ $product->price }}</div>
+                </div>
+            @endforeach
         </main>
+        <div class="pagination-wrapper d-flex justify-content-center mt-4" >
+            {{ $products->withQueryString()->links('pagination.custom') }}
+        </div>
     </section>
 
     <!-- Popup Modal -->
@@ -79,22 +68,27 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
             <img id="modalImage" src="" alt="">
-            <p id="modalDescription">
-                This is one of the most creative photo from the July event. Specially added by the designer. This is one of the most creative photo from the July event. Specially added by the designer. 
-                
-                Designer: <a href="">Sagor Askar</a>.
-                <br>
-                <br>
 
-                <a href="" class="btn btn-sm btn-primary" style="width: 20%;">Buy Now</a>
-            </p>
+            <p id="modalDescription"></p>
+            <a href="#" id="buyButton" class="btn btn-sm btn-primary" style="width: 20%;">Buy Now</a>
         </div>
     </div>
 
     <script>
-        function openModal(title, imageUrl) {
+        function openModal(element) {
+            const title = element.dataset.title;
+            const imageUrl = element.dataset.image;
+            const description = element.dataset.description;
+            const designer = element.dataset.designer;
+            const designer_id = element.dataset.designer_id;
+            const designerRoute = "{{ url('designer-profile') }}/" + designer_id;
+
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('modalDescription').innerHTML =
+                description + "<br> <strong>Designer:</strong> <a href='" + designerRoute + "' id='designerLink'>" + designer + "</a>";
+            document.getElementById('buyButton').href = "{{ url('buy-product') }}/" + element.dataset.productId;
+
             document.getElementById('imageModal').style.display = 'flex';
         }
 
@@ -119,13 +113,10 @@
         </div>
 
         <div class="container">
-            <button type="button" class="btn btn-outline-secondary popularSearch">Business</button>
-            <button type="button" class="btn btn-outline-secondary popularSearch">Wedding</button>
-            <button type="button" class="btn btn-outline-secondary popularSearch">Education</button>
-            <button type="button" class="btn btn-outline-secondary popularSearch">Festivals</button>
-            <button type="button" class="btn btn-outline-secondary popularSearch">Farmer</button>
-            <button type="button" class="btn btn-outline-secondary popularSearch">Celebration</button>
-            <button type="button" class="btn btn-outline-secondary popularSearch">Office</button>
+            @foreach($categories as $key=>$category)
+               <button type="button" class="btn btn-outline-secondary popularSearch">{{$category->name}}</button>
+            @endforeach
+
         </div>
     </section>
 

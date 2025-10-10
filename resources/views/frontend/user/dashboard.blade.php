@@ -1,8 +1,14 @@
-@extends('layouts.designer_panel')
+@extends('layouts.user_panel')
 @section('panel_content')
 
     <section class="pt-4 pb-5">
         <div class="container">
+
+            @if(session('success'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="font-weight-bold">Dashboard</h4>

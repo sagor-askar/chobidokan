@@ -57,17 +57,44 @@ class LoginController extends Controller
     }
 
 
+//    public function customLogin(Request $request)
+//    {
+//        $request->validate([
+//            'email' => 'required|email',
+//            'password' => 'required|min:6',
+//        ]);
+//        // Attempt to authenticate the user
+//        $credentials = $request->only('email', 'password');
+//        if (Auth::attempt($credentials)) {
+//           return redirect()->intended('/')->with('success', 'Successfully Logged In');
+//        }
+//        return back()->with('error', 'Invalid email or password.');
+//    }
+
+
     public function customLogin(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
-        // Attempt to authenticate the user
+
         $credentials = $request->only('email', 'password');
+
         if (Auth::attempt($credentials)) {
-           return redirect()->intended('/')->with('success', 'Successfully Logged In');
+            $user = Auth::user();
+
+            if ($user->role_id == 2) {
+                return redirect()->route('designer.dashboard')
+                    ->with('success', 'Successfully Logged In!');
+            } elseif ($user->role_id == 3) {
+                return redirect()->route('user.dashboard')
+                    ->with('success', 'Successfully Logged In!');
+            }
+            return redirect()->intended('/')
+                ->with('success', 'Successfully Logged In');
         }
+
         return back()->with('error', 'Invalid email or password.');
     }
 }

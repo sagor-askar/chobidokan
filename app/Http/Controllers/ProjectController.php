@@ -16,37 +16,6 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-//    public function projectStore(Request $request)
-//    {
-//        $subscription = Subscription::find($request->subscription_id);
-//        $data = $request->all();
-//        $data['user_id'] =  Auth::user()->id;
-//        $data['status'] =  1;
-//        $data['publish_date'] =Carbon::now()->format('Y-m-d');
-//        $data['expire_date'] = Carbon::now()->addDays($subscription->days)->format('Y-m-d');
-//
-//        $project = Project::create($data);
-//
-//        if ($request->hasFile('project_file')) {
-//            $file = $request->file('project_file');
-//            $fileName = time() . rand(1000, 9999) . '.' . $file->getClientOriginalExtension();
-//            $filePath = 'uploads/project/' . $fileName;
-//            $file->move(public_path('uploads/project'), $fileName);
-//            $project->project_file = $filePath;
-//        }
-//        $project->save();
-//
-//        Order::create([
-//            'project_id' => $project->id,
-//            'user_id' => Auth::user()->id,
-//            'subscription_id' => $subscription->id,
-//            'amount' => $subscription->price,
-//        ]);
-//
-//        return redirect()->route('welcome')->with('success', 'Successfully Post Submitted!');
-//    }
-
-
     public function customizationDetail($id)
     {
         $project = Project::with([
@@ -54,7 +23,9 @@ class ProjectController extends Controller
             'order',
             'subscription',
             'projectSubmits',
-            'uploads'
+            'uploads' => function($q) {
+                $q->latest()->take(6);
+            }
         ])
             ->withCount([
                 'projectSubmits as total_designer' => function ($query) {
@@ -64,8 +35,29 @@ class ProjectController extends Controller
             ])
             ->where('id', $id)
             ->first();
+
         return view('frontend.menu.customizeDetails',compact('project'));
     }
+
+    public function submittedFileViewAll($id)
+    {
+        $allSubmittedFiles = Upload::with([
+            'projectSubmits',
+            'project'])->where('project_id', $id)->paginate(8);
+        return view('frontend.menu.all-submitted-file',compact('allSubmittedFiles'));
+    }
+
+    public function submittedFileConfirm($uploadId)
+    {
+
+          $submittedFile = Upload::find($uploadId);
+           $submittedFile->status = 1;
+           $submittedFile->save();
+        return redirect()->route('dashboard')->with('success', 'Your Order has been confirmed !');
+
+    }
+
+
 
     // customize job submission
     public function submission($id)
