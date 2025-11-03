@@ -148,6 +148,47 @@
                 </ul>
             </li>
 
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa-fw fas fa-users">
+
+                    </i>
+                    <span>Project Management</span>
+                    <span class="pull-right-container"><i class="fa fa-fw fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                        <li class="{{ request()->is('admin/project') || request()->is('admin/project/*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.project.list') }}">
+                                <i class="fa-fw fas fa-unlock-alt">
+
+                                </i>
+                                <span>Project List</span>
+                            </a>
+                        </li>
+                </ul>
+            </li>
+
+
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-upload mr-2"></i>
+                    <span>Upload Product Management</span>
+                    <span class="pull-right-container"><i class="fa fa-fw fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="{{ request()->is('admin/products') || request()->is('admin/products/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.products.list') }}">
+                            <i class="fa-fw fas fa-unlock-alt">
+
+                            </i>
+                            <span>Product List</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             <li class="{{ request()->is('admin/settings') || request()->is('admin/settings/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.settings') }}">
                     <i class='fa fa-cog'></i>

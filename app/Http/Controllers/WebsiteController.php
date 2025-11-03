@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\Project;
 use App\Models\ProjectSubmit;
 use App\Models\Subscription;
@@ -26,7 +27,10 @@ class WebsiteController extends Controller
     public function index()
     {
         $settings = Setting::first();
-        return view('welcome', compact('settings'));
+        $categories = Category::where('status',1)->get();
+        $products = Product::where('status', 1)->paginate(10);
+
+        return view('welcome', compact('settings','products','categories'));
     }
 
     // custom request
@@ -99,20 +103,14 @@ class WebsiteController extends Controller
         return view('frontend.menu.submissionGuideline');
     }
 
-    // user's profile
-    public function sellerDashboard()
-    {
-        $user = User::find(Auth::id());
-        return view('frontend.profiles.dashboard',compact('user'));
-    }
 
     // user profile - public view
     public function designerProfile($id)
     {
         $user = User::findOrFail($id);
 
-        $uploads = Upload::with(['projectSubmit', 'project'])
-            ->whereHas('projectSubmit', function ($q) use ($id) {
+        $uploads = Upload::with(['projectSubmits', 'project'])
+            ->whereHas('projectSubmits', function ($q) use ($id) {
                 $q->where('user_id', $id);
             })
             ->paginate(6);
@@ -135,12 +133,6 @@ class WebsiteController extends Controller
     public function signup()
     {
         return view('frontend.auth.signup');
-    }
-
-    // uploads
-    public function uploadImages()
-    {
-        return view('frontend.menu.fileUpload');
     }
 
     // about us

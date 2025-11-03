@@ -65,4 +65,14 @@ class Project extends Model
         return $this->hasMany(Upload::class, 'project_id');
     }
 
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetails::class, 'project_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'project_id');
+    }
+
 }
