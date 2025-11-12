@@ -4,10 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\Project;
 use App\Models\ProjectSubmit;
+use App\Models\Subscription;
+use App\Models\Upload;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -39,16 +46,15 @@ class ProjectController extends Controller
     public function designerSubmitDetails($projectId, $designerId)
     {
 
-        $designerSubmitfiles = \App\Models\Upload::with(['project','projectSubmit'])->whereHas('projectSubmit', function ($query) use ($projectId, $designerId) {
+        $designerSubmitfiles = Upload::with(['project','projectSubmit'])->whereHas('projectSubmit', function ($query) use ($projectId, $designerId) {
                                 $query->where('project_id', $projectId)
                                       ->where('user_id', $designerId);
                                        })
                                 ->get();
-
-
         return view('admin.project.submit-design-show', compact('designerSubmitfiles'));
 
     }
+
 
     public function projectDelete($id)
     {
@@ -59,4 +65,5 @@ class ProjectController extends Controller
         $project->delete();
         return redirect()->route('admin.project.list')->with('success', 'Project deleted successfully.');
     }
+
 }

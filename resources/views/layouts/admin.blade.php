@@ -68,6 +68,13 @@
                     </div>
                 @endif
 
+                <div style="margin-top: 15px;">
+                    <a  href="{{ url("/") }}" target="_blank" >
+                        <i class="fa fa-globe" aria-hidden="true"></i>
+                        <span style="color: #FFFFFF">Website</span>
+                    </a>
+                </div>
+
 
             </nav>
         </header>

@@ -158,7 +158,7 @@
 
                                 <!-- Middle Content -->
                                 <div class="col-md-7 col-12">
-                                    <h5><strong>{!! $project->project_description !!}</strong></h5>
+                                    <h5><strong>{{ $project->name }}</strong></h5>
                                     <p>{!! $project->logo_description !!}</p>
                                     <div class="d-flex flex-wrap">
                                         <span class="badge badge-custom">{{$project->category?->name}}</span>

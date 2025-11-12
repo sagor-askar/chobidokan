@@ -52,8 +52,8 @@
 
                                                 </td>
                                             @endif
-                                            <td>{{ \Carbon\Carbon::parse($orderHistory->publish_date)->format('d M, Y') }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($orderHistory->expire_date)->format('d M, Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($orderHistory->publish_date)->format('d-m-Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($orderHistory->expire_date)->format('d-m-Y') }}</td>
 
                                             @if($orderHistory->status == 2)
                                                 <td>

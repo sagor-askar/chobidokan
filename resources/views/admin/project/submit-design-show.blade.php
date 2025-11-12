@@ -109,6 +109,7 @@
                                                  data-target="#imageModal"
                                                  onclick="$('#modalImage').attr('src','{{ asset($designerSubmitfile->file_path) }}')">
 
+
                                             <!-- Eye Icon -->
                                             <div class="card-eye"
                                                  data-toggle="modal"
@@ -123,6 +124,11 @@
                                         @endif
 
                                         <div class="card-body text-center">
+                                            @if($designerSubmitfile->status == 1)
+                                                <div class="text-start">
+                                                    <span class="badge badge-success" style="background-color: green">Selected</span>
+                                                </div>
+                                            @endif
                                             <h6 class="card-title mb-1">
                                                 {{ $designerSubmitfile->projectSubmit?->user?->name }}
                                             </h6>

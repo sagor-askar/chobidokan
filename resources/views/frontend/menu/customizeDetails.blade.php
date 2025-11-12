@@ -40,10 +40,17 @@
 
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">{{$project?->name}}</h5>
-                        <hr>
+                        <h5 class="card-title"><strong>Title </strong> : {{$project?->name}}</h5>
+                        <h6 class="card-title"> <strong>Category</strong> : {{$project?->category->name}}</h6>
                         <p class="card-text">{!! $project->project_description !!}</p>
-                        <p class="card-text"><small class="text-muted">Posted On: {{\Carbon\Carbon::parse($project->publish_date)->format('d-m-Y')}}</small></p>
+
+                        <h6 class="card-title"> <strong>Attachment</strong> :  <a target="_blank" href="{{ asset($project->project_file) }}" class=" btn btn-sm btn-success text-center">
+                                <i class="bi bi-file-earmark-fill"></i>Download</a></h6>
+                        <p class="card-text">
+                            <small class="text-muted"> <strong>Posted On:</strong> : {{\Carbon\Carbon::parse($project->publish_date)->format('d-M-Y')}}</small>
+                            <br>
+                            <small class="text-muted"> <strong>Expire Date:</strong> : {{\Carbon\Carbon::parse($project->expireDate)->format('d-M-Y')}}</small>
+                        </p>
                     </div>
                 </div>
                 @php
@@ -73,8 +80,11 @@
                                 <span>Time:  <strong>{{$daysLeft}}</strong>  days left</span>
                             @endif
 
-                            <span>Total Designers:  <b>{{$project->total_designer ?? '0'}}</b></span>
-                            <span>Total Designs: <b>{{$project->total_submitted_design ?? '0'}}</b></span>
+{{--                            <span>Total Designers:  <b>{{$project->total_designer ?? '0'}}</b></span>--}}
+{{--                            <span>Total Designs: <b>{{$project->total_submitted_design ?? '0'}}</b></span>--}}
+
+                            <span>Total Designers:  <b>{{$project->subscription->designer ?? '0'}}</b></span>
+                            <span>Total Designs: <b>{{$project->subscription->design ?? '0'}}</b></span>
                         </div>
                     </div>
                 </div>
