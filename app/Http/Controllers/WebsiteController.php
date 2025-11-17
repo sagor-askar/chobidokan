@@ -274,5 +274,11 @@ class WebsiteController extends Controller
         return view('viewAll');
     }
 
+    // view image details page
+    public function viewDetails()
+    {
+        return view('viewDetails');
+    }
+
 
 }
