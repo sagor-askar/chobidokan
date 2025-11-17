@@ -91,11 +91,78 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <script>
             function openModal(title, imageUrl) {
                 document.getElementById('modalTitle').innerText = title;
                 document.getElementById('modalImage').src = imageUrl;
                 document.getElementById('imageModal').style.display = 'flex';
+=======
+        <main class="container2">
+            @foreach($products as $key=>$product)
+                @php
+                    $description = strip_tags($product->description);
+                    $designer = $product->user->name;
+                    $designer_id = $product->user->id;
+                @endphp
+
+                <div class="item item-{{$key}}"
+                     data-title="{{ $product->title }}"
+                     data-image="{{ asset($product->file_path) }}"
+                     data-description="{{ $description }}"
+                     data-designer="{{ $designer }}"
+                     data-designer_id="{{ $designer_id }}"
+                     onclick="openModal(this)">
+                    <img class="img" src="{{ asset($product->file_path) }}" alt="">
+                    <div class="overlay">{{ $product->title }} | Tk {{ $product->price }}</div>
+                </div>
+            @endforeach
+        </main>
+        <div class="pagination-wrapper d-flex justify-content-center mt-4" >
+            {{ $products->withQueryString()->links('pagination.custom') }}
+        </div>
+    </section>
+
+    <!-- Popup Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <img id="modalImage" src="" alt="">
+
+            <p id="modalDescription"></p>
+            <a href="#" id="buyButton" class="btn btn-sm btn-primary" style="width: 20%;">Buy Now</a>
+        </div>
+    </div>
+
+    <script>
+        function openModal(element) {
+            const title = element.dataset.title;
+            const imageUrl = element.dataset.image;
+            const description = element.dataset.description;
+            const designer = element.dataset.designer;
+            const designer_id = element.dataset.designer_id;
+            const designerRoute = "{{ url('designer-profile') }}/" + designer_id;
+
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('modalDescription').innerHTML =
+                description + "<br> <strong>Designer:</strong> <a href='" + designerRoute + "' id='designerLink'>" + designer + "</a>";
+            document.getElementById('buyButton').href = "{{ url('buy-product') }}/" + element.dataset.productId;
+
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside the content
+        window.onclick = function(event) {
+            let modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                closeModal();
+>>>>>>> c029552daad3a66f706df210ef0114bf44b20955
             }
 
             function closeModal() {
@@ -111,10 +178,39 @@
             };
         </script>
 
+<<<<<<< HEAD
         <!-- popular search -->
         <section class="section">
             <div class="container section-title" data-aos="fade-up">
                 <p>Popular Search<br></p>
+=======
+        <div class="container">
+            @foreach($categories as $key=>$category)
+               <button type="button" class="btn btn-outline-secondary popularSearch">{{$category->name}}</button>
+            @endforeach
+
+        </div>
+    </section>
+
+    <!-- become a seller section -->
+    @if (Auth::check() && Auth::user()->role_id == 2)
+    @else
+    <section class="section">
+        <div class="container">
+            <h3>Sell Your Photograph on ChobiDokan</h3>
+            <p>Become a contributor and make money selling your images.</p>
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <button type="button" class="btn btn-link text-decoration-none sellBtn" style="font-size: 1.3rem;">
+                    <i class="fa fa-plus-square-o text-danger"></i> Create Your Account
+                </button>
+                <button type="button" class="btn btn-link text-decoration-none sellBtn" style="font-size: 1.3rem;">
+                    <i class="fa fa-upload text-danger"></i> Upload Your Photograph
+                </button>
+                <button type="button" class="btn btn-link text-decoration-none sellBtn" style="font-size: 1.3rem;">
+                    <i class="fa fa-usd text-danger"></i> Make Money Per Every Sell
+                </button>
+>>>>>>> c029552daad3a66f706df210ef0114bf44b20955
             </div>
 
             <div class="container">

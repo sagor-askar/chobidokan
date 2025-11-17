@@ -7,7 +7,9 @@ use App\Http\Controllers\Admin\SettingController;
 // frontend pages
 use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Artisan;
 
@@ -45,6 +47,8 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('seller-login', 'sellerLog')->name('seller-login');
     // designer profile
     Route::get('designer-profile/{id}', 'designerProfile')->name('designer-profile');
+    // image details page - static
+    Route::get('view-all', 'viewAll')->name('viewAll');
 });
 
 //user & seller Registration
@@ -68,6 +72,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::resource('users', 'UsersController');
+    Route::get('users/change-status/{id}', 'UsersController@changeStatus')->name('users.changeStatus');
 
     // Categories
     Route::delete('categories/destroy', 'CategoryController@massDestroy')->name('categories.massDestroy');
@@ -117,25 +122,68 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('info', 'SettingController@infoSetup')->name('info.setup');
     Route::post('info/store', 'SettingController@infoSetupStore')->name('info.setup.store');
 
+    // Project
+    Route::get('project-list', 'ProjectController@projectList')->name('project.list');
+    Route::get('project-details/{id}', 'ProjectController@projectDetails')->name('project.details');
+    Route::get('project-details/{project_id}/{designer_id}', 'ProjectController@designerSubmitDetails')->name('project.design-submit-show');
+    Route::delete('project/delete/{id}', 'ProjectController@projectDelete')->name('project.delete');
+
+   // Upload Product
+    Route::get('product-list', 'ProductController@productList')->name('products.list');
+
 });
 
 Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
-    Route::get('/seller-dashboard', [WebsiteController::class, 'sellerDashboard'])->name('seller-dashboard');
     Route::get('customize', [WebsiteController::class,'customization'])->name('customize');
     Route::get('closed-jobs',  [WebsiteController::class, 'closedJobs'])->name('closed-jobs');
     Route::get('/custom-request', [WebsiteController::class, 'customRequest'])->name('custom-request');
     Route::get('/custom-job/search', [WebsiteController::class, 'CustomJobSearch'])->name('custom-job.search');
     Route::get('customize-details/{id}', [ProjectController::class, 'customizationDetail'])->name('customize-details');
+    Route::get('project/submitted-file-view-all/{id}', [ProjectController::class, 'submittedFileViewAll'])->name('submitted-file-view-all');
+    Route::get('project/submitted-file-confirm/{id}', [ProjectController::class, 'submittedFileConfirm'])->name('project.submitted-file.confirm');
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
     Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
-    Route::get('/project-upload',        [WebsiteController::class, 'uploadImages'])->name('project-upload');
 
+    Route::group(['prefix' => 'designer', 'as' => 'designer.'], function () {
+        Route::get('/dashboard', [DesignerController::class, 'dashboard'])->name('dashboard');
+        Route::get('/about', [DesignerController::class, 'about'])->name('about');
+        Route::get('/orders', [DesignerController::class, 'orders'])->name('orders');
+        Route::get('/order-delivery/{id}', [DesignerController::class, 'orderDelivery'])->name('order-delivery');
+        Route::post('/order-submit/{id}', [DesignerController::class, 'orderSubmit'])->name('order.submit');
 
-    Route::prefix('designer')->group(function() {
-        Route::get('/about/{id}', [DesignerController::class, 'about'])->name('designer.about');
-        Route::get('/submitted-works/{id}', [DesignerController::class, 'submittedWorks'])->name('designer.submittedWorks');
-        Route::get('/manage-profile/{id}', [DesignerController::class, 'manageProfile'])->name('designer.manageprofile');
-        Route::get('/change-password/{id}', [DesignerController::class, 'changePassword'])->name('designer.changePassword');
+        Route::get('/rejected-orders', [DesignerController::class, 'rejectedOrders'])->name('rejected-orders');
+        Route::get('/order/sample-upload-file/{id}', [DesignerController::class, 'rejectedOrderFile'])->name('order.sample.upload-file');
+
+        Route::get('/order-history', [DesignerController::class, 'orderHistory'])->name('order-history');
+        Route::get('/order/submitted-file/{id}', [DesignerController::class, 'submittedOrderFile'])->name('order.submitted-file');
+        Route::get('/submitted-works/{id}', [DesignerController::class, 'submittedWorks'])->name('submittedWorks');
+        Route::get('/manage-profile', [DesignerController::class, 'manageProfile'])->name('manage.profile');
+        Route::put('/profile-update', [DesignerController::class, 'updateProfile'])->name('profile.update');
+        Route::get('/change-password', [DesignerController::class, 'changePassword'])->name('change.password');
+        Route::put('/update-password', [DesignerController::class, 'updatePassword'])->name('updatePassword');
+
+        Route::get('/product-upload',  [ProductController::class, 'uploadProduct'])->name('upload');
+        Route::post('/product-store', [ProductController::class, 'storeProduct'])->name('products.store');
+
+        Route::get('/product-list',  [DesignerController::class, 'productList'])->name('product-list');
+        Route::get('/product-edit/{id}',  [DesignerController::class, 'productEdit'])->name('product.edit');
+        Route::put('/product-update/{id}',  [DesignerController::class, 'productUpdate'])->name('products.update');
+
+    });
+
+    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+        Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+        Route::get('/about', [UserController::class, 'about'])->name('about');
+        Route::get('/orders', [UserController::class, 'orders'])->name('orders');
+        Route::get('/order/submitted-file/{id}', [UserController::class, 'submittedOrderFile'])->name('order.submitted-file');
+        Route::put('/order/project-approve/{id}', [UserController::class, 'projectApprove'])->name('order.project.approve');
+       // Route::put('/order/submission-reject/{id}', [UserController::class, 'submissionReject'])->name('order.submission.reject');
+        Route::get('/order-history', [UserController::class, 'orderHistory'])->name('order-history');
+        Route::get('/submitted-works/{id}', [UserController::class, 'submittedWorks'])->name('submittedWorks');
+        Route::get('/manage-profile', [UserController::class, 'manageProfile'])->name('manage.profile');
+        Route::put('/profile-update', [UserController::class, 'updateProfile'])->name('profile.update');
+        Route::get('/change-password', [UserController::class, 'changePassword'])->name('change.password');
+        Route::put('/update-password', [UserController::class, 'updatePassword'])->name('updatePassword');
     });
     Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
 

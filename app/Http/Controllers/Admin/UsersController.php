@@ -83,4 +83,13 @@ class UsersController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+
+
+    public function changeStatus($id)
+    {
+        $user = User::find($id);
+        $user->is_banned = !$user->is_banned;
+        $user->save();
+        return redirect()->route('admin.users.index')->with('success', 'User Status Changed successfully .');
+    }
 }
