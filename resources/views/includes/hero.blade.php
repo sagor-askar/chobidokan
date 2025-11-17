@@ -7,8 +7,7 @@
             <select class="custom-form-control" style="max-width: 10rem;">
                 <option value="all">All</option>
                 <option value="photos">Photos</option>
-                <option value="illustrations">Illustrations</option>
-                <option value="vectors">Vectors</option>
+                <option value="vectors">Videos</option>
             </select>
 
             <!-- Search Input -->
