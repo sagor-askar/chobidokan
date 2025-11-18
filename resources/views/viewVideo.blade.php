@@ -54,14 +54,16 @@
     <!-- Hero Section -->
     @include('includes.hero')
 
-    <div class="container py-3">
+    <div class="container py-5">
 
         <!-- Blog Container -->
         <div class=" border-0">
 
             <!-- Feature Image -->
-            <div class="w-100 feature-img">
-                <img src="{{ asset('frontend_assets/img/portfolio/books-2.jpg') }}" class="img-fluid" alt="blog image">
+            <div class="mt-5 w-100 feature-img">
+                <video class="h-50 w-100" controls>
+                    <source src="{{ asset('images/demovideo.mp4') }}" type="video/mp4">
+                </video>
 
                 <!-- Always visible bottom overlay -->
                 <div class="feature-overlay">
@@ -71,7 +73,7 @@
                         <i class="fa fa-share-alt"></i>
                     </div>
 
-                    <span>Featured Image</span>
+                    <span>Featured Video</span>
                 </div>
             </div>
 
@@ -114,10 +116,10 @@
                     {{-- if the image is available --}}
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
                     <label class="form-check-label" for="flexCheckChecked">
-                        Image Available.
+                        Video Available.
                     </label>
                     <br>
-                    <small>This image is copyrighted by ChobiDokan. To use it, purchase it now.</small>
+                    <small>This video is copyrighted by ChobiDokan. To use it, purchase it now.</small>
                 </div>
 
                 <!-- Tags -->
@@ -142,15 +144,16 @@
     <section class="mb-2">
         <div class="container">
 
-            <h3 class="mb-4 text-center font-weight-bold">Similar Images</h3>
+            <h3 class="mb-4 text-center font-weight-bold">Similar Videos</h3>
 
             <div class="row">
 
                 <!-- Image 1 -->
                 <div class="col-md-4 mb-4">
                     <div class="card image-card">
-                        <img src="{{ asset('frontend_assets/img/portfolio/books-2.jpg') }}" class="card-img-top"
-                            alt="Image">
+                        <video class="card-img-top" muted>
+                            <source src="{{ asset('images/demo-video.mp4') }}" type="video/mp4">
+                        </video>
 
                         <!-- Overlay -->
                         <div class="image-overlay">
@@ -159,7 +162,7 @@
                                 <i class="fa fa-download"></i>
                                 <i class="fa fa-share-alt"></i>
                             </div>
-                            <span>Text</span>
+                            <span>Video Title</span>
                         </div>
                     </div>
                 </div>
@@ -167,8 +170,9 @@
                 <!-- Image 2 -->
                 <div class="col-md-4 mb-4">
                     <div class="card image-card">
-                        <img src="{{ asset('frontend_assets/img/portfolio/books-2.jpg') }}" class="card-img-top"
-                            alt="Image">
+                        <video class="card-img-top" muted>
+                            <source src="{{ asset('images/demo-video.mp4') }}" type="video/mp4">
+                        </video>
 
                         <!-- Overlay -->
                         <div class="image-overlay">
@@ -177,16 +181,18 @@
                                 <i class="fa fa-download"></i>
                                 <i class="fa fa-share-alt"></i>
                             </div>
-                            <span>Text</span>
+                            <span>Video Title</span>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Image 3 -->
                 <div class="col-md-4 mb-4">
                     <div class="card image-card">
-                        <img src="{{ asset('frontend_assets/img/portfolio/books-2.jpg') }}" class="card-img-top"
-                            alt="Image">
+                        <video class="card-img-top" muted>
+                            <source src="{{ asset('images/demo-video.mp4') }}" type="video/mp4">
+                        </video>
 
                         <!-- Overlay -->
                         <div class="image-overlay">
@@ -195,9 +201,10 @@
                                 <i class="fa fa-download"></i>
                                 <i class="fa fa-share-alt"></i>
                             </div>
-                            <span>Text</span>
+                            <span>Video Title</span>
                         </div>
                     </div>
+
                 </div>
 
             </div>
