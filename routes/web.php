@@ -48,6 +48,8 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('seller-login', 'sellerLog')->name('seller-login');
     // designer profile
     Route::get('designer-profile/{id}', 'designerProfile')->name('designer-profile');
+    // image details page - static
+    Route::get('view-all', 'viewAll')->name('viewAll');
 });
 
 //user & seller Registration
