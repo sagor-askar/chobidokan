@@ -136,6 +136,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('project/delete/{id}', 'ProjectController@projectDelete')->name('project.delete');
    // Upload Product
     Route::get('product-list', 'ProductController@productList')->name('products.list');
+    Route::get('product-change-status/{id}', 'ProductController@productChangeStatus')->name('product.statusChange');
+    Route::get('product-show/{id}', 'ProductController@productShow')->name('product.show');
+    Route::delete('product-delete/{id}', 'ProductController@productDelete')->name('product.delete');
 
 // designer payment
     Route::post('project-designer-payment', 'DesignerPaymentController@designerPayment')->name('project.designer.payment');
@@ -177,6 +180,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::get('/product-list',  [DesignerController::class, 'productList'])->name('product-list');
         Route::get('/product-edit/{id}',  [DesignerController::class, 'productEdit'])->name('product.edit');
         Route::put('/product-update/{id}',  [DesignerController::class, 'productUpdate'])->name('products.update');
+        Route::delete('/product-delete/{id}',  [DesignerController::class, 'productDelete'])->name('product.delete');
 
     });
 

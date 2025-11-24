@@ -25,7 +25,14 @@ class ProductController extends Controller
             'file'        => 'required|file',
             'type'        => 'required|in:1,2', // 1=image, 2=video
             'description' => 'nullable|string',
+            'tags' => 'nullable',
         ]);
+
+        if ($request->tags) {
+            $tags =  json_encode($request->tags);
+        }else{
+            $tags = NULL;
+        }
 
         $file = $request->file('file');
         $ext = strtolower($file->getClientOriginalExtension());
@@ -50,7 +57,7 @@ class ProductController extends Controller
 //            return back()->withErrors(['file' => 'Video must be between 1MB and 250MB.'])->withInput();
 //        }
 
-        $filename = time().'_'.uniqid().'.'.$ext;
+        $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . time() . '.' . $ext;
         $path = 'uploads/products/'.$filename;
         $file->move(public_path('uploads/products'), $filename);
 
@@ -60,6 +67,7 @@ class ProductController extends Controller
             'user_id'     => Auth::id(),
             'price'       => $request->price,
             'type'        => $request->type,
+            'tags'        => $tags,
             'description' => $request->description,
             'file_path'   => $path,
             'file_name'   => $filename,

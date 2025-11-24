@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Bundle JS (Popper included) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <div class="content">
         @if(session('success'))
             <div class="alert alert-success" role="alert">
@@ -33,7 +37,7 @@
                                         Designer
                                     </th>
                                     <th>
-                                        Price
+                                        Price(Tk.)
                                     </th>
 
                                     <th>
@@ -45,7 +49,11 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($products as $key => $product)
+                                @foreach($products as $index => $product)
+                                    @php
+                                        $extension = strtolower(pathinfo($product->file_path, PATHINFO_EXTENSION));
+                                        $isVideo = in_array($extension, ['mp4', 'webm', 'ogg', 'mov']);
+                                    @endphp
                                     <tr data-entry-id="{{ $product->id }}">
                                         <td>
 
@@ -54,11 +62,52 @@
                                             {{ $product->title ?? '' }}
                                         </td>
 
-                                        @if($product->file_path)
-                                            <td><img src="{{ asset($product->file_path) }}" alt="Image" width="40"></td>
-                                        @else
-                                            <td><span class="badge badge-danger">No Image !</span></td>
-                                        @endif
+                                        <td style="position: relative; width: 90px; height: 60px;">
+                                            @if($product->file_path)
+                                                {{-- Thumbnail --}}
+                                                @if($isVideo)
+                                                    <video width="100%" height="100%" style="object-fit: cover; border-radius: 3px;" muted>
+                                                        <source src="{{ asset($product->file_path) }}" type="video/{{ $extension }}">
+                                                    </video>
+                                                    @php $iconClass = 'bi-play-btn-fill'; @endphp
+                                                @else
+                                                    <img src="{{ asset($product->file_path) }}" alt="Image"
+                                                         style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 3px;">
+                                                    @php $iconClass = 'bi-arrows-fullscreen'; @endphp
+                                                @endif
+
+                                                {{-- Overlay Icon --}}
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#mediaModal{{ $index }}"
+                                                   style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                          color: #fff; background: rgba(0,0,0,0.5); border-radius: 50%; padding: 4px;">
+                                                    <i class="bi {{ $iconClass }}" style="font-size: 16px;"></i>
+                                                </a>
+
+                                                {{-- Modal --}}
+                                                <div class="modal fade" id="mediaModal{{ $index }}" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">{{ $product->title }}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body text-center">
+                                                                @if($isVideo)
+                                                                    <video controls autoplay style="width: 100%">
+                                                                        <source src="{{ asset($product->file_path) }}" type="video/{{ $extension }}">
+                                                                    </video>
+                                                                @else
+                                                                    <img src="{{ asset($product->file_path) }}" alt="Image" class="img-fluid">
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            @else
+                                                <span class="badge bg-danger">No File!</span>
+                                            @endif
+                                        </td>
 
                                         <td>
                                             {{ $product->category?->name ?? '' }}
@@ -84,15 +133,29 @@
                                         @endif
 
                                         <td>
-                                            <a class="btn btn-xs btn-info" href="{{ route('admin.project.details', $product->id) }}">
-                                                <i class="fa fa-list"></i> Details
-                                            </a>
 
-                                            <form action="{{ route('admin.project.delete', $product->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                            @if($product->status == 1)
+                                                <a class="btn btn-xs btn-danger" href="{{ route('admin.product.statusChange', $product->id) }}"><i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                                    Inactive
+                                                </a>
+                                            @else
+                                                <a class="btn btn-xs btn-success" href="{{ route('admin.product.statusChange', $product->id) }}"><i class="fa fa-check-circle-o"></i>
+                                                    Active
+                                                </a>
+                                            @endif
+
+                                                <a class="btn btn-xs btn-primary" href="{{ route('admin.product.show', $product->id) }}">
+                                                    <i class="fa fa-eye"></i> View
+                                                </a>
+
+                                            <form action="{{ route('admin.product.delete', $product->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                                <input type="submit" class="btn btn-xs btn-danger" value="{{ __('global.delete') }}">
                                             </form>
+                                                <a class="btn btn-xs btn-info" href="{{ route('admin.project.details', $product->id) }}">
+                                                    <i class="fa fa-list"></i> Details
+                                                </a>
 
                                         </td>
 
@@ -114,47 +177,5 @@
         </div>
     </div>
 @endsection
-@section('scripts')
-    @parent
-    <script>
-        $(document).ready(function() {
 
-            // Optional: Mass delete button
-            let dtButtons = $.extend(true, [], defaultButtons);
-
-            @can('category_delete')
-            let deleteButtonTrans = '{{ trans("global.datatables.delete") }}';
-            let deleteButton = {
-                text: deleteButtonTrans,
-                url: "{{ route('admin.categories.massDestroy') }}",
-                className: 'btn-danger',
-                action: function(e, dt, node, config) {
-                    var ids = $.map(dt.rows({ selected: true }).nodes(), function(entry) {
-                        return $(entry).data('entry-id');
-                    });
-
-                    if (ids.length === 0) {
-                        alert('{{ trans("global.datatables.zero_selected") }}');
-                        return;
-                    }
-
-                    if (confirm('{{ trans("global.areYouSure") }}')) {
-                        $.ajax({
-                            headers: { 'x-csrf-token': _token },
-                            method: 'POST',
-                            url: config.url,
-                            data: { ids: ids, _method: 'DELETE' }
-                        }).done(function() { location.reload(); });
-                    }
-                }
-            }
-            dtButtons.push(deleteButton);
-            @endcan
-
-            // Initialize DataTable for this page
-            initDataTable('#products-dataTable', dtButtons);
-
-        });
-    </script>
-@endsection
 
