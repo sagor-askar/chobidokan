@@ -89,7 +89,6 @@
                                             @endif
                                         </div>
                                         <a href="{{ asset($orderSubmittedFile->file_path) }}"
-                                           download
                                            class="btn btn-success text-center">Download</a>
                                     </div>
                                 </div>

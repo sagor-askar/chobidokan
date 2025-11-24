@@ -21,7 +21,7 @@
                                         <th>#</th>
                                         <th>Product Name</th>
                                         <th>Category</th>
-                                        <th>Image</th>
+                                        <th>Image/Video</th>
                                         <th>Price</th>
                                         <th> Status</th>
                                         <th>Action</th>
@@ -29,41 +29,63 @@
                                     </thead>
                                     <tbody>
                                     @foreach($products as $index => $product)
+                                        @php
+                                            $extension = strtolower(pathinfo($product->file_path, PATHINFO_EXTENSION));
+                                            $isVideo = in_array($extension, ['mp4', 'webm', 'ogg', 'mov']);
+                                        @endphp
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $product->title }}</td>
                                             <td>{{ $product->category?->name ?? 'N/A' }}</td>
+
                                             <td style="position: relative; width: 90px; height: 60px;">
                                                 @if($product->file_path)
-                                                    <img src="{{ asset($product->file_path) }}" alt="Image"
-                                                         style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 3px;">
+                                                    @if($isVideo)
+                                                        <video width="100%" height="100%" style="object-fit: cover; border-radius: 3px;" muted>
+                                                            <source src="{{ asset($product->file_path) }}" type="video/{{ $extension }}">
+                                                        </video>
 
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal{{ $index }}"
-                                                       style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                  color: #fff; background: rgba(0,0,0,0.5); border-radius: 50%; padding: 4px;">
-                                                        <i class="bi bi-arrows-fullscreen" style="font-size: 14px;"></i>
-                                                    </a>
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#mediaModal{{ $index }}"
+                                                           style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                          color: #fff; background: rgba(0,0,0,0.5); border-radius: 50%; padding: 4px;">
+                                                            <i class="bi bi-play-btn-fill" style="font-size: 16px;"></i>
+                                                        </a>
+                                                    @else
 
-                                                    <!-- Modal -->
-                                                    <div class="modal fade" id="imageModal{{ $index }}" tabindex="-1"
-                                                         aria-labelledby="imageModalLabel{{ $index }}" aria-hidden="true">
+                                                        <img src="{{ asset($product->file_path) }}" alt="Image"
+                                                             style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 3px;">
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#mediaModal{{ $index }}"
+                                                           style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                          color: #fff; background: rgba(0,0,0,0.5); border-radius: 50%; padding: 4px;">
+                                                            <i class="bi bi-arrows-fullscreen" style="font-size: 14px;"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    {{-- Modal for Image/Video --}}
+                                                    <div class="modal fade" id="mediaModal{{ $index }}" tabindex="-1" aria-hidden="true">
                                                         <div class="modal-dialog modal-dialog-centered modal-lg">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" id="imageModalLabel{{ $index }}">{{ $product->title }}</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    <h5 class="modal-title">{{ $product->title }}</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                 </div>
                                                                 <div class="modal-body text-center">
-                                                                    <img src="{{ asset($product->file_path) }}" alt="Image" class="img-fluid">
+                                                                    @if($isVideo)
+                                                                        <video controls autoplay style="width: 100%">
+                                                                            <source src="{{ asset($product->file_path) }}" type="video/{{ $extension }}">
+                                                                        </video>
+                                                                    @else
+                                                                        <img src="{{ asset($product->file_path) }}" alt="Image" class="img-fluid">
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                 @else
-                                                    <span class="badge bg-danger">No Image!</span>
+                                                    <span class="badge bg-danger">No File!</span>
                                                 @endif
                                             </td>
-
 
                                             <td>{{ $product->price  }}</td>
                                             <td>
@@ -77,6 +99,12 @@
                                                 <a class="btn btn-xs btn-info" href="{{ route('designer.product.edit', $product->id) }}">
                                                     {{ trans('global.edit') }}
                                                 </a>
+
+                                                <form action="{{ route('designer.product.delete', $product->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                    <input type="submit" class="btn btn-xs btn-danger" value="{{ __('global.delete') }}">
+                                                </form>
                                             </td>
                                         </tr>
 

@@ -138,6 +138,7 @@
     @include('includes.hero')
 
     <!-- Best Collection -->
+    <!-- Best Collection -->
     <section class="section">
         <div class="container section-title" data-aos="fade-up">
             <p>Premium Collection<br></p>

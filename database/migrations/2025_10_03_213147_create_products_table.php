@@ -15,15 +15,15 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('user_id');
+            $table->string('title')->nullable();
+            $table->unsignedBigInteger('category_id');
             $table->decimal('price', 10, 2);
+            $table->integer('type')->default(1)->comment('1=>Image, 2=>Video');
+            $table->string('file_path')->nullable();
+            $table->string('file_name')->nullable();
+            $table->string('file_type')->nullable();
             $table->text('description')->nullable();
-            $table->string('file_path');
-            $table->string('file_name');
-            $table->string('file_type');
-            $table->integer('file_size')->nullable();
             $table->integer('status')->default(0)->comment('1=>Active, 0=>Inactive');
             $table->timestamps();
         });

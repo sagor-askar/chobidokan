@@ -1,6 +1,6 @@
 @extends('layouts.designer_panel')
 @section('panel_content')
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <style>
         .ck-editor__editable {
             min-height: 150px; /* চাইলে height বাড়াও, যেমন 400px */
@@ -9,6 +9,43 @@
             flex-direction: column;
             align-items: flex-start !important;
             gap: 1rem;
+        }
+
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            border: 1px solid #ced4da;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: text;
+        }
+
+        .tags-input input {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .tag {
+            background-color: #5bc0de;
+            color: white;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tag i {
+            margin-left: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+
+        .tag i:hover {
+            color: #d9534f;
         }
     </style>
 
@@ -59,6 +96,22 @@
                                         @enderror
                                     </div>
 
+
+                                    <div class="col-md-6">
+                                        <div class="mb-3 form-group position-relative">
+                                            <label for="type-select" class="form-label">Type</label>
+                                            <select id="type-select" name="type" class="form-control @error('type') is-invalid @enderror" required>
+                                                <option selected disabled>Select Type</option>
+                                                <option value="1"{{ (old('type', $product->type) == 1) ? 'selected' : '' }}>Image</option>
+                                                <option value="2"{{ (old('type', $product->type) == 2) ? 'selected' : '' }}> Video</option>
+                                            </select>
+                                            @error('type')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <i class="fa fa-chevron-down position-absolute" style="top: 40px; right: 20px; pointer-events: none; color: #aaa;"></i>
+                                        </div>
+                                    </div>
+
                                     <!-- Price -->
                                     <div class="col-md-6">
                                         <label for="designPrice" class="form-label">Design Price</label>
@@ -69,7 +122,27 @@
                                         @enderror
                                     </div>
 
-                                    <!-- File Upload -->
+                                  <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="tags" class="form-label"> Tags  <small class="text-muted ms-1">(Press 'Enter' or ',' to add)</small></label>
+                                        <div class="tags-input" id="tags-input">
+                                            <input type="text" id="tag-input-field" placeholder="Type and press Enter" class="form-control border-0 shadow-none p-0">
+                                        </div>
+                                    </div>
+                                  </div>
+
+
+                                    <!-- Description -->
+                                    <div class="col-12">
+                                        <label for="description" class="form-label">Description (Optional)</label>
+                                        <textarea class="form-control @error('description') is-invalid @enderror"
+                                                  id="description" name="description" rows="4">{{ old('description', $product->description) }}</textarea>
+                                        @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+
                                     <div class="col-md-6">
                                         <label for="designFile" class="form-label">Upload File (<small>Accepted: EPS, PSD, JPG</small>)</label>
                                         <input type="file" class="form-control @error('file') is-invalid @enderror"
@@ -87,19 +160,6 @@
 
                                         @error('file')
                                         <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-
-
-
-                                    </div>
-
-                                    <!-- Description -->
-                                    <div class="col-12">
-                                        <label for="description" class="form-label">Description (Optional)</label>
-                                        <textarea class="form-control @error('description') is-invalid @enderror"
-                                                  id="description" name="description" rows="4">{{ old('description', $product->description) }}</textarea>
-                                        @error('description')
-                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
@@ -158,10 +218,48 @@
     </div>
 
     <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
     <script>
         ClassicEditor
             .create(document.querySelector('#description'))
             .catch(error => { console.error(error); });
+    </script>
+
+    <script>
+        const tagsInput = document.getElementById('tags-input');
+        const inputField = document.getElementById('tag-input-field');
+        const initialTags = {!! $product->tags ?? '[]' !!};  // Decode JSON tags or default to an empty array
+        initialTags.forEach(tag => createTag(tag));
+
+        function createTag(text) {
+            const tag = document.createElement('span');
+            tag.classList.add('tag');
+            tag.innerHTML = `${text} <i class="bi bi-x"></i>`;
+
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'tags[]';
+            hiddenInput.value = text;
+            tagsInput.appendChild(hiddenInput);
+
+            const closeButton = tag.querySelector('i');
+            closeButton.addEventListener('click', () => {
+                tag.remove();
+                hiddenInput.remove();
+            });
+            tagsInput.insertBefore(tag, inputField);
+        }
+
+        inputField.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.key === ',') {
+                event.preventDefault(); // Prevent form submission
+                const tagText = inputField.value.trim();
+                if (tagText !== '') {
+                    createTag(tagText);
+                    inputField.value = '';
+                }
+            }
+        });
     </script>
 
 @endsection

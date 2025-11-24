@@ -101,11 +101,11 @@
                                             </td>
                                         @elseif($project->status == 2)
                                             <td>
-                                                <span class="badge badge-success">Inactive</span>
+                                                <span class="badge badge-success" style="background-color: green">Completed</span>
                                             </td>
                                         @else
                                             <td>
-                                                <span class="badge badge-danger">Inactive</span>
+                                                <span class="badge badge-danger" style="background-color: red">Inactive</span>
                                             </td>
                                         @endif
 

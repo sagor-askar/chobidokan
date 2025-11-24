@@ -31,7 +31,7 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Designer List
+                       <h4>Designer List</h4>
                     </div>
                     <div class="panel-body">
                         <div class="card-header text-center project-header">
@@ -40,7 +40,7 @@
 
                         <br>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable datatable-SubCompany" id="subCompany-dataTable">
+                            <table class="table table-bordered table-striped table-hover datatable datatable-designer" id="designer-dataTable">
                                 <thead>
                                 <tr>
                                     <th>
@@ -63,6 +63,10 @@
                                     <th>
                                         Total Submitted Design
                                     </th>
+
+                                    <th>
+                                        Designer Payment Status
+                                    </th>
                                     <th>
                                         Action
                                     </th>
@@ -71,12 +75,33 @@
                                 <tbody>
                                 @foreach($designers as $key => $designer)
                                     @php
+                                    //dd($designer);
+
                                        $totalSubmit = \App\Models\ProjectSubmit::where('project_id', $designer->project_id)
                                                         ->where('user_id', $designer->user_id)
                                                         ->withCount('uploads')
                                                         ->get()
                                                         ->sum('uploads_count');
+
+                                       $order = \App\Models\Order::where('project_id',$designer->project_id)->first();
+
+
+                                       $orderDetailsStatus = \App\Models\OrderDetails::with('order')
+                                                       ->whereHas('project', function ($query){
+                                                      $query->where('status', 2);
+                                                       })
+                                                   ->where('project_id',$designer->project_id)->where('user_id',$designer->user_id)->first();
+
+                                        $orderDetails = \App\Models\OrderDetails::with('order')->whereHas('order', function ($query){
+                                                      $query->where('status', 0);
+                                                       })
+                                                       ->whereHas('project', function ($query){
+                                                      $query->where('status', 2);
+                                                       })
+                                                   ->where('project_id',$designer->project_id)->where('user_id',$designer->user_id)->first();
+
                                     @endphp
+
                                     <tr data-entry-id="{{ $designer->id }}">
                                         <td>
 
@@ -100,18 +125,39 @@
                                             {{ $totalSubmit}}
                                         </td>
 
-                                        <td>
+                                        @if($orderDetailsStatus)
+                                            @if($orderDetailsStatus?->order?->status == 1)
+                                                <td>
+                                                    <span class="badge badge-success" style="background-color: green">Paid</span>
+                                                </td>
+                                            @else
+                                                <td>
+                                                    <span class="badge badge-danger" style="background-color: red">Unpaid</span>
+                                                </td>
+                                            @endif
+                                        @else
+                                            <td>
 
+                                            </td>
+                                        @endif
+
+                                        <td>
                                             <a class="btn btn-xs btn-primary" href="{{ route('admin.project.design-submit-show', [$designer->project_id,$designer->user_id]) }}">
                                                 {{ trans('global.view') }}
                                             </a>
 
-                                            <form action="{{ route('admin.project.delete', $designer->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                            </form>
-
+                                          @if($orderDetails)
+                                                <form action="{{ route('admin.project.designer.payment') }}"
+                                                      method="POST"
+                                                      style="display:inline;">
+                                                    @csrf
+                                                    <input type="hidden" name="project_id" value="{{$designer->project_id}}">
+                                                    <input type="hidden" name="designer_id" value="{{$designer->user_id}}">
+                                                    <button type="submit" class="btn btn-xs btn-success">
+                                                        Payment
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </td>
 
                                     </tr>
@@ -132,68 +178,41 @@
 @section('scripts')
     @parent
     <script>
-        $(function() {
-            let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-            @can('category_delete')
-            let deleteButtonTrans = '{{ trans('
-        global.datatables.delete ') }}'
+        $(function () {
+            let dtButtons = $.extend(true, [], defaultButtons);
+            @can('user_delete')
+            let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
             let deleteButton = {
-                text: deleteButtonTrans
-                , url: "{{ route('admin.categories.massDestroy') }}"
-                , className: 'btn-danger'
-                , action: function(e, dt, node, config) {
-                    var ids = $.map(dt.rows({
-                        selected: true
-                    }).nodes(), function(entry) {
+                text: deleteButtonTrans,
+                url: "{{ route('admin.users.massDestroy') }}",
+                className: 'btn-danger',
+                action: function (e, dt, node, config) {
+                    var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
                         return $(entry).data('entry-id')
                     });
 
                     if (ids.length === 0) {
-                        alert('{{ trans('
-                        global.datatables.zero_selected ') }}')
+                        alert('{{ trans('global.datatables.zero_selected') }}')
 
                         return
                     }
 
-                    if (confirm('{{ trans('
-                        global.areYouSure ') }}')) {
+                    if (confirm('{{ trans('global.areYouSure') }}')) {
                         $.ajax({
-                            headers: {
-                                'x-csrf-token': _token
-                            }
-                            , method: 'POST'
-                            , url: config.url
-                            , data: {
-                                ids: ids
-                                , _method: 'DELETE'
-                            }
-                        })
-                            .done(function() {
-                                location.reload()
-                            })
+                            headers: {'x-csrf-token': _token},
+                            method: 'POST',
+                            url: config.url,
+                            data: { ids: ids, _method: 'DELETE' }})
+                            .done(function () { location.reload() })
                     }
                 }
             }
             dtButtons.push(deleteButton)
             @endcan
 
-            $.extend(true, $.fn.dataTable.defaults, {
-                orderCellsTop: true
-                , order: [
-                    [1, 'desc']
-                ]
-                , pageLength: 100
-                , });
-            let table = $('.datatable-SubCompany:not(.ajaxTable)').DataTable({
-                buttons: dtButtons
-            })
-            $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e) {
-                $($.fn.dataTable.tables(true)).DataTable()
-                    .columns.adjust();
-            });
+            initDataTable('#designer-dataTable', dtButtons);
 
-        })
+        });
 
     </script>
-
 @endsection
