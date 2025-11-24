@@ -274,5 +274,23 @@ class WebsiteController extends Controller
         return view('viewAll');
     }
 
+    // view image details page
+    public function viewDetails()
+    {
+        return view('viewDetails');
+    }
+
+    // all videos
+    public function allVideos()
+    {
+        return view('allVideos');
+    }
+
+    // view video details
+    public function viewVideo()
+    {
+        return view('viewVideo');
+    }
+
 
 }
