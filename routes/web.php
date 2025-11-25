@@ -56,6 +56,11 @@ Route::controller(WebsiteController::class)->group(function() {
     // video details page - static
     Route::get('all-videos', 'allVideos')->name('allVideos');
     Route::get('view-video', 'viewVideo')->name('viewVideo');
+
+    Route::get('/product/search', 'search')->name('product.search');
+    Route::get('/tag/{tag}/product', 'tagProduct')->name('tag-wise-product');
+    Route::get('/category/{id}/product', 'categoryProduct')->name('category-wise-product');
+    Route::get('/product-details/{id}', 'productDetails')->name('product-details');
 });
 
 //user & seller Registration
