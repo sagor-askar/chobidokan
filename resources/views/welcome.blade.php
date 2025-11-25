@@ -273,8 +273,14 @@
 
         <div class="container">
             @foreach($categories as $category)
-                <button type="button" class="btn btn-outline-secondary popularSearch">{{ $category->name }}</button>
+                <a href="{{ route('category-wise-product', $category->id) }}" class="btn btn-outline-secondary popularSearch">{{ $category->name }}</a>
             @endforeach
+
+           @if(count($uniqueTags) > 0 )
+                    @foreach($uniqueTags as $key => $tag)
+                        <a href="{{ route('tag-wise-product', $tag) }}" class="btn btn-outline-secondary popularSearch">{{ $tag }}</a>
+                    @endforeach
+             @endif
         </div>
     </section>
 
