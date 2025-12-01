@@ -53,6 +53,7 @@ body {
     color: var(--default-color);
     background-color: var(--background-color);
     font-family: var(--default-font);
+    text-decoration: none !important;
 }
 
 a {
@@ -923,8 +924,9 @@ section,
 /* Popular Search */
 .popularSearch {
     width: auto;
-    padding: 6px 40px;
-    font-size: 1rem;
+    padding: 1px 10px;
+    font-size: 0.9rem;
+    color: black;
     height: auto;
     margin: 5px;
     white-space: nowrap;

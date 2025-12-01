@@ -12,11 +12,6 @@
         margin-top: 20px;
     }
 
-    .upload-preview {
-        padding: 15px 0;
-        text-align: center;
-    }
-
     .requirement-title {
         font-weight: 600;
         font-size: 0.9rem;
@@ -66,12 +61,7 @@
 
     .tag i:hover {
         color: #d9534f;
-        /* Change color to red on hover for better UI feedback */
     }
-
-
-
-
 
     @media (min-width: 992px) {
         .sidebar {
@@ -83,7 +73,6 @@
         }
     }
 
-
     @media (max-width: 500px) {
         .topbar {
             margin-top: 20px;
@@ -91,43 +80,27 @@
             align-items: center !important;
             text-align: center;
         }
-
         .topbar .d-flex {
             justify-content: center !important;
         }
-
-
-        .upload-preview h5 {
-            font-size: 1.2rem;
-        }
-
-        .upload-preview p {
-            font-size: 0.9rem;
-        }
-
         .requirement-title {
             font-size: 0.95rem;
         }
-
         .sidebar ul {
             padding-left: 18px;
         }
-
         .btn-sm {
             font-size: 0.8rem;
             padding: 6px 10px;
         }
-
         .d-flex.justify-content-between {
             flex-direction: column;
             align-items: flex-start !important;
             gap: 1rem;
         }
     }
-
-
      .ck-editor__editable {
-         min-height: 150px; /* চাইলে height বাড়াও, যেমন 400px */
+         min-height: 150px;
      }
 
 
@@ -148,15 +121,6 @@
                         {{ session('success') }}
                     </div>
                 @endif
-
-                <div class="upload-preview">
-                    <h5>Submit your first work</h5>
-                    <p class="text-muted">
-                        You’re almost there! <strong>Upload and submit 150 - 200 files for review</strong>.<br>
-                        Once they’re approved, you’re all set to start selling your content.
-                    </p>
-                </div>
-
 
                 <!-- Upload Form (Hidden initially) -->
                 <div class="container" id="uploadForm">
