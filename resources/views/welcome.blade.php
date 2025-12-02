@@ -135,7 +135,6 @@
         @include('includes.hero')
 
         <!-- Best Collection -->
-        <!-- Best Collection -->
         <section class="section">
             <div class="container section-title" data-aos="fade-up">
                 <p>Premium Collection<br></p>
@@ -164,7 +163,11 @@
                         @endif
 
                         <div class="watermark">CHOBIDOKAN</div>
-                        <div class="overlay">{{ $product->title }} | Tk {{ $product->price }}</div>
+                        <div class="overlay">
+                            <a href="{{ route('product-details', $product->id) }}" style="color: white;">
+                                {{ $product->title }} | Tk {{ $product->price }}
+                            </a>
+                        </div>
                     </div>
                 @endforeach
             </main>
@@ -194,7 +197,7 @@
         </div>
 
         <script>
-            // 🔹 Modal Open
+            // Modal Open
             function openModal(element) {
                 const title = element.dataset.title;
                 const fileUrl = element.dataset.file;
@@ -298,7 +301,7 @@
                         </button>
                     </div>
                     <a type="button" class="btn btn-dark" href="{{ route('seller-registration') }}"
-                        style="font-size: medium; border-radius: 20px; padding: 8px 38px;">BECOME A SELLER</a>
+                        style="font-size: medium; padding: 5px 15px;">Become A Seller</a>
                 </div>
             </section>
         @endif
@@ -315,7 +318,7 @@
                     image and you can purchase whatever you like.</p>
 
                 <a type="button" class="btn btn-dark" href="{{ route('custom-request') }}"
-                    style="font-size: medium; border-radius: 20px; padding: 8px 38px;">CUSTOM REQUEST</a>
+                    style="font-size: medium; padding: 5px 15px;">Custom Request</a>
             </div>
         </section>
     </main>

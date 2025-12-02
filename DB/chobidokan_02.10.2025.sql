@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 24, 2025 at 12:44 PM
--- Server version: 10.4.32-MariaDB
+-- Generation Time: Dec 02, 2025 at 09:30 AM
+-- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -29,9 +29,9 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `categories` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `logo` varchar(255) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT 1 COMMENT '1=>Active, 0=>Inactive',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -42,8 +42,12 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `logo`, `description`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Logo', 'uploads/categories/1755617202.jpg', 'test', 1, '2025-08-19 15:26:42', '2025-08-19 15:26:42'),
-(2, 'Web & App Design', 'uploads/categories/1755625723.png', 'test', 1, '2025-08-19 17:48:43', '2025-08-19 17:48:43');
+(1, 'Photography', 'uploads/categories/1764569264.jpg', 'Nature & Landscape, Travel, People & Lifestyle, Events, Wildlife, Food photography.', 1, '2025-08-19 15:26:42', '2025-12-01 06:07:45'),
+(2, 'Graphics & Illustrations', 'uploads/categories/1764570701.jpg', 'Vector art, Icons, Infographics, Digital illustrations, Flat design graphics', 1, '2025-08-19 17:48:43', '2025-12-01 06:31:42'),
+(3, 'Business & Marketing Assets', 'uploads/categories/1764570872.jpg', 'Branding mockups, Presentation images, Social media templates, Business concept visuals, Office/Workplace images,', 1, '2025-09-20 18:00:55', '2025-12-01 06:34:33'),
+(4, 'Technology & Digital', NULL, 'Software/UI mockups, Tech devices, Cybersecurity visuals, Artificial intelligence graphics, Web & app screenshots (legal/created ones)', 1, '2025-12-01 06:41:18', '2025-12-01 06:41:18'),
+(5, 'Creative & Abstract Art', NULL, 'Abstract backgrounds, Patterns & textures, Creative compositions, Surreal images, Artistic edits', 1, '2025-12-01 06:42:20', '2025-12-01 06:42:20'),
+(6, 'Editorial & News Images', NULL, 'Real-world events, Public figures (editorial license)  City, culture & lifestyle shots, Documentary-style photos', 1, '2025-12-01 06:43:09', '2025-12-01 06:43:09');
 
 -- --------------------------------------------------------
 
@@ -56,7 +60,7 @@ CREATE TABLE `comments` (
   `project_id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL,
   `designer_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `comment` text NOT NULL,
+  `comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `parent_id` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -70,8 +74,8 @@ CREATE TABLE `comments` (
 
 CREATE TABLE `faqs` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `question` varchar(255) NOT NULL,
-  `answer` text NOT NULL,
+  `question` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `answer` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -95,8 +99,8 @@ INSERT INTO `faqs` (`id`, `question`, `answer`, `created_at`, `updated_at`) VALU
 
 CREATE TABLE `info_setups` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -116,8 +120,8 @@ INSERT INTO `info_setups` (`id`, `title`, `description`, `created_at`, `updated_
 
 CREATE TABLE `licencings` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -137,15 +141,15 @@ INSERT INTO `licencings` (`id`, `title`, `description`, `created_at`, `updated_a
 
 CREATE TABLE `media` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `model_type` varchar(255) NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` char(36) DEFAULT NULL,
-  `collection_name` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `file_name` varchar(255) NOT NULL,
-  `mime_type` varchar(255) DEFAULT NULL,
-  `disk` varchar(255) NOT NULL,
-  `conversions_disk` varchar(255) DEFAULT NULL,
+  `uuid` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `collection_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mime_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `disk` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `conversions_disk` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `size` bigint(20) UNSIGNED NOT NULL,
   `manipulations` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`manipulations`)),
   `custom_properties` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`custom_properties`)),
@@ -164,7 +168,7 @@ CREATE TABLE `media` (
 
 CREATE TABLE `migrations` (
   `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -199,12 +203,12 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (26, '2025_08_22_231135_create_project_submits_table', 3),
 (27, '2025_08_23_030900_create_uploads_table', 3),
 (28, '2025_09_05_180219_add_columns_to_subscriptions_table', 4),
-(30, '2025_09_22_010012_add_status_to_uploads_table', 5),
-(31, '2025_09_26_015757_create_order_details_table', 6),
-(32, '2025_09_27_072333_create_comments_table', 7),
-(35, '2025_10_13_021759_create_payments_table', 8),
-(36, '2025_10_03_213147_create_products_table', 9),
-(37, '2025_11_24_114618_add_tag_to_products_table', 10);
+(29, '2025_09_22_010012_add_status_to_uploads_table', 5),
+(30, '2025_09_26_015757_create_order_details_table', 5),
+(31, '2025_09_27_072333_create_comments_table', 5),
+(33, '2025_10_13_021759_create_payments_table', 6),
+(34, '2025_10_03_213147_create_products_table', 7),
+(35, '2025_11_24_114618_add_tag_to_products_table', 7);
 
 -- --------------------------------------------------------
 
@@ -218,8 +222,8 @@ CREATE TABLE `orders` (
   `subscription_id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `amount` int(11) NOT NULL DEFAULT 0,
-  `card_type` varchar(255) DEFAULT NULL,
-  `bank_txn` varchar(255) DEFAULT NULL,
+  `card_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bank_txn` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT 0 COMMENT '0=>Inproggress, 1=>Approved,2=Rejected',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -230,7 +234,13 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `project_id`, `subscription_id`, `user_id`, `amount`, `card_type`, `bank_txn`, `status`, `created_at`, `updated_at`) VALUES
-(10, 67, 1, 3, 100, 'nagad', '1004203119626', 1, '2025-10-10 16:13:26', '2025-10-16 15:19:03');
+(1, 1, 1, 3, 100, NULL, NULL, 0, '2025-08-19 17:29:25', '2025-08-19 17:29:25'),
+(2, 2, 1, 3, 100, NULL, NULL, 0, '2025-08-19 20:19:08', '2025-08-19 20:19:08'),
+(3, 3, 1, 4, 100, NULL, NULL, 0, '2025-09-05 09:54:44', '2025-09-05 09:54:44'),
+(4, 4, 1, 4, 100, NULL, NULL, 0, '2025-09-05 11:12:29', '2025-09-05 11:12:29'),
+(5, 8, 1, 3, 100, 'DBBL-VISA', '1110759532959', 0, '2025-12-01 09:22:17', '2025-12-01 09:22:17'),
+(6, 9, 2, 3, 150, 'DBBL-NEXUS', '1104142611640', 0, '2025-12-01 09:24:13', '2025-12-01 09:24:13'),
+(7, 10, 3, 3, 250, 'DBBL-MASTERDEBIT', '1022198482779', 0, '2025-12-01 10:42:22', '2025-12-01 10:42:22');
 
 -- --------------------------------------------------------
 
@@ -243,19 +253,12 @@ CREATE TABLE `order_details` (
   `project_id` bigint(20) UNSIGNED DEFAULT NULL,
   `order_id` bigint(20) UNSIGNED DEFAULT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `file_path` varchar(255) DEFAULT NULL,
-  `file_name` varchar(255) DEFAULT NULL,
-  `file_type` varchar(255) DEFAULT NULL,
+  `file_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `order_details`
---
-
-INSERT INTO `order_details` (`id`, `project_id`, `order_id`, `user_id`, `file_path`, `file_name`, `file_type`, `created_at`, `updated_at`) VALUES
-(5, 67, 10, 2, 'uploads/project/approved-file/126-500x800_imresizer_68e95ce89ad92.jpg', '126-500x800_imresizer_68e95ce89ad92.jpg', 'image/jpeg', '2025-10-10 19:22:17', '2025-10-10 19:22:17');
 
 -- --------------------------------------------------------
 
@@ -264,8 +267,8 @@ INSERT INTO `order_details` (`id`, `project_id`, `order_id`, `user_id`, `file_pa
 --
 
 CREATE TABLE `password_resets` (
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -282,18 +285,11 @@ CREATE TABLE `payments` (
   `product_id` bigint(20) UNSIGNED DEFAULT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL COMMENT 'user = Designer',
   `amount` int(11) NOT NULL DEFAULT 0,
-  `card_type` varchar(255) DEFAULT NULL,
-  `bank_txn` varchar(255) DEFAULT NULL,
+  `card_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bank_txn` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `payments`
---
-
-INSERT INTO `payments` (`id`, `order_id`, `project_id`, `product_id`, `user_id`, `amount`, `card_type`, `bank_txn`, `created_at`, `updated_at`) VALUES
-(2, 10, 67, NULL, 2, 80, 'DBBL-MobileBanking', '1074473429886', '2025-10-16 15:19:03', '2025-10-16 15:19:03');
 
 -- --------------------------------------------------------
 
@@ -303,7 +299,7 @@ INSERT INTO `payments` (`id`, `order_id`, `project_id`, `product_id`, `user_id`,
 
 CREATE TABLE `permissions` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -375,11 +371,11 @@ INSERT INTO `permission_role` (`role_id`, `permission_id`) VALUES
 
 CREATE TABLE `personal_access_tokens` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) NOT NULL,
+  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tokenable_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `token` varchar(64) NOT NULL,
-  `abilities` text DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -393,8 +389,8 @@ CREATE TABLE `personal_access_tokens` (
 
 CREATE TABLE `privacy_policies` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -415,15 +411,15 @@ INSERT INTO `privacy_policies` (`id`, `title`, `description`, `created_at`, `upd
 CREATE TABLE `products` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `category_id` bigint(20) UNSIGNED NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `type` int(11) NOT NULL DEFAULT 1 COMMENT '1=>Image, 2=>Video',
-  `tags` varchar(255) DEFAULT NULL,
-  `file_path` varchar(255) DEFAULT NULL,
-  `file_name` varchar(255) DEFAULT NULL,
-  `file_type` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL,
+  `tags` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT 0 COMMENT '1=>Active, 0=>Inactive',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -434,10 +430,7 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `user_id`, `title`, `category_id`, `price`, `type`, `tags`, `file_path`, `file_name`, `file_type`, `description`, `status`, `created_at`, `updated_at`) VALUES
-(1, 2, 'Natural Image 1', 2, 500.00, 1, NULL, 'uploads/products/1760648855_68f15e971f32c.jpg', '1760648855_68f15e971f32c.jpg', 'image/jpeg', NULL, 1, '2025-10-16 21:07:35', '2025-10-16 21:07:35'),
-(4, 2, 'Natural Image 2', 2, 600.00, 1, '[\"natural\",\"natural image\",\"beautiful image\"]', 'uploads/products/1763964330_6923f5aa99e65.png', '1763964330_6923f5aa99e65.png', 'image/png', '<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</p>', 1, '2025-11-24 06:05:30', '2025-11-24 07:00:19'),
-(6, 2, 'Natural Image 3', 2, 800.00, 1, '[\"natural\",\"beautiful\"]', 'uploads/products/natural2-1763978272.png', 'natural2-1763978272.png', 'image/png', '<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</p>', 1, '2025-11-24 09:57:52', '2025-11-24 09:57:52'),
-(7, 2, 'Technology Video', 2, 1000.00, 2, '[\"Technology\",\"Videos\",\"Technology Video\"]', 'uploads/products/293917_small-1763979925.mp4', '293917_small-1763979925.mp4', 'video/mp4', '<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</p><p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>', 1, '2025-11-24 10:25:25', '2025-11-24 10:25:25');
+(1, 2, 'A professional logo with graphics', 2, '100.00', 1, '[\"graphics\",\"design\",\"creativity\"]', 'uploads/products/pexels-cottonbro-6203473-1764577269.jpg', 'pexels-cottonbro-6203473-1764577269.jpg', 'image/jpeg', NULL, 1, '2025-12-01 08:21:09', '2025-12-01 08:35:18');
 
 -- --------------------------------------------------------
 
@@ -447,11 +440,11 @@ INSERT INTO `products` (`id`, `user_id`, `title`, `category_id`, `price`, `type`
 
 CREATE TABLE `projects` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `category_id` bigint(20) UNSIGNED NOT NULL,
-  `project_description` longtext DEFAULT NULL,
-  `logo_description` longtext DEFAULT NULL,
-  `project_file` varchar(255) DEFAULT NULL,
+  `project_description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `logo_description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `project_file` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `publish_date` date DEFAULT NULL,
   `expire_date` date DEFAULT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL,
@@ -465,7 +458,9 @@ CREATE TABLE `projects` (
 --
 
 INSERT INTO `projects` (`id`, `name`, `category_id`, `project_description`, `logo_description`, `project_file`, `publish_date`, `expire_date`, `user_id`, `status`, `created_at`, `updated_at`) VALUES
-(67, 'Test Project', 2, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', 'uploads/project/17601127926327.pdf', '2025-10-10', '2025-10-17', 3, 2, '2025-10-10 16:13:12', '2025-10-10 19:24:56');
+(8, 'A full customized graphics design', 2, 'The picture would be in vector format. In the picture, there will be a boy cycling around the field, and some kids playing football besides him.', 'Happiness flying...', NULL, '2025-12-01', '2025-12-04', 3, 1, '2025-12-01 09:22:00', '2025-12-01 09:22:00'),
+(9, 'Full customized and unique Logo', 3, 'I need a customized and unique logo for my business startup. I am operating textile export import business. Kindly make the logo based on this theme.', 'RBC Limited.', NULL, '2025-12-01', '2025-12-08', 3, 1, '2025-12-01 09:23:53', '2025-12-01 09:23:53'),
+(10, 'Website Landing Page', 4, 'A single page website landing page, where some of my main business will be focused. Though I am doing electronics products business, make the landing page with that flow. Make it premium, don\'t think about the budget.', NULL, NULL, '2025-12-01', '2025-12-11', 3, 1, '2025-12-01 10:42:17', '2025-12-01 10:42:17');
 
 -- --------------------------------------------------------
 
@@ -476,7 +471,7 @@ INSERT INTO `projects` (`id`, `name`, `category_id`, `project_description`, `log
 CREATE TABLE `project_submits` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `project_id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `visibility` tinyint(1) NOT NULL DEFAULT 1,
   `stock` tinyint(1) NOT NULL DEFAULT 0,
   `submit_date` date DEFAULT NULL,
@@ -484,14 +479,6 @@ CREATE TABLE `project_submits` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `project_submits`
---
-
-INSERT INTO `project_submits` (`id`, `project_id`, `title`, `visibility`, `stock`, `submit_date`, `user_id`, `created_at`, `updated_at`) VALUES
-(9, 67, 'Test Project', 1, 1, '2025-10-11', 2, '2025-10-10 19:20:08', '2025-10-10 19:20:08'),
-(10, 67, 'Test Project', 1, 1, '2025-10-11', 4, '2025-10-10 20:10:52', '2025-10-10 20:10:52');
 
 -- --------------------------------------------------------
 
@@ -501,8 +488,8 @@ INSERT INTO `project_submits` (`id`, `project_id`, `title`, `visibility`, `stock
 
 CREATE TABLE `research_imgs` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -515,7 +502,7 @@ CREATE TABLE `research_imgs` (
 
 CREATE TABLE `roles` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -555,8 +542,8 @@ INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
 
 CREATE TABLE `search_tips` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -576,16 +563,16 @@ INSERT INTO `search_tips` (`id`, `title`, `description`, `created_at`, `updated_
 
 CREATE TABLE `settings` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `site_title` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `facebook` varchar(255) DEFAULT NULL,
-  `twitter` varchar(255) DEFAULT NULL,
-  `instagram` varchar(255) DEFAULT NULL,
-  `linkedin` varchar(255) DEFAULT NULL,
-  `logo` varchar(255) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `site_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `facebook` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `instagram` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `linkedin` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -605,7 +592,7 @@ INSERT INTO `settings` (`id`, `name`, `site_title`, `email`, `phone`, `address`,
 
 CREATE TABLE `subscriptions` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `points` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`points`)),
   `price` int(11) NOT NULL,
   `designer` int(11) DEFAULT NULL,
@@ -623,7 +610,9 @@ CREATE TABLE `subscriptions` (
 --
 
 INSERT INTO `subscriptions` (`id`, `name`, `points`, `price`, `designer`, `days`, `design`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Weekly Package', '[\"Premium Design\", \"Quality Desgin\"]', 100, 2, 7, 6, NULL, NULL, 1, '2025-08-19 15:31:19', '2025-10-10 19:07:34');
+(1, 'Regular', '[null]', 100, 3, 3, 10, NULL, NULL, 1, '2025-08-19 15:31:19', '2025-12-01 09:04:37'),
+(2, 'Premium', '[null]', 150, 5, 7, 20, NULL, NULL, 1, '2025-12-01 09:05:05', '2025-12-01 09:05:05'),
+(3, 'Exclusive', '[null]', 250, 7, 10, 30, NULL, NULL, 1, '2025-12-01 09:05:34', '2025-12-01 09:05:34');
 
 -- --------------------------------------------------------
 
@@ -633,8 +622,8 @@ INSERT INTO `subscriptions` (`id`, `name`, `points`, `price`, `designer`, `days`
 
 CREATE TABLE `technical_infos` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -647,8 +636,8 @@ CREATE TABLE `technical_infos` (
 
 CREATE TABLE `terms` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -668,9 +657,9 @@ INSERT INTO `terms` (`id`, `title`, `description`, `created_at`, `updated_at`) V
 
 CREATE TABLE `testimonials` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `speech` text NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `designation` varchar(255) NOT NULL,
+  `speech` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `designation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -694,23 +683,13 @@ CREATE TABLE `uploads` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `project_submit_id` bigint(20) UNSIGNED NOT NULL,
   `project_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `file_path` varchar(255) NOT NULL,
-  `file_name` varchar(255) NOT NULL,
-  `file_type` varchar(255) DEFAULT NULL,
+  `file_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT 0 COMMENT '0=>Pending, 1=>Approved',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `uploads`
---
-
-INSERT INTO `uploads` (`id`, `project_submit_id`, `project_id`, `file_path`, `file_name`, `file_type`, `status`, `created_at`, `updated_at`) VALUES
-(14, 9, 67, 'uploads/project/submit-file/1760124008_68e95c68f0f45.jpg', '1760124008_68e95c68f0f45.jpg', 'image/jpeg', 0, '2025-10-10 19:20:10', '2025-10-10 19:20:10'),
-(15, 9, 67, 'uploads/project/submit-file/1760124010_68e95c6a2160c.jpg', '1760124010_68e95c6a2160c.jpg', 'image/jpeg', 0, '2025-10-10 19:20:10', '2025-10-10 19:20:10'),
-(16, 9, 67, 'uploads/project/submit-file/1760124010_68e95c6ad0abe.jpg', '1760124010_68e95c6ad0abe.jpg', 'image/jpeg', 1, '2025-10-10 19:20:11', '2025-10-10 19:21:09'),
-(17, 10, 67, 'uploads/project/submit-file/1760127052_68e9684c19b71.jpg', '1760127052_68e9684c19b71.jpg', 'image/jpeg', 0, '2025-10-10 20:10:52', '2025-10-10 20:10:52');
 
 -- --------------------------------------------------------
 
@@ -720,26 +699,26 @@ INSERT INTO `uploads` (`id`, `project_submit_id`, `project_id`, `file_path`, `fi
 
 CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `verification_code` varchar(255) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `verification_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_verified` int(11) NOT NULL DEFAULT 0 COMMENT '0=>Unverified, 1=>Verified',
   `role_id` int(11) NOT NULL,
   `is_banned` int(11) NOT NULL DEFAULT 0 COMMENT '0=>Unbanned, 1=>Banned',
   `email_verified_at` datetime DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `remember_token` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `bio` longtext DEFAULT NULL,
-  `bank_name` varchar(255) DEFAULT NULL,
-  `branch_name` varchar(255) DEFAULT NULL,
-  `account_holder_name` varchar(255) DEFAULT NULL,
-  `account_number` varchar(255) DEFAULT NULL,
-  `routing_no` varchar(255) DEFAULT NULL,
-  `account_type` varchar(255) DEFAULT NULL,
-  `mobile_banking_no` varchar(255) DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bio` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bank_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `branch_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `account_holder_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `account_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `routing_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `account_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mobile_banking_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -751,9 +730,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `verification_code`, `is_verified`, `role_id`, `is_banned`, `email_verified_at`, `password`, `remember_token`, `address`, `image`, `bio`, `bank_name`, `branch_name`, `account_holder_name`, `account_number`, `routing_no`, `account_type`, `mobile_banking_no`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1, 'Admin', 'admin@admin.com', NULL, NULL, 0, 1, 0, NULL, '$2y$10$qEjQZHdTBu9EGW8wilQiFuZUyTS888bUSMnCnFagFr49uu5uBOwcC', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 'Md. Shamim Al-Deen', 'shamimaldeen@gmail.com', '01738298666', NULL, 0, 2, 0, NULL, '$2y$10$fgNROc8u560fl59BxKLjjeOKQR2Jjc9WumHJykSmki1X9VA0GXCsS', NULL, '15-Dhanmondhi,dhaka-1200,Bangladesh', 'uploads/designer/1759437246_68dee1be965fa.jpg', '<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>', 'ABC Bank Ltd', 'gfdgdfg', 'Md. Shamim Al-Deen', '341243546567', '5432532', 'Card', '01738298666', '2025-08-18 19:35:11', '2025-10-02 21:01:23', NULL),
-(3, 'Al-Deen', 'aldeen298666@gmail.com', '01738298666', NULL, 0, 3, 0, NULL, '$2y$10$OPd4kGtlvs9goxYIiKlZ9e4q1wgu47ks.WfqbIiDdyRL1UU8v5f/q', NULL, '15-Dhanmondhi,dhaka-1200,Bangladesh', 'uploads/user/1759269347_68dc51e3ef620.jpg', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 'ABC Bank Ltd', 'Banani', 'Al-Deen', '34124354656', '54654', 'Card', '01738298667', '2025-08-18 19:37:44', '2025-09-30 22:05:43', NULL),
-(4, 'designer1', 'designer1@gmail.com', '01738455455', NULL, 0, 2, 0, NULL, '$2y$10$e192oASPePQ.3kHXAFvVG.mqC52vyQc5To1la123I2uyLXFkIWQeu', NULL, '15-Dhanmondhi,dhaka-1200,Bangladesh', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-05 13:38:24', '2025-10-03 19:59:39', NULL);
+(2, 'Md. Shamim Al-Deen', 'shamimaldeen@gmail.com', '01738298666', NULL, 0, 2, 0, NULL, '$2y$10$DfJ8PFPV70BYWe/HDiqLbe4I.4azC4VrnaXavBydPjHFM9QDkoAqG', NULL, 'H#10, R#23, Kazipara, Mirpur, Dhaka.', NULL, 'A professional designer. Working with Graphics, Photoshop etc.', 'Pubali Bank', 'Kazipara, Mirpur.', 'Mr. Shamim Al-Deen', '951357369', '8525', 'Business', '01738298666', '2025-08-18 19:35:11', '2025-08-18 19:35:11', NULL),
+(3, 'Al-Deen', 'aldeen298666@gmail.com', '01738298667', NULL, 0, 3, 0, NULL, '$2y$10$rZFWnfgeFFIWfyd0X4SI1eiPnbKUIyHZpn4EZBiEag0oVh2BMt3qy', NULL, 'H#15, R#20, Mirpur-10, Dhaka.', NULL, 'This is a dummy account', 'Sonali Bank', 'Mirpur 10', 'Al-Deen', '369852369', '3265', 'Business', '01738298667', '2025-08-18 19:37:44', '2025-08-18 19:37:44', NULL);
 
 --
 -- Indexes for dumped tables
@@ -957,13 +935,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `faqs`
@@ -993,25 +971,25 @@ ALTER TABLE `media`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -1035,19 +1013,19 @@ ALTER TABLE `privacy_policies`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `project_submits`
 --
 ALTER TABLE `project_submits`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `research_imgs`
@@ -1077,7 +1055,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `subscriptions`
 --
 ALTER TABLE `subscriptions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `technical_infos`
@@ -1101,7 +1079,7 @@ ALTER TABLE `testimonials`
 -- AUTO_INCREMENT for table `uploads`
 --
 ALTER TABLE `uploads`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
