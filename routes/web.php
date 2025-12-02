@@ -68,7 +68,6 @@ Route::post('/user/register', 'Auth\RegisterController@userRegister')->name('use
 Route::post('/user-login', 'Auth\LoginController@customLogin')->name('customLogin');
 Route::post('/seller/register', 'Auth\RegisterController@sellerRegister')->name('seller.register');
 
-
 Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
@@ -139,13 +138,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('project-details/{id}', 'ProjectController@projectDetails')->name('project.details');
     Route::get('project-details/{project_id}/{designer_id}', 'ProjectController@designerSubmitDetails')->name('project.design-submit-show');
     Route::delete('project/delete/{id}', 'ProjectController@projectDelete')->name('project.delete');
-   // Upload Product
+
+    // Upload Product
     Route::get('product-list', 'ProductController@productList')->name('products.list');
     Route::get('product-change-status/{id}', 'ProductController@productChangeStatus')->name('product.statusChange');
     Route::get('product-show/{id}', 'ProductController@productShow')->name('product.show');
     Route::delete('product-delete/{id}', 'ProductController@productDelete')->name('product.delete');
 
-// designer payment
+    // designer payment
     Route::post('project-designer-payment', 'DesignerPaymentController@designerPayment')->name('project.designer.payment');
 
 });
@@ -212,13 +212,10 @@ Route::match(['get', 'post'], 'designer/payment/success', [DesignerPaymentContro
 Route::match(['get', 'post'], 'designer/payment/fail', [DesignerPaymentController::class,'designerPaymentFail'])->name('designer.payment.fail');
 Route::match(['get', 'post'], 'designer/payment/cancel', [DesignerPaymentController::class,'designerPaymentCancel'])->name('designer.payment.cancel');
 
-
 // Customer
 Route::post('order/success', [PaymentController::class,'orderSuccess'])->name('order.success');
 Route::match(['get', 'post'], 'order/fail', [PaymentController::class, 'orderFail'])->name('order.fail');
 Route::match(['get', 'post'], 'order/cancel', [PaymentController::class, 'orderCancel'])->name('order.cancel');
-
-
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password
