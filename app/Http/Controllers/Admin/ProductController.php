@@ -11,8 +11,14 @@ class ProductController extends Controller
     public function productList()
     {
 
-        $products = Product::paginate(10);
-        return view('admin.product.product-list', compact('products'));
+        // $products = Product::paginate(10);
+        $approvedProducts = Product::where('status', 1)
+                                   ->paginate(10);
+
+        $newProducts = Product::where('status', 0)
+                                   ->paginate(10);
+
+        return view('admin.product.product-list', compact('approvedProducts', 'newProducts'));
     }
 
     public function productChangeStatus($id)
