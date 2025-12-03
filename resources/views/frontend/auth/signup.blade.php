@@ -238,7 +238,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-4">
+                            <div class="col-md-4 mb-4">
                                 <div class="input-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a9 9 0 0 1 13 0"/></svg>
@@ -246,29 +246,19 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6 mb-4">
+                            <div class="col-md-4 mb-4">
                                 <div class="input-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><path d="M2 7h20M2 12h20M2 17h20"/></svg>
                                     <input type="text" name="account_number" placeholder="Account Number">
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
+                            <div class="col-md-4 mb-4">
                                 <div class="input-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
                                     <input type="text" name="routing_no" placeholder="Routing Number">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <div class="input-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24"><path d="M22 16.92V21a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.18 2 2 0 0 1 4 2h4.09a2 2 0 0 1 2 1.72c.12.81.36 1.6.72 2.32a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.72.36 1.51.6 2.32.72a2 2 0 0 1 1.72 2z"/></svg>
-                                    <input type="text" name="mobile_banking_no" placeholder="Mobile Banking Number">
                                 </div>
                             </div>
                         </div>
@@ -280,12 +270,20 @@
                                         viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
 
                                     <select name="payment_method" style="border:0;outline:none;background:transparent;width:100%;">
-                                        <option value="">Select Payment Method</option>
+                                        <option value="">Select Mobile Wallet</option>
                                         <option value="bkash">bKash</option>
                                         <option value="rocket">Rocket</option>
                                         <option value="nagad">Nagad</option>
                                         <option value="upay">Upay</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24"><path d="M22 16.92V21a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.18 2 2 0 0 1 4 2h4.09a2 2 0 0 1 2 1.72c.12.81.36 1.6.72 2.32a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.72.36 1.51.6 2.32.72a2 2 0 0 1 1.72 2z"/></svg>
+                                    <input type="text" name="mobile_banking_no" placeholder="Mobile Banking Number">
                                 </div>
                             </div>
                         </div>
