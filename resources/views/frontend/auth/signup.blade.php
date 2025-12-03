@@ -2,14 +2,13 @@
 
 @section('content')
 <style>
-    /* Global style cleanup */
+    
     * {
-        box-sizing: border-box; /* Ensures padding doesn't affect total width */
+        box-sizing: border-box;
     }
 
     /* Main Layout & Container */
     .chobidokan-signup {
-        /* Increased padding and margin for better vertical centering */
         padding: 40px 15px;
         margin-top: 5rem;
         min-height: 90vh;
@@ -26,22 +25,20 @@
     /* Right Panel (Form Container) */
     .chobidokan-signup .right-panel {
         background: #ffffff;
-        /* Larger border radius for a softer look */
         border-radius: 16px;
-        padding: 3rem; /* Increased padding */
-        /* Enhanced, deeper shadow for a floating, premium look */
+        padding: 3rem;
         box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
     }
 
     /* Header/Branding */
     .chobidokan-signup .brand-head {
         text-align:center;
-        margin-bottom: 2rem; /* Increased spacing */
+        margin-bottom: 2rem;
     }
     .chobidokan-signup .brand-head h3 {
-        font-weight: 800; /* Bolder heading */
-        color: #1f2937; /* Darker, more professional color */
-        font-size: 2rem; /* Larger font size */
+        font-weight: 800; 
+        color: #1f2937;
+        font-size: 2rem;
     }
     .chobidokan-signup .brand-head p {
         color: #6b7280;
@@ -54,24 +51,23 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        /* Cleaner background and border */
         background: #ffffff;
         border: 1px solid #c2d4ec;
-        padding: 12px 18px; /* Increased padding */
+        padding: 12px 18px;
         border-radius: 12px;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
     /* Focus state enhancement */
     .chobidokan-signup .input-icon:focus-within {
         border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); /* Subtle focus ring */
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); 
     }
     .chobidokan-signup .input-icon svg {
-        width:20px; /* Larger icon */
+        width:20px; 
         height:20px;
         flex: 0 0 20px;
         opacity: .8;
-        color: #4a5568; /* Darker icon color */
+        color: #4a5568; 
     }
     .chobidokan-signup .input-icon input {
         border: 0;
@@ -79,39 +75,37 @@
         background: transparent;
         outline: none;
         width: 100%;
-        font-size: 1rem; /* Slightly larger input text */
+        font-size: 1rem; 
     }
     .chobidokan-signup .input-helper {
         font-size: .85rem;
-        color: #e3342f; /* Standard error color */
+        color: #e3342f; 
         margin-top: 8px;
         font-weight: 500;
     }
 
     /* Primary Button */
     .chobidokan-signup .btn-primary {
-        /* Enhanced gradient and shadow for a 'pop' effect */
         background: linear-gradient(90deg, #1d4ed8, #2563eb);
         border: none;
-        padding: 12px 24px; /* Increased vertical padding */
+        padding: 12px 24px; 
         border-radius: 12px;
         font-weight: 700;
         letter-spacing: 0.5px;
-        /* Stronger, premium shadow */
         box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
         transition: all 0.2s ease-in-out;
     }
     .chobidokan-signup .btn-primary:hover {
         background: linear-gradient(90deg, #2563eb, #1d4ed8);
         box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
-        transform: translateY(-2px); /* Subtle lift on hover */
+        transform: translateY(-2px); 
     }
 
     /* Links and Checkbox Text */
     .chobidokan-signup a.small-link {
         font-size: .95rem;
         color: #2563eb;
-        font-weight: 600; /* Bolder link text */
+        font-weight: 600; 
         text-decoration: none;
     }
     .chobidokan-signup a.small-link:hover {
@@ -119,7 +113,7 @@
         color: #1e40af;
     }
     .form-check-label {
-        color: #4b5563; /* Darker text for readability */
+        color: #4b5563; 
         font-size: 0.95rem;
     }
 
@@ -127,7 +121,7 @@
     @media (max-width: 767px) {
         .chobidokan-signup .right-panel { padding: 2.5rem; }
         .chobidokan-signup .brand-head h3 { font-size: 1.75rem; }
-        .chobidokan-signup .btn-primary { width: 100% !important; } /* Make button full width on mobile */
+        .chobidokan-signup .btn-primary { width: 100% !important; } 
         .chobidokan-signup .d-flex.justify-content-center { justify-content: flex-start !important; }
     }
 </style>
@@ -203,6 +197,103 @@
                         </div>
                     </div>
 
+                    {{-- radio buttons --}}
+                    <div class="mb-4">
+                        <label class="form-label mb-2" style="font-weight:600;color:#374151;">Register As</label>
+                        <div class="d-flex gap-4">
+
+                            <div>
+                                <input type="radio" name="user_type" id="customerOption" value="customer" checked>
+                                <label for="customerOption" class="ms-1">Customer</label>
+                            </div>
+
+                            <div>
+                                <input type="radio" name="user_type" id="designerOption" value="designer">
+                                <label for="designerOption" class="ms-1">Designer</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {{-- extra forms for designers --}}
+                    <div id="designerForm" style="display:none; margin-top:20px;">
+                        <h5 style="font-weight:700;color:#1f2937;">Designer Information</h5>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-4">
+                                <div class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24"><path d="M12 2l9 4-9 4-9-4 9-4zm0 8l9 4-9 4-9-4 9-4z"/></svg>
+                                    <input type="text" name="bank_name" placeholder="Bank Name">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/></svg>
+                                    <input type="text" name="branch_name" placeholder="Branch Name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a9 9 0 0 1 13 0"/></svg>
+                                    <input type="text" name="account_holder_name" placeholder="Account Holder Name">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24"><path d="M2 7h20M2 12h20M2 17h20"/></svg>
+                                    <input type="text" name="account_number" placeholder="Account Number">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
+                                    <input type="text" name="routing_no" placeholder="Routing Number">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24"><path d="M22 16.92V21a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.18 2 2 0 0 1 4 2h4.09a2 2 0 0 1 2 1.72c.12.81.36 1.6.72 2.32a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.72.36 1.51.6 2.32.72a2 2 0 0 1 1.72 2z"/></svg>
+                                    <input type="text" name="mobile_banking_no" placeholder="Mobile Banking Number">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+
+                                    <select name="payment_method" style="border:0;outline:none;background:transparent;width:100%;">
+                                        <option value="">Select Payment Method</option>
+                                        <option value="bkash">bKash</option>
+                                        <option value="rocket">Rocket</option>
+                                        <option value="nagad">Nagad</option>
+                                        <option value="upay">Upay</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
                     <div class="d-flex justify-content-between align-items-start mb-4">
                         <div class="d-flex align-items-start">
                             <input type="checkbox" class="form-check-input me-2 mt-1" name="terms_conditiond" id="exampleCheck1" required style="cursor:pointer;">
@@ -247,5 +338,17 @@
             btn.innerHTML = EYE_SVG;
         }
     }
+</script>
+
+<script>
+// Show/Hide Designer Form
+document.getElementById('designerOption').addEventListener('click', function () {
+    document.getElementById('designerForm').style.display = 'block';
+});
+
+document.getElementById('customerOption').addEventListener('click', function () {
+    document.getElementById('designerForm').style.display = 'none';
+});
+
 </script>
 @endsection
