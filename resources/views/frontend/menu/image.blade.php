@@ -86,12 +86,13 @@
         @foreach($products as $key=>$product)
           <div class="col-md-4 mb-4">
             <div class="gallery-item">
-              <img src="{{ asset($product->file_path) }}" alt="{{$product->file_name}}">
+                <a href="{{ route('product-details',$product->id) }}">
+                    <img src="{{ asset($product->file_path) }}" alt="{{$product->file_name}}">
+                </a>
               <div class="overlay">
                 <h6>{{ $product->title ?? '' }}</h6>
                 <div class="overlay-icons">
                     <a href="{{ route('product-details',$product->id) }}">  <i class="fa fa-eye" title="View"></i></a>
-
                   <i class="fa fa-download" title="Download"></i>
                   <i class="fa fa-share-alt" title=""></i>
                 </div>

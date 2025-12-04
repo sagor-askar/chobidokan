@@ -178,8 +178,9 @@
            @foreach($similarProducts as $key=>$similarProduct )
                     <div class="col-md-4 mb-4">
                         <div class="similar-card">
-                            <img src="{{ asset($similarProduct->file_path) }}" alt="{{ $similarProduct->file_name }}">
-
+                            <a href="{{ route('product-details',$product->id) }}">
+                               <img src="{{ asset($similarProduct->file_path) }}" alt="{{ $similarProduct->file_name }}">
+                            </a>
                             <div class="similar-overlay">
                                 <div>
                                     <a href="{{ route('product-details',$similarProduct->id) }}">

@@ -100,7 +100,9 @@
                                 <source src="{{ asset($product->file_path) }}" type="{{ $product->file_type }}">
                             </video>
                         @else
+                            <a href="{{ route('product-details', $product->id) }}">
                             <img class="img" src="{{ asset($product->file_path) }}" alt="">
+                            </a>
                         @endif
 
                         <div class="watermark">CHOBIDOKAN</div>

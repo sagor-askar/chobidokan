@@ -72,51 +72,28 @@
   <!-- Hero Section -->
   @include('includes.hero')
 
-  <h5 class="text-center mt-4">1,00,000+ images for "Title Name >> View All"</h5>
+  <h5 class="text-center mt-4">{{ $products->total() }}+ images for "{{ $category->name ?? '' }} >> View All"</h5>
 
   <div class="container gallery">
     <div class="row">
-      <div class="col-md-4 mb-4">
-        <div class="gallery-item">
-          <img src="{{ asset('frontend_assets/1.jpg') }}" alt="Gallery Image 1">
-          <div class="overlay">
-            <h6>Happy Senior Couple</h6>
-            <div class="overlay-icons">
-              <i class="fa fa-eye" title="View"></i>
-              <i class="fa fa-download" title="Download"></i>
-              <i class="fa fa-share-alt" title=""></i>
-            </div>
-          </div>
-        </div>
-      </div>
 
+        @foreach($products as $key=>$product)
       <div class="col-md-4 mb-4">
         <div class="gallery-item">
-          <img src="{{ asset('frontend_assets/1.jpg') }}" alt="Gallery Image 2">
+            <a href="{{ route('product-details',$product->id) }}">
+                <img src="{{ asset($product->file_path) }}" alt="{{$product->file_name}}">
+            </a>
           <div class="overlay">
-            <h6>Outdoor Activity</h6>
+            <h6>{{ $product->title ?? '' }}</h6>
             <div class="overlay-icons">
-              <i class="fa fa-eye" title="View"></i>
+                <a href="{{ route('product-details',$product->id) }}">  <i class="fa fa-eye" title="View"></i></a>
               <i class="fa fa-download" title="Download"></i>
               <i class="fa fa-share-alt" title=""></i>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="col-md-4 mb-4">
-        <div class="gallery-item">
-          <img src="{{ asset('frontend_assets/1.jpg') }}" alt="Gallery Image 3">
-          <div class="overlay">
-            <h6>Smiling Grandma</h6>
-            <div class="overlay-icons">
-              <i class="fa fa-eye" title="View"></i>
-              <i class="fa fa-download" title="Download"></i>
-              <i class="fa fa-share-alt" title=""></i>
-            </div>
-          </div>
-        </div>
-      </div>
+        @endforeach
     </div>
   </div>
 </main>
