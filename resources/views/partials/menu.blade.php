@@ -185,7 +185,7 @@
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-upload mr-2"></i>
-                    <span>Uploaded Products</span>
+                    <span>Product Management </span>
                     <span class="pull-right-container"><i class="fa fa-fw fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
@@ -195,7 +195,17 @@
                             <i class="fa-fw fas fa-unlock-alt">
 
                             </i>
-                            <span>Product List</span>
+                            <span> Upload Product List</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/approved-products') || request()->is('admin/approved-products/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.approved.products.list') }}">
+                            <i class="fa-fw fas fa-unlock-alt">
+
+                            </i>
+                            <span> Approved Product List</span>
                         </a>
                     </li>
                 </ul>

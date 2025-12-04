@@ -31,6 +31,10 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('signin', 'signin')->name('signin');
     Route::get('signup', 'signup')->name('signup');
     Route::get('submission-guidelines', 'guidelines')->name('submission-guidelines');
+    Route::get('customize', 'customization')->name('customize');
+    Route::get('closed-jobs', 'closedJobs')->name('closed-jobs');
+    Route::get('/custom-job/search', 'CustomJobSearch')->name('custom-job.search');
+
     // footer routes
     Route::get('about-us', 'aboutUs')->name('about-us');
     Route::get('testimonials', 'testimonial')->name('testimonials');
@@ -141,6 +145,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Upload Product
     Route::get('product-list', 'ProductController@productList')->name('products.list');
+    Route::get('approved-product-list', 'ProductController@approvedProductList')->name('approved.products.list');
     Route::get('product-change-status/{id}', 'ProductController@productChangeStatus')->name('product.statusChange');
     Route::get('product-show/{id}', 'ProductController@productShow')->name('product.show');
     Route::delete('product-delete/{id}', 'ProductController@productDelete')->name('product.delete');
@@ -151,10 +156,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 });
 
 Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
-    Route::get('customize', [WebsiteController::class,'customization'])->name('customize');
-    Route::get('closed-jobs',  [WebsiteController::class, 'closedJobs'])->name('closed-jobs');
     Route::get('/custom-request', [WebsiteController::class, 'customRequest'])->name('custom-request');
-    Route::get('/custom-job/search', [WebsiteController::class, 'CustomJobSearch'])->name('custom-job.search');
     Route::get('customize-details/{id}', [ProjectController::class, 'customizationDetail'])->name('customize-details');
     Route::get('project/submitted-file-view-all/{id}', [ProjectController::class, 'submittedFileViewAll'])->name('submitted-file-view-all');
     Route::get('project/submitted-file-confirm/{id}', [ProjectController::class, 'submittedFileConfirm'])->name('project.submitted-file.confirm');
