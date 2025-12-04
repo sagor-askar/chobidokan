@@ -3,7 +3,6 @@
     <div class="content">
 
         <div class="row">
-            <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         {{ trans('global.show') }} Product
@@ -90,11 +89,6 @@
                                         {{ $product->price ?? '' }} Tk.
                                     </td>
                                 </tr>
-                                </tbody>
-                            </table>
-
-                            <table class="table table-bordered table-striped">
-                                <tbody>
                                 <tr>
                                     <th>
                                         Designer
@@ -103,6 +97,9 @@
                                     <td>
                                         {{ $product->user->name ?? '' }}
                                     </td>
+
+                                </tr>
+                                <tr>
 
                                     <th> Publish Date </th>
                                     <td>
@@ -113,14 +110,30 @@
                                     <th>
                                         Image
                                     </th>
+                                    @php
+                                        $extension = strtolower(pathinfo($product->file_path, PATHINFO_EXTENSION));
+                                        $isVideo = in_array($extension, ['mp4', 'webm', 'ogg', 'mov']);
+                                    @endphp
                                     <td>
-                                        <div>
-                                            <a target="_blank" href="{{ asset($product->file_path) }}" title="Click to download" download>
-                                                <img src="{{ asset($product->file_path) }}" alt="Image" width="170" style="height:auto; cursor:pointer;">
-                                            </a>
-                                            <div style="font-size:12px; color:#555;">Click image to download</div>
-                                        </div>
+                                        @if ($isVideo)
+                                            <div>
+                                                <video width="30%" height="60%" style="object-fit: cover; border-radius: 3px;" muted>
+                                                    <source src="{{ asset($product->file_path) }}"
+                                                            type="video/{{ $extension }}">
+                                                </video>
+                                                @php $iconClass = 'bi-play-btn-fill'; @endphp
+                                            </div>
+                                        @else
+                                            <div>
+                                                <a target="_blank" href="{{ asset($product->file_path) }}" title="Click to download" download>
+                                                    <img src="{{ asset($product->file_path) }}" alt="Image" width="170" style="height:auto; cursor:pointer;">
+                                                </a>
+                                                <div style="font-size:12px; color:#555;">Click image to download</div>
+                                            </div>
+                                        @endif
                                     </td>
+                                </tr>
+                                <tr>
                                     <th>
                                         Status
                                     </th>
@@ -137,6 +150,7 @@
                                 </tr>
                                 </tbody>
                             </table>
+
                             <div class="form-group">
                                 <a class="btn btn-default" href="{{ route('admin.products.list') }}">
                                     {{ trans('global.back_to_list') }}
@@ -145,10 +159,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-            </div>
         </div>
     </div>
 @endsection

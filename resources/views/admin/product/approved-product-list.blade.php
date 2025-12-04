@@ -10,13 +10,13 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Uploaded Items
+                        Approved Product Items
                     </div>
                     <div class="panel-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable datatable-products"
-                                id="upload-products-dataTable">
-                                <caption><i class="fa fa-list" aria-hidden="true"></i>  Uploaded Product Items</caption>
+                            <table class="table table-bordered table-striped table-hover datatable datatable-approved-products"
+                                id="approved-products-dataTable">
+                                <caption><i class="fa fa-list" aria-hidden="true"></i>  Approved Product Items</caption>
                                 <thead>
                                     <tr>
                                         <th>
@@ -47,7 +47,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($newProducts as $index => $product)
+                                    @foreach ($approvedProducts as $index => $product)
                                         @php
                                             $extension = strtolower(pathinfo($product->file_path, PATHINFO_EXTENSION));
                                             $isVideo = in_array($extension, ['mp4', 'webm', 'ogg', 'mov']);
@@ -80,7 +80,7 @@
                                                     <a href="#" data-bs-toggle="modal"
                                                         data-bs-target="#mediaModal{{ $index }}"
                                                         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                                                color: #fff; background: rgba(0,0,0,0.5); border-radius: 50%; padding: 4px;">
+                                    color: #fff; background: rgba(0,0,0,0.5); border-radius: 50%; padding: 4px;">
                                                         <i class="bi {{ $iconClass }}" style="font-size: 16px;"></i>
                                                     </a>
 
@@ -178,12 +178,13 @@
                                     @endforeach
                                 </tbody>
                             </table>
+
+                            @if ($approvedProducts->hasPages())
+                                {{ $approvedProducts->links() }}
+                            @endif
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
     </div>
@@ -234,7 +235,8 @@
             }
             dtButtons.push(deleteButton)
             @endcan
-            initDataTable('#upload-products-dataTable', dtButtons);
+            initDataTable('#approved-products-dataTable', dtButtons);
         })
+
     </script>
 @endsection

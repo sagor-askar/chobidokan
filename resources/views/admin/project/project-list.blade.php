@@ -127,7 +127,6 @@
                                 </tbody>
                             </table>
                             @if ($projects->hasPages())
-
                                 {{ $projects->links() }}
                             @endif
                         </div>
@@ -187,9 +186,7 @@
             }
             dtButtons.push(deleteButton)
             @endcan
-
             initDataTable('#project-dataTable', dtButtons);
-
         })
 
     </script>

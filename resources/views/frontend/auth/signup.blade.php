@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-    
+
     * {
         box-sizing: border-box;
     }
@@ -36,7 +36,7 @@
         margin-bottom: 2rem;
     }
     .chobidokan-signup .brand-head h3 {
-        font-weight: 800; 
+        font-weight: 800;
         color: #1f2937;
         font-size: 2rem;
     }
@@ -60,14 +60,14 @@
     /* Focus state enhancement */
     .chobidokan-signup .input-icon:focus-within {
         border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); 
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
     .chobidokan-signup .input-icon svg {
-        width:20px; 
+        width:20px;
         height:20px;
         flex: 0 0 20px;
         opacity: .8;
-        color: #4a5568; 
+        color: #4a5568;
     }
     .chobidokan-signup .input-icon input {
         border: 0;
@@ -75,11 +75,11 @@
         background: transparent;
         outline: none;
         width: 100%;
-        font-size: 1rem; 
+        font-size: 1rem;
     }
     .chobidokan-signup .input-helper {
         font-size: .85rem;
-        color: #e3342f; 
+        color: #e3342f;
         margin-top: 8px;
         font-weight: 500;
     }
@@ -88,7 +88,7 @@
     .chobidokan-signup .btn-primary {
         background: linear-gradient(90deg, #1d4ed8, #2563eb);
         border: none;
-        padding: 12px 24px; 
+        padding: 12px 24px;
         border-radius: 12px;
         font-weight: 700;
         letter-spacing: 0.5px;
@@ -98,14 +98,14 @@
     .chobidokan-signup .btn-primary:hover {
         background: linear-gradient(90deg, #2563eb, #1d4ed8);
         box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
-        transform: translateY(-2px); 
+        transform: translateY(-2px);
     }
 
     /* Links and Checkbox Text */
     .chobidokan-signup a.small-link {
         font-size: .95rem;
         color: #2563eb;
-        font-weight: 600; 
+        font-weight: 600;
         text-decoration: none;
     }
     .chobidokan-signup a.small-link:hover {
@@ -113,7 +113,7 @@
         color: #1e40af;
     }
     .form-check-label {
-        color: #4b5563; 
+        color: #4b5563;
         font-size: 0.95rem;
     }
 
@@ -121,7 +121,7 @@
     @media (max-width: 767px) {
         .chobidokan-signup .right-panel { padding: 2.5rem; }
         .chobidokan-signup .brand-head h3 { font-size: 1.75rem; }
-        .chobidokan-signup .btn-primary { width: 100% !important; } 
+        .chobidokan-signup .btn-primary { width: 100% !important; }
         .chobidokan-signup .d-flex.justify-content-center { justify-content: flex-start !important; }
     }
 </style>
@@ -203,12 +203,12 @@
                         <div class="d-flex gap-4">
 
                             <div>
-                                <input type="radio" name="user_type" id="customerOption" value="customer" checked>
+                                <input type="radio" name="role_id" id="customerOption" value="3" checked>
                                 <label for="customerOption" class="ms-1">Customer</label>
                             </div>
 
                             <div>
-                                <input type="radio" name="user_type" id="designerOption" value="designer">
+                                <input type="radio" name="role_id" id="designerOption" value="2">
                                 <label for="designerOption" class="ms-1">Designer</label>
                             </div>
 
@@ -224,7 +224,7 @@
                                 <div class="input-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><path d="M12 2l9 4-9 4-9-4 9-4zm0 8l9 4-9 4-9-4 9-4z"/></svg>
-                                    <input type="text" name="bank_name" placeholder="Bank Name">
+                                    <input type="text" name="bank_name" placeholder="Bank Name" value="{{ old('bank_name') }}">
                                 </div>
                             </div>
 
@@ -232,7 +232,7 @@
                                 <div class="input-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/></svg>
-                                    <input type="text" name="branch_name" placeholder="Branch Name">
+                                    <input type="text" name="branch_name" placeholder="Branch Name" value="{{ old('branch_name') }}" >
                                 </div>
                             </div>
                         </div>
@@ -242,7 +242,7 @@
                                 <div class="input-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a9 9 0 0 1 13 0"/></svg>
-                                    <input type="text" name="account_holder_name" placeholder="Account Holder Name">
+                                    <input type="text" name="account_holder_name" placeholder="Account Holder Name" value="{{ old('account_holder_name') }}">
                                 </div>
                             </div>
 
@@ -250,7 +250,7 @@
                                 <div class="input-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><path d="M2 7h20M2 12h20M2 17h20"/></svg>
-                                    <input type="text" name="account_number" placeholder="Account Number">
+                                    <input type="text" name="account_number" placeholder="Account Number" value="{{ old('account_number') }}">
                                 </div>
                             </div>
 
@@ -258,7 +258,7 @@
                                 <div class="input-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>
-                                    <input type="text" name="routing_no" placeholder="Routing Number">
+                                    <input type="text" name="routing_no" placeholder="Routing Number" value="{{ old('routing_no') }}">
                                 </div>
                             </div>
                         </div>
@@ -269,7 +269,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
 
-                                    <select name="payment_method" style="border:0;outline:none;background:transparent;width:100%;">
+                                    <select name="account_type" style="border:0;outline:none;background:transparent;width:100%;">
                                         <option value="">Select Mobile Wallet</option>
                                         <option value="bkash">bKash</option>
                                         <option value="rocket">Rocket</option>
@@ -283,7 +283,7 @@
                                 <div class="input-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24"><path d="M22 16.92V21a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.18 2 2 0 0 1 4 2h4.09a2 2 0 0 1 2 1.72c.12.81.36 1.6.72 2.32a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.72.36 1.51.6 2.32.72a2 2 0 0 1 1.72 2z"/></svg>
-                                    <input type="text" name="mobile_banking_no" placeholder="Mobile Banking Number">
+                                    <input type="text" name="mobile_banking_no" placeholder="Mobile Banking Number" value="{{ old('mobile_banking_no') }}">
                                 </div>
                             </div>
                         </div>

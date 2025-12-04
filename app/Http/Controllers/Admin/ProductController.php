@@ -10,15 +10,15 @@ class ProductController extends Controller
 {
     public function productList()
     {
+        $newProducts = Product::where('status', 0)->paginate(10);
+        return view('admin.product.product-list', compact( 'newProducts'));
+    }
 
-        // $products = Product::paginate(10);
-        $approvedProducts = Product::where('status', 1)
-                                   ->paginate(10);
 
-        $newProducts = Product::where('status', 0)
-                                   ->paginate(10);
-
-        return view('admin.product.product-list', compact('approvedProducts', 'newProducts'));
+    public function approvedProductList()
+    {
+        $approvedProducts = Product::where('status', 1)->paginate(10);
+        return view('admin.product.approved-product-list', compact('approvedProducts'));
     }
 
     public function productChangeStatus($id)
