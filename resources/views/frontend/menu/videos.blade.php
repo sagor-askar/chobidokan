@@ -59,66 +59,53 @@
 
         <section class="mb-2">
             <div class="container">
-                <div class="row">
+                <div class="row g-4">
 
-                    <!-- video 1 -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card image-card">
-                            <video class="card-img-top" muted>
-                                <source src="{{ asset('images/demo-video.mp4') }}" type="video/mp4">
-                            </video>
+                    <!-- Item -->
+                    <div class="col-md-4">
+                        <div class="position-relative overflow-hidden rounded shadow-lg">
+
+                            <!-- Video Wrapper -->
+                            <div class="ratio ratio-16x9">
+                                <video class="w-100" muted playsinline preload="metadata" onmouseenter="this.play()"
+                                    onmouseleave="this.pause(); this.currentTime=0;">
+
+                                    <source src="{{ asset('frontend_assets/img/demo.mp4') }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+
+                            <!-- Play Icon -->
+                            <div class="position-absolute top-50 start-50 translate-middle text-white">
+                                <i class="fa fa-play-circle fa-3x opacity-75"></i>
+                            </div>
+
+                            <!-- Watermark -->
+                            <div
+                                class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-dark bg-opacity-50 text-white small rounded">
+                                CHOBIDOKAN
+                            </div>
 
                             <!-- Overlay -->
-                            <div class="image-overlay">
-                                <div class="overlay-icons">
-                                    <i class="fa fa-eye"></i>
-                                    <i class="fa fa-download"></i>
-                                    <i class="fa fa-share-alt"></i>
+                            <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
+                                style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
+
+                                <div class="fw-semibold">Sample Video Title</div>
+
+                                <div class="d-flex justify-content-between align-items-center small mt-1">
+                                    <span>Tk 500</span>
+
+                                    <div class="d-flex gap-3">
+                                        <i class="fa fa-eye"></i>
+                                        <i class="fa fa-download"></i>
+                                        <i class="fa fa-share-alt"></i>
+                                    </div>
                                 </div>
-                                <span>Video Title</span>
                             </div>
+
                         </div>
                     </div>
 
-                    <!-- video 2 -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card image-card">
-                            <video class="card-img-top" muted>
-                                <source src="{{ asset('images/demo-video.mp4') }}" type="video/mp4">
-                            </video>
-
-                            <!-- Overlay -->
-                            <div class="image-overlay">
-                                <div class="overlay-icons">
-                                    <i class="fa fa-eye"></i>
-                                    <i class="fa fa-download"></i>
-                                    <i class="fa fa-share-alt"></i>
-                                </div>
-                                <span>Video Title</span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- video 3 -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card image-card">
-                            <video class="card-img-top" muted>
-                                <source src="{{ asset('images/demo-video.mp4') }}" type="video/mp4">
-                            </video>
-
-                            <!-- Overlay -->
-                            <div class="image-overlay">
-                                <div class="overlay-icons">
-                                    <i class="fa fa-eye"></i>
-                                    <i class="fa fa-download"></i>
-                                    <i class="fa fa-share-alt"></i>
-                                </div>
-                                <span>Video Title</span>
-                            </div>
-                        </div>
-
-                    </div>
 
                 </div>
             </div>
