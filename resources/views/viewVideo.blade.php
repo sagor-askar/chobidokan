@@ -4,11 +4,12 @@
         .feature-img {
             position: relative;
             overflow: hidden;
+            padding-bottom: 70px;
         }
 
         .feature-overlay {
             position: absolute;
-            bottom: 0;
+            bottom: 10px;
             width: 100%;
             background: rgba(0, 0, 0, 0.65);
             color: #fff;
@@ -16,6 +17,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-top: 20px;
         }
 
         .feature-icons i {
@@ -56,26 +58,44 @@
 
     <div class="container py-5">
 
-        <!-- Blog Container -->
+        <!-- Container -->
         <div class=" border-0">
 
             <!-- Feature Image -->
-            <div class="mt-5 w-100 feature-img">
-                <video class="h-50 w-100" controls>
-                    <source src="{{ asset('images/demovideo.mp4') }}" type="video/mp4">
-                </video>
+            <div class="mt-5 w-100 feature-img rounded shadow-lg position-relative">
 
-                <!-- Always visible bottom overlay -->
-                <div class="feature-overlay">
-                    <div class="feature-icons">
-                        <i class="fa fa-heart"></i>
-                        <i class="fa fa-eye"></i>
-                        <i class="fa fa-share-alt"></i>
+                <!-- Video Wrapper -->
+                <div class="ratio ratio-16x9">
+                    <video class="w-100" muted playsinline preload="metadata" controls onmouseenter="this.play()"
+                        onmouseleave="this.pause(); this.currentTime=0;">
+
+                        <source src="{{ asset('frontend_assets/img/demo.mp4') }}" type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- Center Play Icon -->
+                <div class="position-absolute top-50 start-50 translate-middle text-white">
+                    <i class="fa fa-play-circle fa-4x opacity-75"></i>
+                </div>
+
+                <!-- Bottom Overlay -->
+                <div class="feature-overlay w-100" style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
+
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="feature-icons">
+                            <i class="fa fa-heart"></i>
+                            <i class="fa fa-eye"></i>
+                            <i class="fa fa-share-alt"></i>
+                        </div>
+
+                        <span class="fw-semibold">Featured Video</span>
                     </div>
 
-                    <span>Featured Video</span>
+                    <span class="badge bg-warning text-dark fw-semibold">Featured</span>
                 </div>
             </div>
+
+
 
             <div class="card-body p-4">
 
@@ -83,8 +103,8 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
 
                     <div class="d-flex align-items-center">
-                        <img src="http://1.gravatar.com/avatar/7a20fad302fc2dd4b4649dc5bdb3c463?s=64&d=mm&r=g"
-                            class="rounded-circle mr-3" width="50" height="50" alt="Author">
+                        <img src="{{ asset('assets/img/user/default-user.png') }}" class="rounded-circle mr-3"
+                            width="50" height="50" alt="Author">
 
                         <div>
                             <h6 class="mb-0 font-weight-bold">
@@ -149,62 +169,48 @@
             <div class="row">
 
                 <!-- Image 1 -->
-                <div class="col-md-4 mb-4">
-                    <div class="card image-card">
-                        <video class="card-img-top" muted>
-                            <source src="{{ asset('images/demo-video.mp4') }}" type="video/mp4">
-                        </video>
+                <div class="col-md-4">
+                    <div class="position-relative overflow-hidden rounded shadow-lg">
+
+                        <!-- Video Wrapper -->
+                        <div class="ratio ratio-16x9">
+                            <video class="w-100" muted playsinline preload="metadata" onmouseenter="this.play()"
+                                onmouseleave="this.pause(); this.currentTime=0;">
+
+                                <source src="" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+
+                        <!-- Play Icon -->
+                        <div class="position-absolute top-50 start-50 translate-middle text-white">
+                            <i class="fa fa-play-circle fa-3x opacity-75"></i>
+                        </div>
+
+                        <!-- Watermark -->
+                        <div
+                            class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-dark bg-opacity-50 text-white small rounded">
+                            CHOBIDOKAN
+                        </div>
 
                         <!-- Overlay -->
-                        <div class="image-overlay">
-                            <div class="overlay-icons">
-                                <i class="fa fa-eye"></i>
-                                <i class="fa fa-download"></i>
-                                <i class="fa fa-share-alt"></i>
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
+                            style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
+
+                            <div class="fw-semibold">Sample Video Title</div>
+
+                            <div class="d-flex justify-content-between align-items-center small mt-1">
+                                <span>Tk 500</span>
+
+                                <div class="d-flex gap-3">
+                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-download"></i>
+                                    <i class="fa fa-share-alt"></i>
+                                </div>
                             </div>
-                            <span>Video Title</span>
                         </div>
+
                     </div>
-                </div>
-
-                <!-- Image 2 -->
-                <div class="col-md-4 mb-4">
-                    <div class="card image-card">
-                        <video class="card-img-top" muted>
-                            <source src="{{ asset('images/demo-video.mp4') }}" type="video/mp4">
-                        </video>
-
-                        <!-- Overlay -->
-                        <div class="image-overlay">
-                            <div class="overlay-icons">
-                                <i class="fa fa-eye"></i>
-                                <i class="fa fa-download"></i>
-                                <i class="fa fa-share-alt"></i>
-                            </div>
-                            <span>Video Title</span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Image 3 -->
-                <div class="col-md-4 mb-4">
-                    <div class="card image-card">
-                        <video class="card-img-top" muted>
-                            <source src="{{ asset('images/demo-video.mp4') }}" type="video/mp4">
-                        </video>
-
-                        <!-- Overlay -->
-                        <div class="image-overlay">
-                            <div class="overlay-icons">
-                                <i class="fa fa-eye"></i>
-                                <i class="fa fa-download"></i>
-                                <i class="fa fa-share-alt"></i>
-                            </div>
-                            <span>Video Title</span>
-                        </div>
-                    </div>
-
                 </div>
 
             </div>
