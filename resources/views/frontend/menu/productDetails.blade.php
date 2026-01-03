@@ -54,7 +54,8 @@
         .similar-card {
             position: relative;
             width: 100%;
-            height: 250px; /* Fixed height for all items */
+            height: 250px;
+            /* Fixed height for all items */
             border-radius: 8px;
             overflow: hidden;
         }
@@ -63,7 +64,8 @@
         .similar-card img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* SAME height-width, perfect crop */
+            object-fit: cover;
+            /* SAME height-width, perfect crop */
             transition: transform 0.4s ease;
         }
 
@@ -84,6 +86,28 @@
             justify-content: space-between;
             align-items: center;
         }
+
+        /* watermark text */
+        .image-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+
+            font-size: 100px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+            color: #ffffff;
+            opacity: 0.15;
+            z-index: 10;
+
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        }
     </style>
 
     <!-- Hero Section -->
@@ -96,17 +120,22 @@
 
             <!-- Feature Image -->
             <div class="w-100 feature-img">
-                <img src="{{ asset($product->file_path) }}" class="img-fluid" alt="{{$product->file_name}}">
+                <img src="{{ asset($product->file_path) }}" class="img-fluid" alt="{{ $product->file_name }}">
+
+                <!-- Watermark text -->
+                <div class="image-watermark">
+                    {{ $product->title }}
+                </div>
 
                 <!-- Always visible bottom overlay -->
                 <div class="feature-overlay">
                     <div class="feature-icons">
                         <i class="fa fa-heart"></i>
-                        <i class="fa fa-eye"></i>
                         <i class="fa fa-share-alt"></i>
+                        <i class="fa fa-download" aria-hidden="true"></i>
                     </div>
 
-                    <span>{{$product->title ?? ''}}</span>
+                    <span>{{ $product->title ?? '' }}</span>
                 </div>
             </div>
 
@@ -129,17 +158,26 @@
                             </small>
                         </div>
                     </div>
-                    <div>
-                        <a href="#" class="text-secondary">
-                            <i class="fa fa-download mr-1"></i> Total 10 Downloads
-                        </a>
+                    <div class="d-flex gap-3">
+                        <button type="button" class="btn btn-outline-secondary btn-sm">
+                            <i class="fa fa-heart mr-1"></i> Save
+                        </button>
+
+                        <button type="button" class="btn btn-outline-secondary btn-sm">
+                            <i class="fa fa-download mr-1"></i> Try
+                        </button>
+
+                        <button type="button" class="btn btn-outline-secondary btn-sm">
+                            <i class="fa fa-list mr-1"></i> Total 10 Downloads
+                        </button>
                     </div>
+
                 </div>
 
                 <!-- Blog Content -->
                 <div class="mb-4" style="line-height: 1.8;">
                     <p class="text-secondary">
-                      {!! $product->description !!}
+                        {!! $product->description !!}
                     </p>
 
                     {{-- if the image is available --}}
@@ -156,9 +194,10 @@
                     <h6 class="text-uppercase font-weight-bold">Tags</h6>
 
                     <div class="mt-2">
-                        @if(count($uniqueTags) > 0 )
-                            @foreach($uniqueTags as $key => $tag)
-                                <a href="{{ route('tag-wise-product', $tag) }}" class="btn btn-sm btn-outline-secondary mr-2 mb-2">{{ $tag }}</a>
+                        @if (count($uniqueTags) > 0)
+                            @foreach ($uniqueTags as $key => $tag)
+                                <a href="{{ route('tag-wise-product', $tag) }}"
+                                    class="btn btn-sm btn-outline-secondary mr-2 mb-2">{{ $tag }}</a>
                             @endforeach
                         @endif
                     </div>
@@ -175,15 +214,15 @@
         <div class="container">
             <h3 class="mb-4 text-center font-weight-bold">Similar Images</h3>
             <div class="row">
-           @foreach($similarProducts as $key=>$similarProduct )
+                @foreach ($similarProducts as $key => $similarProduct)
                     <div class="col-md-4 mb-4">
                         <div class="similar-card">
-                            <a href="{{ route('product-details',$product->id) }}">
-                               <img src="{{ asset($similarProduct->file_path) }}" alt="{{ $similarProduct->file_name }}">
+                            <a href="{{ route('product-details', $product->id) }}">
+                                <img src="{{ asset($similarProduct->file_path) }}" alt="{{ $similarProduct->file_name }}">
                             </a>
                             <div class="similar-overlay">
                                 <div>
-                                    <a href="{{ route('product-details',$similarProduct->id) }}">
+                                    <a href="{{ route('product-details', $similarProduct->id) }}">
                                         <i class="fa fa-eye text-white"></i>
                                     </a>
                                     <i class="fa fa-download"></i>
