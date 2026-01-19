@@ -266,9 +266,12 @@ class WebsiteController extends Controller
         }else{
             return view('frontend.menu.closedJobs', compact('status','categories','projects','totalProjects'));
         }
+    }
 
-
-
+    // image view all page
+    public function viewAll()
+    {
+        return view('viewAll');
     }
 
 
