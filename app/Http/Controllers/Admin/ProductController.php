@@ -26,7 +26,13 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->status = $product->status == 1 ? 0 : 1;
         $product->save();
-        return redirect()->back()->with('success', 'Status Changed successfully.');
+
+        if ($product->status == 1) {
+          return redirect()->route('admin.approved.products.list')->with('success', 'Status Changed successfully.');
+        }else{
+            return redirect()->route('admin.products.list')->with('success', 'Status Changed successfully.');
+        }
+
     }
 
     public function productShow($id)

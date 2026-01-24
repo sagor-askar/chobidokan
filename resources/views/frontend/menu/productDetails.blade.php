@@ -124,7 +124,7 @@
 
                 <!-- Watermark text -->
                 <div class="image-watermark">
-                    {{ $product->title }}
+                    CHOBIDOKAN
                 </div>
 
                 <!-- Always visible bottom overlay -->
