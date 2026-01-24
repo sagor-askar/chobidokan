@@ -10,50 +10,51 @@
                 </a>
             </li>
             @can('user_management_access')
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa-fw fas fa-users">
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa-fw fas fa-users">
 
-                    </i>
-                    <span>{{ trans('cruds.userManagement.title') }}</span>
-                    <span class="pull-right-container"><i class="fa fa-fw fa-angle-left pull-right"></i></span>
-                </a>
-                <ul class="treeview-menu">
-                    @can('permission_access')
-                    <li class="{{ request()->is('admin/permissions') || request()->is('admin/permissions/*') ? 'active' : '' }}">
-                        <a href="{{ route('admin.permissions.index') }}">
-                            <i class="fa-fw fas fa-unlock-alt">
+                        </i>
+                        <span>{{ trans('cruds.userManagement.title') }}</span>
+                        <span class="pull-right-container"><i class="fa fa-fw fa-angle-left pull-right"></i></span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('permission_access')
+                            <li
+                                class="{{ request()->is('admin/permissions') || request()->is('admin/permissions/*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.permissions.index') }}">
+                                    <i class="fa-fw fas fa-unlock-alt">
 
-                            </i>
-                            <span>{{ trans('cruds.permission.title') }}</span>
+                                    </i>
+                                    <span>{{ trans('cruds.permission.title') }}</span>
 
-                        </a>
-                    </li>
-                    @endcan
-                    @can('role_access')
-                    <li class="{{ request()->is('admin/roles') || request()->is('admin/roles/*') ? 'active' : '' }}">
-                        <a href="{{ route('admin.roles.index') }}">
-                            <i class="fa-fw fas fa-briefcase">
+                                </a>
+                            </li>
+                        @endcan
+                        @can('role_access')
+                            <li class="{{ request()->is('admin/roles') || request()->is('admin/roles/*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.roles.index') }}">
+                                    <i class="fa-fw fas fa-briefcase">
 
-                            </i>
-                            <span>{{ trans('cruds.role.title') }}</span>
+                                    </i>
+                                    <span>{{ trans('cruds.role.title') }}</span>
 
-                        </a>
-                    </li>
-                    @endcan
-                    @can('user_access')
-                    <li class="{{ request()->is('admin/users') || request()->is('admin/users/*') ? 'active' : '' }}">
-                        <a href="{{ route('admin.users.index') }}">
-                            <i class="fa-fw fas fa-user">
+                                </a>
+                            </li>
+                        @endcan
+                        @can('user_access')
+                            <li class="{{ request()->is('admin/users') || request()->is('admin/users/*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.users.index') }}">
+                                    <i class="fa-fw fas fa-user">
 
-                            </i>
-                            <span>{{ trans('cruds.user.title') }}</span>
+                                    </i>
+                                    <span>{{ trans('cruds.user.title') }}</span>
 
-                        </a>
-                    </li>
-                    @endcan
-                </ul>
-            </li>
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
             @endcan
 
             {{-- website management --}}
@@ -67,14 +68,16 @@
                 </a>
                 <ul class="treeview-menu">
 
-                    <li class="{{ request()->is('admin/categories') || request()->is('admin/categories/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/categories') || request()->is('admin/categories/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.categories.index') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Category</span>
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/subscriptions') || request()->is('admin/subscriptions/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/subscriptions') || request()->is('admin/subscriptions/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.subscriptions.index') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Subscription Plans</span>
@@ -88,49 +91,56 @@
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/testimonials') || request()->is('admin/testimonials/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/testimonials') || request()->is('admin/testimonials/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.testimonials.index') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Testimonials</span>
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/privacy-policy') || request()->is('admin/privacy-policy/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/privacy-policy') || request()->is('admin/privacy-policy/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.privacy.policy') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Privacy Policy</span>
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/terms-of-use') || request()->is('admin/terms-of-use/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/terms-of-use') || request()->is('admin/terms-of-use/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.terms.use') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Terms of Use</span>
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/licencing') || request()->is('admin/licencing/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/licencing') || request()->is('admin/licencing/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.licencing.info') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Licencing Info</span>
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/search-tips') || request()->is('admin/search-tips/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/search-tips') || request()->is('admin/search-tips/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.search.tips') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Search Tips</span>
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/technical-info') || request()->is('admin/technical-info/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/technical-info') || request()->is('admin/technical-info/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.technical.info') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Technical Info</span>
                         </a>
                     </li>
 
-                    <li class="{{ request()->is('admin/image-research') || request()->is('admin/image-research/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/image-research') || request()->is('admin/image-research/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.img.research') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             <span>Image Research</span>
@@ -158,14 +168,15 @@
                     <span class="pull-right-container"><i class="fa fa-fw fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                        <li class="{{ request()->is('admin/project') || request()->is('admin/project/*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.project.list') }}">
-                                <i class="fa-fw fas fa-unlock-alt">
+                    <li
+                        class="{{ request()->is('admin/project') || request()->is('admin/project/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.project.list') }}">
+                            <i class="fa-fw fas fa-unlock-alt">
 
-                                </i>
-                                <span>Project List</span>
-                            </a>
-                        </li>
+                            </i>
+                            <span>Project List</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
@@ -174,16 +185,27 @@
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-upload mr-2"></i>
-                    <span>Upload Product Management</span>
+                    <span>Product Management </span>
                     <span class="pull-right-container"><i class="fa fa-fw fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="{{ request()->is('admin/products') || request()->is('admin/products/*') ? 'active' : '' }}">
+                    <li
+                        class="{{ request()->is('admin/products') || request()->is('admin/products/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.products.list') }}">
                             <i class="fa-fw fas fa-unlock-alt">
 
                             </i>
-                            <span>Product List</span>
+                            <span> Upload Product List</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/approved-products') || request()->is('admin/approved-products/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.approved.products.list') }}">
+                            <i class="fa-fw fas fa-unlock-alt">
+
+                            </i>
+                            <span> Approved Product List</span>
                         </a>
                     </li>
                 </ul>
@@ -198,15 +220,16 @@
 
 
             @if (file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
-            @can('profile_password_edit')
-            <li class="{{ request()->is('profile/password') || request()->is('profile/password/*') ? 'active' : '' }}">
-                <a href="{{ route('profile.password.edit') }}">
-                    <i class="fa-fw fas fa-key">
-                    </i>
-                    {{ trans('global.change_password') }}
-                </a>
-            </li>
-            @endcan
+                @can('profile_password_edit')
+                    <li
+                        class="{{ request()->is('profile/password') || request()->is('profile/password/*') ? 'active' : '' }}">
+                        <a href="{{ route('profile.password.edit') }}">
+                            <i class="fa-fw fas fa-key">
+                            </i>
+                            {{ trans('global.change_password') }}
+                        </a>
+                    </li>
+                @endcan
             @endif
             <li>
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">

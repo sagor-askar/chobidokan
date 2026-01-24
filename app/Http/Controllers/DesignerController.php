@@ -228,12 +228,22 @@ class DesignerController extends Controller
             'price'       => 'required|numeric|min:1',
             'file'        => 'nullable|mimes:eps,psd,jpg,jpeg|max:256000',
             'description' => 'nullable|string',
+            'tags' => 'nullable',
+            'type' => 'required',
         ]);
+
+        if ($request->tags !== null) {
+            $tags = json_encode($request->tags);
+        } else {
+            $tags = $product->tags;
+        }
 
         $data = [
             'title'       => $request->title,
             'category_id' => $request->category_id,
+            'type'       => $request->type,
             'price'       => $request->price,
+            'tags' => $tags,
             'description' => $request->description,
         ];
 
@@ -252,8 +262,7 @@ class DesignerController extends Controller
             if (in_array($ext, ['jpg', 'jpeg']) && ($sizeMB < 1.5 || $sizeMB > 250)) {
                 return back()->withErrors(['file' => 'JPG file must be between 1.5MB and 250MB.'])->withInput();
             }
-
-            $filename = time().'_'.uniqid().'.'.$ext;
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . time() . '.' . $ext;
             $path = 'uploads/products/'.$filename;
             $file->move(public_path('uploads/products'), $filename);
 
@@ -270,6 +279,16 @@ class DesignerController extends Controller
         $product->update($data);
 
         return redirect()->route('designer.product-list')->with('success', 'Product updated successfully!');
+    }
+
+    public function productDelete($id)
+    {
+        $product = Product::findOrFail($id);
+        if ($product->file_path && file_exists(public_path($product->file_path))) {
+            unlink(public_path($product->file_path));
+        }
+        $product->delete();
+        return redirect()->back()->with('success', 'Product deleted successfully!');
     }
 
 
