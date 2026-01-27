@@ -61,7 +61,7 @@ class UserController extends Controller
         $project = Project::find($id);
         $project->status = 2;
         $project->save();
-        return redirect()->back()->with('success', 'Comment Successfully Sent!');
+        return redirect()->back()->with('success', ' Order Successfully Completed!');
     }
 
     public function submissionReject(Request $request ,$id)

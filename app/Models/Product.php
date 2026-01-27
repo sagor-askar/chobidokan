@@ -16,8 +16,8 @@ class Product extends Model
     ];
 
     protected $fillable = [
-        'title', 'category_id','user_id', 'price', 'description',
-        'file_path', 'file_name', 'file_type', 'file_size','status'
+        'title', 'category_id','user_id', 'price','type','tags', 'description',
+        'file_path', 'file_name', 'file_type','status'
     ];
 
     public function user()

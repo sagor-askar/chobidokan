@@ -21,10 +21,8 @@
             <ul>
                 <li><a href="{{ route('info') }}">Info</a></li>
 
-                @if (Auth::check())
-
                 <li><a href="{{ route('customize') }}">Customize Jobs</a></li>
-
+                @if (Auth::check())
                 @if(Auth::user()->role_id == 2)
                 <li><a href="{{ route('designer.upload') }}">Upload</a></li>
                 @endif

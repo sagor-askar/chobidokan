@@ -44,8 +44,8 @@
                                                 <td><span class="badge badge-danger">No Logo Attached!</span></td>
                                             @endif
                                             <td>{{ $orderProject?->order->amount }} TK.</td>
-                                            <td>{{ \Carbon\Carbon::parse($orderProject->publish_date)->format('d M, Y') }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($orderProject->expire_date)->format('d M, Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($orderProject->publish_date)->format('d-m-Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($orderProject->expire_date)->format('d-m-Y') }}</td>
 
                                             @if(count($orderProject->orderDetails) > 0)
                                                 <td>

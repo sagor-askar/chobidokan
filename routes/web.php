@@ -1,5 +1,6 @@
 <?php
 // backend modules
+use App\Http\Controllers\Admin\DesignerPaymentController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\SettingController;
@@ -30,6 +31,10 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('signin', 'signin')->name('signin');
     Route::get('signup', 'signup')->name('signup');
     Route::get('submission-guidelines', 'guidelines')->name('submission-guidelines');
+    Route::get('customize', 'customization')->name('customize');
+    Route::get('closed-jobs', 'closedJobs')->name('closed-jobs');
+    Route::get('/custom-job/search', 'CustomJobSearch')->name('custom-job.search');
+
     // footer routes
     Route::get('about-us', 'aboutUs')->name('about-us');
     Route::get('testimonials', 'testimonial')->name('testimonials');
@@ -47,13 +52,25 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('seller-login', 'sellerLog')->name('seller-login');
     // designer profile
     Route::get('designer-profile/{id}', 'designerProfile')->name('designer-profile');
+
+    // image details page - static
+    Route::get('all-images', 'viewAll')->name('viewAll');
+    Route::get('view-image', 'viewDetails')->name('viewDetails');
+
+    // video details page - static
+    Route::get('all-videos', 'allVideos')->name('allVideos');
+    Route::get('view-video', 'viewVideo')->name('viewVideo');
+
+    Route::get('/product/search', 'search')->name('product.search');
+    Route::get('/tag/{tag}/product', 'tagProduct')->name('tag-wise-product');
+    Route::get('/category/{id}/product', 'categoryProduct')->name('category-wise-product');
+    Route::get('/product-details/{id}', 'productDetails')->name('product-details');
 });
 
 //user & seller Registration
 Route::post('/user/register', 'Auth\RegisterController@userRegister')->name('user.register');
 Route::post('/user-login', 'Auth\LoginController@customLogin')->name('customLogin');
 Route::post('/seller/register', 'Auth\RegisterController@sellerRegister')->name('seller.register');
-
 
 Auth::routes(['register' => false]);
 
@@ -126,16 +143,20 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('project-details/{project_id}/{designer_id}', 'ProjectController@designerSubmitDetails')->name('project.design-submit-show');
     Route::delete('project/delete/{id}', 'ProjectController@projectDelete')->name('project.delete');
 
-   // Upload Product
+    // Upload Product
     Route::get('product-list', 'ProductController@productList')->name('products.list');
+    Route::get('approved-product-list', 'ProductController@approvedProductList')->name('approved.products.list');
+    Route::get('product-change-status/{id}', 'ProductController@productChangeStatus')->name('product.statusChange');
+    Route::get('product-show/{id}', 'ProductController@productShow')->name('product.show');
+    Route::delete('product-delete/{id}', 'ProductController@productDelete')->name('product.delete');
+
+    // designer payment
+    Route::post('project-designer-payment', 'DesignerPaymentController@designerPayment')->name('project.designer.payment');
 
 });
 
 Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
-    Route::get('customize', [WebsiteController::class,'customization'])->name('customize');
-    Route::get('closed-jobs',  [WebsiteController::class, 'closedJobs'])->name('closed-jobs');
     Route::get('/custom-request', [WebsiteController::class, 'customRequest'])->name('custom-request');
-    Route::get('/custom-job/search', [WebsiteController::class, 'CustomJobSearch'])->name('custom-job.search');
     Route::get('customize-details/{id}', [ProjectController::class, 'customizationDetail'])->name('customize-details');
     Route::get('project/submitted-file-view-all/{id}', [ProjectController::class, 'submittedFileViewAll'])->name('submitted-file-view-all');
     Route::get('project/submitted-file-confirm/{id}', [ProjectController::class, 'submittedFileConfirm'])->name('project.submitted-file.confirm');
@@ -166,6 +187,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::get('/product-list',  [DesignerController::class, 'productList'])->name('product-list');
         Route::get('/product-edit/{id}',  [DesignerController::class, 'productEdit'])->name('product.edit');
         Route::put('/product-update/{id}',  [DesignerController::class, 'productUpdate'])->name('products.update');
+        Route::delete('/product-delete/{id}',  [DesignerController::class, 'productDelete'])->name('product.delete');
 
     });
 
@@ -187,11 +209,15 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
 
 });
 
+//admin-designer payment
+Route::match(['get', 'post'], 'designer/payment/success', [DesignerPaymentController::class,'designerPaymentSuccess'])->name('designer.payment.success');
+Route::match(['get', 'post'], 'designer/payment/fail', [DesignerPaymentController::class,'designerPaymentFail'])->name('designer.payment.fail');
+Route::match(['get', 'post'], 'designer/payment/cancel', [DesignerPaymentController::class,'designerPaymentCancel'])->name('designer.payment.cancel');
+
+// Customer
 Route::post('order/success', [PaymentController::class,'orderSuccess'])->name('order.success');
 Route::match(['get', 'post'], 'order/fail', [PaymentController::class, 'orderFail'])->name('order.fail');
 Route::match(['get', 'post'], 'order/cancel', [PaymentController::class, 'orderCancel'])->name('order.cancel');
-
-
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

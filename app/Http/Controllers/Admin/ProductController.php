@@ -10,8 +10,44 @@ class ProductController extends Controller
 {
     public function productList()
     {
+        $newProducts = Product::where('status', 0)->paginate(10);
+        return view('admin.product.product-list', compact( 'newProducts'));
+    }
 
-        $products = Product::where('status', 1)->paginate(10);
-        return view('admin.product.product-list', compact('products'));
+
+    public function approvedProductList()
+    {
+        $approvedProducts = Product::where('status', 1)->paginate(10);
+        return view('admin.product.approved-product-list', compact('approvedProducts'));
+    }
+
+    public function productChangeStatus($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->status = $product->status == 1 ? 0 : 1;
+        $product->save();
+
+        if ($product->status == 1) {
+          return redirect()->route('admin.approved.products.list')->with('success', 'Status Changed successfully.');
+        }else{
+            return redirect()->route('admin.products.list')->with('success', 'Status Changed successfully.');
+        }
+
+    }
+
+    public function productShow($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('admin.product.show', compact('product'));
+    }
+
+    public function productDelete($id)
+    {
+        $product = Product::findOrFail($id);
+        if ($product->file_path && file_exists(public_path($product->file_path))) {
+            unlink(public_path($product->file_path));
+        }
+        $product->delete();
+        return redirect()->back()->with('success', 'Product deleted successfully!');
     }
 }

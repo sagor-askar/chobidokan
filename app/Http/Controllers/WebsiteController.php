@@ -28,9 +28,18 @@ class WebsiteController extends Controller
     {
         $settings = Setting::first();
         $categories = Category::where('status',1)->get();
-        $products = Product::where('status', 1)->paginate(10);
+        $products = Product::where('type',1)->where('status', 1)->latest()->paginate(10);
 
-        return view('welcome', compact('settings','products','categories'));
+
+        $allTags = collect();
+        $tagProducts = Product::where('status', 1)->get();
+
+        $tagProducts->each(function ($product) use (&$allTags) {
+            $tags = json_decode($product->tags, true) ?? [];
+            $allTags = $allTags->merge($tags);
+        });
+        $uniqueTags = $allTags->unique()->values();
+        return view('welcome', compact('settings','products','categories','uniqueTags'));
     }
 
     // custom request
@@ -64,7 +73,7 @@ class WebsiteController extends Controller
             ->where('status', 1)
             ->orderBy('id', 'desc');
 
-        if ($user->role_id == 3) {
+        if ($user && $user->role_id == 3) {
             $projectsQuery->where('user_id', $user->id);
         }
         $projects = $projectsQuery->paginate(2);
@@ -89,7 +98,7 @@ class WebsiteController extends Controller
             ])
             ->where('status', 2)
             ->orderBy('id', 'desc');
-        if ($user->role_id == 3) {
+        if ($user && $user->role_id == 3) {
             $projectsQuery->where('user_id', $user->id);
         }
         $projects = $projectsQuery->paginate(2);
@@ -239,7 +248,7 @@ class WebsiteController extends Controller
                 'uploads as total_submitted_design'
             ]);
 
-        if ($user->role_id == 3) {
+        if ($user && $user->role_id == 3) {
             $query->where('user_id', $user->id); // 🔹 user logic
         }
 
@@ -266,8 +275,143 @@ class WebsiteController extends Controller
         }else{
             return view('frontend.menu.closedJobs', compact('status','categories','projects','totalProjects'));
         }
+    }
+
+    // image view all page
+    public function viewAll()
+    {
+        return view('viewAll');
+    }
+
+    // view image details page
+    public function viewDetails()
+    {
+        return view('viewDetails');
+    }
+
+    // all videos
+    public function allVideos()
+    {
+        return view('allVideos');
+    }
+
+    // view video details
+    public function viewVideo()
+    {
+        return view('viewVideo');
+    }
+
+    public function search(Request $request)
+    {
+        $type = $request->query('type');
+        $search = $request->query('search');
+        $products = Product::where('status', 1)
+                  ->where('type', $type)
+                  ->where(function($query) use ($search) {
+
+                $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('tags', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+
+                $query->orWhereHas('category', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+                $query->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+            })
+            ->paginate(8);
+        //tags
+        $allTags = collect();
+        $tagProducts = Product::where('status', 1)->get();
+
+        $tagProducts->each(function ($product) use (&$allTags) {
+            $tags = json_decode($product->tags, true) ?? [];
+            $allTags = $allTags->merge($tags);
+        });
+        $uniqueTags = $allTags->unique()->values();
+
+        if ($type == 1) {
+            return view('frontend.menu.image', compact('products', 'type','search','uniqueTags'));
+        }else{
+            return view('frontend.menu.videos', compact('products', 'type','search','uniqueTags'));
+        }
+    }
 
 
+    public function tagProduct($tag)
+    {
+         $products = Product::with('user')
+                ->where(function ($query) use ($tag) {
+                    $query->whereJsonContains('tags', $tag);
+                })
+                ->where('status', 1)
+                ->paginate(8);
+        //tags
+        $allTags = collect();
+        $tagProducts = Product::where('status', 1)
+                      ->where(function ($query) use ($tag) {
+                          $query->whereJsonContains('tags', $tag);
+                     })
+                    ->get();
+        $tagProducts->each(function ($product) use (&$allTags) {
+            $tags = json_decode($product->tags, true) ?? [];
+            $allTags = $allTags->merge($tags);
+        });
+        $uniqueTags = $allTags->unique()->values();
+        return view('frontend.menu.tag-product',compact('tag','products','uniqueTags'));
+    }
+
+    public function categoryProduct($id)
+    {
+        $category = Category::find($id);
+        $products = Product::with('user')
+            ->where('status', 1)
+            ->where('category_id', $id)
+            ->paginate(8);
+        //tags
+        $allTags = collect();
+        $tagProducts = Product::where('status', 1)
+            ->where('category_id', $id)
+            ->get();
+        $tagProducts->each(function ($product) use (&$allTags) {
+            $tags = json_decode($product->tags, true) ?? [];
+            $allTags = $allTags->merge($tags);
+        });
+        $uniqueTags = $allTags->unique()->values();
+        return view('frontend.menu.category-product',compact('category','products','uniqueTags'));
+    }
+
+
+    public function productDetails($id)
+    {
+        $product = Product::find($id);
+        $category = Category::find($product->category_id);
+        //tags
+        $allTags = collect();
+        $tagProducts = Product::where('status', 1)
+            ->where('category_id', $product->category_id)
+            ->get();
+        $tagProducts->each(function ($product) use (&$allTags) {
+            $tags = json_decode($product->tags, true) ?? [];
+            $allTags = $allTags->merge($tags);
+        });
+        $uniqueTags = $allTags->unique()->values();
+
+
+        $similarProducts = Product::where('status', 1)
+            ->where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->latest()
+            ->take(12)
+            ->get();
+
+
+        if ($product->type == 1) {
+            return view('frontend.menu.imageDetails',compact('category','product','uniqueTags','similarProducts'));
+        }else{
+            return view('frontend.menu.videoDetails',compact('category','product','uniqueTags','similarProducts'));
+        }
 
     }
 

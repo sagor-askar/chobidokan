@@ -53,7 +53,7 @@ class ProjectController extends Controller
           $submittedFile = Upload::find($uploadId);
            $submittedFile->status = 1;
            $submittedFile->save();
-        return redirect()->route('dashboard')->with('success', 'Your Order has been confirmed !');
+        return redirect()->route('user.dashboard')->with('success', 'Your Order has been confirmed !');
 
     }
 

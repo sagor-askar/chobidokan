@@ -53,6 +53,11 @@ body {
     color: var(--default-color);
     background-color: var(--background-color);
     font-family: var(--default-font);
+    text-decoration: none !important;
+}
+
+* {
+    text-decoration: none !important;
 }
 
 a {
@@ -243,6 +248,7 @@ h6 {
 /* Index Page Header */
 .index-page .header {
     --background-color: rgba(255, 255, 255, 0);
+    z-index: 1001;
 }
 
 /* Index Page Header on Scroll */
@@ -922,8 +928,9 @@ section,
 /* Popular Search */
 .popularSearch {
     width: auto;
-    padding: 6px 40px;
-    font-size: 1rem;
+    padding: 1px 10px;
+    font-size: 0.9rem;
+    color: black;
     height: auto;
     margin: 5px;
     white-space: nowrap;
@@ -1138,11 +1145,10 @@ section,
 }
 
 .custom-form-control {
-    height: 3.5rem;
+    height: 3rem;
     font-size: 1rem;
     padding: 0 15px;
     border: 1px solid #ccc;
-    border-radius: 5px 0 0 5px;
     flex: 1;
     min-width: 0;
 }
@@ -1152,13 +1158,13 @@ section,
 }
 
 .custom-btn {
-    height: 3.5rem;
+    height: 3rem;
     width: 60px;
     font-size: 1.3rem;
     background-color: #6c757d;
     color: white;
     border: 1px solid #6c757d;
-    border-radius: 0 5px 5px 0;
+    border-radius: 0 20px 20px 0;
     display: flex;
     align-items: center;
     justify-content: center;

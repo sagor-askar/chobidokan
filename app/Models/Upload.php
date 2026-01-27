@@ -21,7 +21,7 @@ class Upload extends Model
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function projectSubmits()
+    public function projectSubmit()
     {
         return $this->belongsTo(ProjectSubmit::class, 'project_submit_id');
     }

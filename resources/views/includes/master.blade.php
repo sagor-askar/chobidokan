@@ -142,6 +142,13 @@
             @endif
         });
     </script>
+
+    <script>
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    </script>
+
 </body>
 
 </html>
