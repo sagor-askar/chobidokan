@@ -226,48 +226,63 @@ class DesignerController extends Controller
             'title'       => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'price'       => 'required|numeric|min:1',
-            'file'        => 'nullable|mimes:eps,psd,jpg,jpeg|max:256000',
+            'file'        => 'nullable|file',
+            'type'        => 'required|in:1,2', // 1=image, 2=video
             'description' => 'nullable|string',
-            'tags' => 'nullable',
-            'type' => 'required',
+            'tags'        => 'nullable',
         ]);
 
-        if ($request->tags !== null) {
-            $tags = json_encode($request->tags);
-        } else {
-            $tags = $product->tags;
-        }
+        $tags = $request->tags ? json_encode($request->tags) : $product->tags;
 
         $data = [
             'title'       => $request->title,
             'category_id' => $request->category_id,
-            'type'       => $request->type,
+            'user_id'     => $product->user_id,
             'price'       => $request->price,
-            'tags' => $tags,
+            'type'        => $request->type,
+            'tags'        => $tags,
             'description' => $request->description,
         ];
 
-        // File upload only if new file is provided
+        // ================= FILE UPDATE =================
         if ($request->hasFile('file')) {
+
             $file = $request->file('file');
             $ext = strtolower($file->getClientOriginalExtension());
             $sizeMB = $file->getSize() / 1048576;
 
-            if ($ext === 'eps' && ($sizeMB < 0.5 || $sizeMB > 80)) {
-                return back()->withErrors(['file' => 'EPS file must be between 0.5MB and 80MB.'])->withInput();
+            $allowedImages = ['jpg', 'jpeg', 'png', 'gif'];
+            $allowedVideos = ['mp4', 'mov', 'avi', 'mkv'];
+
+            // TYPE BASED VALIDATION (same as store)
+            if ($request->type == 1 && !in_array($ext, $allowedImages)) {
+                return back()->withErrors(['file' => 'Please upload a valid image file.'])->withInput();
             }
-            if ($ext === 'psd' && ($sizeMB < 1.5 || $sizeMB > 250)) {
-                return back()->withErrors(['file' => 'PSD file must be between 1.5MB and 250MB.'])->withInput();
+
+            if ($request->type == 2 && !in_array($ext, $allowedVideos)) {
+                return back()->withErrors(['file' => 'Please upload a valid video file.'])->withInput();
             }
-            if (in_array($ext, ['jpg', 'jpeg']) && ($sizeMB < 1.5 || $sizeMB > 250)) {
-                return back()->withErrors(['file' => 'JPG file must be between 1.5MB and 250MB.'])->withInput();
+
+            // OPTIONAL SIZE VALIDATION (same as store)
+            /*
+            if ($request->type == 1 && ($sizeMB < 0.1 || $sizeMB > 25)) {
+                return back()->withErrors(['file' => 'Image must be between 0.1MB and 25MB.'])->withInput();
             }
-            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . time() . '.' . $ext;
-            $path = 'uploads/products/'.$filename;
+
+            if ($request->type == 2 && ($sizeMB < 1 || $sizeMB > 250)) {
+                return back()->withErrors(['file' => 'Video must be between 1MB and 250MB.'])->withInput();
+            }
+            */
+
+            // FILE SAVE
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)
+                . '-' . time() . '.' . $ext;
+
+            $path = 'uploads/products/' . $filename;
             $file->move(public_path('uploads/products'), $filename);
 
-            // Delete old file if exists
-            if (file_exists(public_path($product->file_path))) {
+            // DELETE OLD FILE
+            if ($product->file_path && file_exists(public_path($product->file_path))) {
                 unlink(public_path($product->file_path));
             }
 
@@ -276,10 +291,14 @@ class DesignerController extends Controller
             $data['file_type'] = $file->getClientMimeType();
         }
 
+        // UPDATE PRODUCT
         $product->update($data);
 
-        return redirect()->route('designer.product-list')->with('success', 'Product updated successfully!');
+        return redirect()
+            ->route('designer.product-list')
+            ->with('success', 'Product updated successfully!');
     }
+
 
     public function productDelete($id)
     {

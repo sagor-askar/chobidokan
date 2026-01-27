@@ -405,7 +405,14 @@ class WebsiteController extends Controller
             ->latest()
             ->take(12)
             ->get();
-        return view('frontend.menu.productDetails',compact('category','product','uniqueTags','similarProducts'));
+
+
+        if ($product->type == 1) {
+            return view('frontend.menu.imageDetails',compact('category','product','uniqueTags','similarProducts'));
+        }else{
+            return view('frontend.menu.videoDetails',compact('category','product','uniqueTags','similarProducts'));
+        }
+
     }
 
 

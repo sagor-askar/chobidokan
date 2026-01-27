@@ -55,13 +55,14 @@
         <!-- Hero Section -->
         @include('includes.hero')
 
-        <h5 class="text-center mt-4">1,00,000+ videos for "Title Name >> View All"</h5>
+        <h5 class="text-center mt-4">{{ $products->total() }}+ videos @if($search) for <strong> {{ $search }}</strong> @endif </h5>
 
         <section class="mb-2">
             <div class="container">
                 <div class="row g-4">
 
                     <!-- Item -->
+                    @foreach($products as $key=>$product)
                     <div class="col-md-4">
                         <div class="position-relative overflow-hidden rounded shadow-lg">
 
@@ -69,31 +70,24 @@
                             <div class="ratio ratio-16x9">
                                 <video class="w-100" muted playsinline preload="metadata" onmouseenter="this.play()"
                                     onmouseleave="this.pause(); this.currentTime=0;">
-
-                                    <source src="{{ asset('frontend_assets/img/demo.mp4') }}" type="video/mp4">
-                                    Your browser does not support the video tag.
+                                    <source src="{{ asset($product->file_path) }}" type="video/mp4">
                                 </video>
                             </div>
 
                             <!-- Play Icon -->
-                            <div class="position-absolute top-50 start-50 translate-middle text-white">
+                            <a href="{{ route('product-details',$product->id) }}"
+                               class="position-absolute top-50 start-50 translate-middle text-white"
+                               style="z-index: 5;">
                                 <i class="fa fa-play-circle fa-3x opacity-75"></i>
-                            </div>
-
-                            <!-- Watermark -->
-                            <div
-                                class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-dark bg-opacity-50 text-white small rounded">
-                                CHOBIDOKAN
-                            </div>
-
+                            </a>
                             <!-- Overlay -->
                             <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
                                 style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
 
-                                <div class="fw-semibold">Sample Video Title</div>
+                                <div class="fw-semibold">{{ $product->title ?? '' }}</div>
 
                                 <div class="d-flex justify-content-between align-items-center small mt-1">
-                                    <span>Tk 500</span>
+                                    <span>Tk {{ $product->price ?? '' }}</span>
 
                                     <div class="d-flex gap-3">
                                         <i class="fa fa-eye"></i>
@@ -105,6 +99,7 @@
 
                         </div>
                     </div>
+                    @endforeach
 
 
                 </div>
