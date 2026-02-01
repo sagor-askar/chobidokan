@@ -65,6 +65,7 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('/tag/{tag}/product', 'tagProduct')->name('tag-wise-product');
     Route::get('/category/{id}/product', 'categoryProduct')->name('category-wise-product');
     Route::get('/product-details/{id}', 'productDetails')->name('product-details');
+
 });
 
 //user & seller Registration
@@ -162,6 +163,8 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('project/submitted-file-confirm/{id}', [ProjectController::class, 'submittedFileConfirm'])->name('project.submitted-file.confirm');
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
     Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
+    Route::get('/product-image/download/{id}', [WebsiteController::class, 'productImageDownload'])->name('product.image-download');
+
 
     Route::group(['prefix' => 'designer', 'as' => 'designer.'], function () {
         Route::get('/dashboard', [DesignerController::class, 'dashboard'])->name('dashboard');
@@ -204,8 +207,10 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::put('/profile-update', [UserController::class, 'updateProfile'])->name('profile.update');
         Route::get('/change-password', [UserController::class, 'changePassword'])->name('change.password');
         Route::put('/update-password', [UserController::class, 'updatePassword'])->name('updatePassword');
+
     });
     Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
+
 
 });
 
