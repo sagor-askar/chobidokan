@@ -170,11 +170,20 @@
 {{--                        <button type="button" class="btn btn-outline-secondary btn-sm">--}}
 {{--                            <i class="fa fa-download mr-1"></i> Try--}}
 {{--                        </button>--}}
+                        
 
-                        <a href="{{ route('product.download', $product->id) }}"
+                        @if(\Illuminate\Support\Facades\Auth::check())
+                            <a href="{{ route('product.image-download', $product->id) }}"
+                               class="btn btn-outline-secondary btn-sm">
+                                <i class="fa fa-download mr-1"></i> Download
+                            </a>
+                        @else
+
+                        <a href="{{ route('signin') }}"
                            class="btn btn-outline-secondary btn-sm">
                             <i class="fa fa-download mr-1"></i> Download
                         </a>
+                        @endif
 
                         <button type="button" class="btn btn-outline-secondary btn-sm">
                             <i class="fa fa-list mr-1"></i> Total 10 Downloads
