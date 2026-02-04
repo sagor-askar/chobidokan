@@ -20,6 +20,7 @@ use App\Models\SearchTips;
 use App\Models\InfoSetup;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 class WebsiteController extends Controller
 {
@@ -416,18 +417,43 @@ class WebsiteController extends Controller
     }
 
 
+    public function productFileView($id)
+    {
+        $product = Product::findOrFail($id);
+
+        $path = storage_path('app/' . $product->file_path);
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path, [
+            'Content-Type' => $product->file_type,
+            'Content-Disposition' => 'inline'
+        ]);
+    }
+
+
     public function productImageDownload($id)
     {
-        dd('ok');
+        $id = base64_decode($id);
         $product = Product::findOrFail($id);
-         //OPTIONAL: permission / purchase check
-         if (!auth()->check()) abort(403);
-        $filePath = public_path($product->file_path);
+        if (!auth()->check()) {
+            abort(403);
+        }
+        $filePath = storage_path('app/' . $product->file_path);
         if (!file_exists($filePath)) {
             abort(404);
         }
-        return response()->download($filePath, $product->file_name);
+        return response()->download(
+            $filePath,
+            $product->file_name,
+            [
+                'Content-Type' => $product->file_type
+            ]
+        );
     }
+
 
 
 
