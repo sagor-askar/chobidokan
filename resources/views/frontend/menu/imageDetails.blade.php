@@ -120,7 +120,12 @@
 
             <!-- Feature Image -->
             <div class="w-100 feature-img">
-                <img src="{{ asset($product->file_path) }}" class="img-fluid" alt="{{ $product->file_name }}">
+
+                <img src="{{ route('product.file.view', $product->id) }}"
+                     class="img-fluid"
+                     alt="{{ $product->file_name }}"
+                     oncontextmenu="return false"
+                     draggable="false">
 
                 <!-- Watermark text -->
                 <div class="image-watermark">
@@ -166,24 +171,10 @@
                         <button type="button" class="btn btn-outline-secondary btn-sm">
                             <i class="fa fa-heart mr-1"></i> Save
                         </button>
-
-{{--                        <button type="button" class="btn btn-outline-secondary btn-sm">--}}
-{{--                            <i class="fa fa-download mr-1"></i> Try--}}
-{{--                        </button>--}}
-                        
-
-                        @if(\Illuminate\Support\Facades\Auth::check())
-                            <a href="{{ route('product.image-download', $product->id) }}"
+                            <a href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}"
                                class="btn btn-outline-secondary btn-sm">
                                 <i class="fa fa-download mr-1"></i> Download
                             </a>
-                        @else
-
-                        <a href="{{ route('signin') }}"
-                           class="btn btn-outline-secondary btn-sm">
-                            <i class="fa fa-download mr-1"></i> Download
-                        </a>
-                        @endif
 
                         <button type="button" class="btn btn-outline-secondary btn-sm">
                             <i class="fa fa-list mr-1"></i> Total 10 Downloads
@@ -236,7 +227,7 @@
                     <div class="col-md-4 mb-4">
                         <div class="similar-card">
                             <a href="{{ route('product-details', $product->id) }}">
-                                <img src="{{ asset($similarProduct->file_path) }}" alt="{{ $similarProduct->file_name }}">
+                                <img src="{{ route('product.file.view', $product->id) }}" alt="{{ $product->file_name }}" oncontextmenu="return false" draggable="false">
                             </a>
                             <div class="similar-overlay">
                                 <div>

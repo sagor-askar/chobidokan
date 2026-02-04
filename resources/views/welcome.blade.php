@@ -90,24 +90,32 @@
                         $isVideo = $product->type == 2;
                     @endphp
 
-                    <div class="item item-{{ $key }}" data-title="{{ $product->title }}"
-                        data-file="{{ asset($product->file_path) }}" data-description="{{ $description }}"
-                        data-designer="{{ $designer }}" data-designer_id="{{ $designer_id }}"
-                        data-type="{{ $product->type }}" data-product-id="{{ $product->id }}">
+                    <div class="item item-{{ $key }}"
+                         data-title="{{ $product->title }}"
+                         data-file="{{ route('product.file.view', $product->id) }}"
+                         data-description="{{ $description }}"
+                         data-designer="{{ $designer }}"
+                         data-designer_id="{{ $designer_id }}"
+                         data-type="{{ $product->type }}"
+                         data-product-id="{{ $product->id }}">
 
                         @if ($isVideo)
                             <video class="img video-thumb" muted loop preload="metadata">
-                                <source src="{{ asset($product->file_path) }}" type="{{ $product->file_type }}">
+                                <source src="{{ route('product.file.view', $product->id) }}"
+                                        type="{{ $product->file_type }}">
                             </video>
                         @else
-                            <a href="{{ route('product-details', $product->id) }}">
-                            <img class="img" src="{{ asset($product->file_path) }}" alt="">
+                            <a href="{{ route('product-details', $product->id) }}" style="color:white">
+                            <img class="img"
+                                 src="{{ route('product.file.view', $product->id) }}"
+                                 alt="">
                             </a>
                         @endif
 
                         <div class="watermark">CHOBIDOKAN</div>
+
                         <div class="overlay">
-                            <a href="{{ route('product-details', $product->id) }}" style="color: white;">
+                            <a href="{{ route('product-details', $product->id) }}" style="color:white">
                                 {{ $product->title }} | Tk {{ $product->price }}
                             </a>
                         </div>

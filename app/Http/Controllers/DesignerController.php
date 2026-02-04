@@ -274,19 +274,20 @@ class DesignerController extends Controller
             }
             */
 
-            // FILE SAVE
+            // FILE NAME
             $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)
                 . '-' . time() . '.' . $ext;
 
-            $path = 'uploads/products/' . $filename;
-            $file->move(public_path('uploads/products'), $filename);
+            $storagePath = 'uploads/products/' . $filename;
+            $file->storeAs('uploads/products', $filename);
 
-            // DELETE OLD FILE
-            if ($product->file_path && file_exists(public_path($product->file_path))) {
-                unlink(public_path($product->file_path));
+            if ($product->file_path) {
+                $oldPath = storage_path('app/' . $product->file_path);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
             }
-
-            $data['file_path'] = $path;
+            $data['file_path'] = $storagePath;
             $data['file_name'] = $filename;
             $data['file_type'] = $file->getClientMimeType();
         }
