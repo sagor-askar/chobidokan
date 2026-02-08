@@ -150,17 +150,21 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
 
                     <div class="d-flex align-items-center">
+                        <a  target="_blank" href="{{ route('designer-profile',$product->user->id) }}">
                         <img src="{{ $product->user && $product->user->image  ? asset($product->user->image)  : 'http://1.gravatar.com/avatar/7a20fad302fc2dd4b4649dc5bdb3c463?s=64&d=mm&r=g' }}"
                             class="rounded-circle mr-3"
                             width="50"
                             height="50"
                             alt="Author">
+                        </a>
 
 
                         <div>
+
                             <h6 class="mb-0 font-weight-bold">
-                                <a href="#" class="text-dark">{{ $product->user?->name }}</a>
+                                <a target="_blank" href="{{ route('designer-profile',$product->user->id) }}" class="text-dark">{{ $product->user?->name }}</a>
                             </h6>
+
                             <small class="text-muted">
                                 <i class="fa fa-calendar mr-1"></i>
                                 {{ \Carbon\Carbon::parse($product->created_at)->format('M d, Y') }}
@@ -171,10 +175,24 @@
                         <button type="button" class="btn btn-outline-secondary btn-sm">
                             <i class="fa fa-heart mr-1"></i> Save
                         </button>
+
+                          @if($isPayment)
                             <a href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}"
                                class="btn btn-outline-secondary btn-sm">
                                 <i class="fa fa-download mr-1"></i> Download
                             </a>
+                         @else
+                            <form action="{{ route('product.purchase') }}"
+                                  method="POST"
+                                  style="display:inline;">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{$product->id}}">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fa fa-download mr-1"></i> Buy
+                                </button>
+                            </form>
+                        @endif
+
 
                         <button type="button" class="btn btn-outline-secondary btn-sm">
                             <i class="fa fa-list mr-1"></i> Total 10 Downloads

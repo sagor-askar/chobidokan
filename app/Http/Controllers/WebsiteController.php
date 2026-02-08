@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Category;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\ProjectSubmit;
@@ -118,9 +119,8 @@ class WebsiteController extends Controller
     public function designerProfile($id)
     {
         $user = User::findOrFail($id);
-
-        $uploads = Upload::with(['projectSubmits', 'project'])
-            ->whereHas('projectSubmits', function ($q) use ($id) {
+        $uploads = Upload::with(['projectSubmit', 'project'])
+            ->whereHas('projectSubmit', function ($q) use ($id) {
                 $q->where('user_id', $id);
             })
             ->paginate(6);
@@ -408,10 +408,16 @@ class WebsiteController extends Controller
             ->get();
 
 
+          $isPayment = null;
+         $authUser =  Auth::check() ? Auth::user() : null;
+          if ($authUser) {
+            $isPayment =  Payment::where('product_id', $product->id)->where('user_id',$authUser->id)->first();
+          }
+
         if ($product->type == 1) {
-            return view('frontend.menu.imageDetails',compact('category','product','uniqueTags','similarProducts'));
+            return view('frontend.menu.imageDetails',compact('category','isPayment','product','uniqueTags','similarProducts'));
         }else{
-            return view('frontend.menu.videoDetails',compact('category','product','uniqueTags','similarProducts'));
+            return view('frontend.menu.videoDetails',compact('category','isPayment','product','uniqueTags','similarProducts'));
         }
 
     }
