@@ -166,6 +166,9 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
     Route::get('/product-image/download/{id}', [WebsiteController::class, 'productImageDownload'])->name('product.image-download');
 
+    Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
+    Route::post('/product-purchase', [PaymentController::class, 'productPurchase'])->name('product.purchase');
+
 
     Route::group(['prefix' => 'designer', 'as' => 'designer.'], function () {
         Route::get('/dashboard', [DesignerController::class, 'dashboard'])->name('dashboard');
@@ -210,7 +213,8 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::put('/update-password', [UserController::class, 'updatePassword'])->name('updatePassword');
 
     });
-    Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
+
+
 
 
 });
@@ -224,6 +228,14 @@ Route::match(['get', 'post'], 'designer/payment/cancel', [DesignerPaymentControl
 Route::post('order/success', [PaymentController::class,'orderSuccess'])->name('order.success');
 Route::match(['get', 'post'], 'order/fail', [PaymentController::class, 'orderFail'])->name('order.fail');
 Route::match(['get', 'post'], 'order/cancel', [PaymentController::class, 'orderCancel'])->name('order.cancel');
+
+
+// Product Purchase Payment
+Route::post('purchase/success', [PaymentController::class,'purchaseSuccess'])->name('purchase.success');
+Route::match(['get', 'post'], 'purchase/fail', [PaymentController::class, 'purchaseFail'])->name('purchase.fail');
+Route::match(['get', 'post'], 'purchase/cancel', [PaymentController::class, 'purchaseCancel'])->name('purchase.cancel');
+
+
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

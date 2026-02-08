@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 //use App\Mail\BookOrderEmail;
 
 use App\Models\Order;
+use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Project;
 use App\Models\Subscription;
 use Carbon\Carbon;
@@ -153,6 +155,107 @@ class PaymentController extends Controller
             }
             $project->delete();
         }
+        return redirect()->route('welcome')->with('error', 'Payment cancelled!');
+    }
+
+
+
+
+
+
+
+    //========== Product Purchase Payment=============//
+
+    public function productPurchase(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            $transaction_id = (string) Str::uuid();
+            $product = Product::find($request->product_id);
+            $user = Auth::user();
+            session(['product_id' => $product->id]);
+
+            $store_id      = env('STORE_ID');
+            $signature_key = env('SIGNATURE_KEY');
+            $url           = env('AMARPAY_URL');
+
+            $payload = [
+                "store_id"      => $store_id,
+                "tran_id"       => $transaction_id,
+                "success_url"   => route('purchase.success'),
+                "fail_url"      => route('purchase.fail'),
+                "cancel_url"    => route('purchase.cancel'),
+                "amount"        => $product->price,
+                "currency"      => "BDT",
+                "signature_key" => $signature_key,
+                "desc"          => "Product Purchase Payment",
+                "cus_name"      => $user->name,
+                "cus_email"     => $user?->email ?? 'customer@example.com',
+                "cus_add1"      => $user->address ?? 'Dhaka',
+                "cus_phone"     => $user?->phone,
+                "opt_a"         => $product->id,  // pass product_id for callback
+                "opt_b"         => $user->id,  // pass user_id for callback
+                "type"          => "json"
+            ];
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $responseObject = json_decode($response, true);
+
+            if (isset($responseObject['payment_url']) && $responseObject['payment_url']) {
+                DB::commit();
+                return redirect()->away($responseObject['payment_url']);
+            } else {
+                DB::rollBack();
+                return back()->with('error', 'Payment URL generation failed! Response: ' . $response);
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    public function purchaseSuccess(Request $request)
+    {
+        $product_id = $request->opt_a;
+        $user_id = $request->opt_b;
+        $product = Product::find($product_id);
+        if (!$product) {
+            return redirect()->route('welcome')->with('error', 'Your Purchase Failed !');
+        }
+           Payment::create([
+                'product_id' => $product->id,
+                'user_id' => $user_id,
+                'amount' =>$request->amount,
+                'card_type'      => $request->card_type ?? null,
+                'bank_txn'       => $request->bank_txn ?? null,
+            ]);
+
+        Auth::loginUsingId($user_id);
+        return redirect()->route('welcome')->with('success', 'Your payment was successful!');
+    }
+
+    //  AmarPay Fail Callback
+    public function purchaseFail(Request $request)
+    {
+        $userId = $request->input('opt_b');
+        Auth::loginUsingId($userId);
+        return redirect()->route('welcome')->with('error', 'Payment failed!');
+    }
+
+    // AmarPay Cancel Callback
+    public function purchaseCancel(Request $request)
+    {
+        $userId = $request->input('opt_b');
+        Auth::loginUsingId($userId);
         return redirect()->route('welcome')->with('error', 'Payment cancelled!');
     }
 }
