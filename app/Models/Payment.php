@@ -19,10 +19,12 @@ class Payment extends Model
         'project_id',
         'order_id',
         'product_id',
+        'designer_id',
         'user_id',
         'amount',
         'card_type',
         'bank_txn',
+        'is_counted',
         'created_at',
         'updated_at',
     ];

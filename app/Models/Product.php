@@ -16,13 +16,13 @@ class Product extends Model
     ];
 
     protected $fillable = [
-        'title', 'category_id','user_id', 'price','type','tags', 'description',
-        'file_path', 'file_name', 'file_type','status'
+        'title', 'category_id','designer_id', 'price','type','tags', 'description',
+        'file_path', 'file_name', 'file_type','total_download','status'
     ];
 
-    public function user()
+    public function designer()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'designer_id');
     }
 
     public function category()

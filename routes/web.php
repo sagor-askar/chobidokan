@@ -66,7 +66,7 @@ Route::controller(WebsiteController::class)->group(function() {
     Route::get('/category/{id}/product', 'categoryProduct')->name('category-wise-product');
     Route::get('/product-details/{id}', 'productDetails')->name('product-details');
     Route::get('/product-file/view/{id}', 'productFileView')->name('product.file.view');
-
+    Route::get('/product/view-video/{id}', 'serveVideo')->name('product.view.video');
 });
 
 //user & seller Registration
@@ -165,7 +165,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
     Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
     Route::get('/product-image/download/{id}', [WebsiteController::class, 'productImageDownload'])->name('product.image-download');
-
+    Route::get('/product/video-download/{id}', [WebsiteController::class, 'downloadVideo'])->name('product.video-download');
     Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
     Route::post('/product-purchase', [PaymentController::class, 'productPurchase'])->name('product.purchase');
 

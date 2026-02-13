@@ -18,10 +18,12 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('project_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
-            $table->unsignedBigInteger('user_id')->comment('user = Designer');
+            $table->unsignedBigInteger('designer_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->integer('amount')->default(0);
             $table->string('card_type')->nullable();
             $table->string('bank_txn')->nullable();
+            $table->string('is_counted')->default(0);
             $table->timestamps();
         });
     }

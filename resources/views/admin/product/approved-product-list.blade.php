@@ -26,7 +26,7 @@
                                             Title
                                         </th>
                                         <th>
-                                            Image
+                                            Image/Video
                                         </th>
                                         <th>
                                             Category
@@ -65,13 +65,17 @@
                                                     {{-- Thumbnail --}}
                                                     @if ($isVideo)
                                                         <video width="100%" height="100%"
-                                                            style="object-fit: cover; border-radius: 3px;" muted>
-                                                            <source src="{{ asset($product->file_path) }}"
-                                                                type="video/{{ $extension }}">
+                                                               style="object-fit: cover; border-radius: 3px;"
+                                                               muted
+                                                               preload="metadata"
+                                                               onmouseover="this.play()"
+                                                               onmouseout="this.pause(); this.currentTime=0;">
+                                                            <source src="{{ route('product.view.video', $product->id) }}"
+                                                                    type="{{ $product->file_type }}">
                                                         </video>
                                                         @php $iconClass = 'bi-play-btn-fill'; @endphp
                                                     @else
-                                                        <img src="{{ asset($product->file_path) }}" alt="Image"
+                                                        <img src="{{ route('product.file.view', $product->id) }}" alt="Image"
                                                             style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 3px;">
                                                         @php $iconClass = 'bi-arrows-fullscreen'; @endphp
                                                     @endif
@@ -96,9 +100,9 @@
                                                                 </div>
                                                                 <div class="modal-body text-center">
                                                                     @if ($isVideo)
-                                                                        <video controls autoplay style="width: 100%">
-                                                                            <source src="{{ asset($product->file_path) }}"
-                                                                                type="video/{{ $extension }}">
+                                                                        <video controls autoplay playsinline style="width: 100%">
+                                                                            <source src="{{ route('product.view.video', $product->id) }}"
+                                                                                    type="{{ $product->file_type }}">
                                                                         </video>
                                                                     @else
                                                                         <img src="{{ asset($product->file_path) }}"
