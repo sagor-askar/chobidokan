@@ -66,7 +66,7 @@
 
                 <!-- Video Wrapper -->
                 <div class="ratio ratio-16x9">
-                    <video class="w-100" muted playsinline preload="metadata" controls onmouseenter="this.play()"
+                    <video class="w-100"  playsinline preload="metadata" controls onmouseenter="this.play()"
                         onmouseleave="this.pause(); this.currentTime=0;">
 
                         <source src="{{ route('product.view.video', $product->id) }}" type="video/mp4">

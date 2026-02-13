@@ -85,8 +85,8 @@
                 @foreach ($products as $key => $product)
                     @php
                         $description = strip_tags($product->description);
-                        $designer = $product->user->name;
-                        $designer_id = $product->user->id;
+                        $designer = $product->designer->name;
+                        $designer_id = $product->designer->id;
                         $isVideo = $product->type == 2;
                     @endphp
 
@@ -187,5 +187,16 @@
             </div>
         </section>
     </main>
-
 @endsection
+@if(session('download_product_id'))
+    <script>
+        window.onload = function () {
+            const link = document.createElement('a');
+            link.href = "{{ route('product.image-download', session('download_product_id')) }}";
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        };
+    </script>
+@endif

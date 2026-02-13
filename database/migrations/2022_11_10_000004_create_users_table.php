@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->string('verification_code')->nullable();
             $table->integer('is_verified')->default(0)->comment('0=>Unverified, 1=>Verified');
-            $table->integer('role_id');
+            $table->integer('role_id')->comment(	'1=>Admin,2=>Designer,3=>user'	);
             $table->integer('is_banned')->default(0)->comment('0=>Unbanned, 1=>Banned');
             $table->datetime('email_verified_at')->nullable();
             $table->string('password');

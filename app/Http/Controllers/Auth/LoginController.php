@@ -85,10 +85,11 @@ class LoginController extends Controller
             $user = Auth::user();
 
             if ($user->role_id == 2) {
-                return redirect()->route('designer.dashboard')
+                return redirect()->intended('/')
                     ->with('success', 'Successfully Logged In!');
             } elseif ($user->role_id == 3) {
-                return redirect()->route('user.dashboard')
+//                return redirect()->route('user.dashboard')
+                return redirect()->intended('/')
                     ->with('success', 'Successfully Logged In!');
             }
             return redirect()->intended('/')

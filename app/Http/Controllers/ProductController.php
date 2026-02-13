@@ -60,7 +60,7 @@ class ProductController extends Controller
         Product::create([
             'title'       => $request->title,
             'category_id' => $request->category_id,
-            'user_id'     => Auth::id(),
+            'designer_id'     => Auth::id(),
             'price'       => $request->price,
             'type'        => $request->type,
             'tags'        => $tags,

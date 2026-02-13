@@ -143,11 +143,43 @@
         });
     </script>
 
+{{--    <script>--}}
+{{--        document.addEventListener('contextmenu', function(e) {--}}
+{{--            e.preventDefault();--}}
+{{--        });--}}
+{{--    </script>--}}
+
+
+
+    <!-- script for Share -->
+
     <script>
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
+        document.querySelectorAll('.share-btn').forEach(function(btn){
+            btn.addEventListener('click', function(e){
+                e.stopPropagation();
+                let dropdown = this.nextElementSibling;
+
+                document.querySelectorAll('.share-dropdown').forEach(d => {
+                    if(d !== dropdown) d.style.display = 'none';
+                });
+
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
         });
+
+        document.addEventListener('click', function(){
+            document.querySelectorAll('.share-dropdown').forEach(d => {
+                d.style.display = 'none';
+            });
+        });
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert("Link copied successfully!");
+            });
+        }
     </script>
+
 
 </body>
 

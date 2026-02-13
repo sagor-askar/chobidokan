@@ -108,6 +108,38 @@
 
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
         }
+
+
+
+        /* share  */
+
+        .share-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .share-dropdown {
+            position: absolute;
+            bottom: 40px;
+            right: 0;
+            background: #fff;
+            min-width: 160px;
+            border-radius: 6px;
+            padding: 8px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 10;
+        }
+        .share-dropdown a {
+            display: block;
+            padding: 8px 12px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .share-dropdown a:hover {
+            background: #f5f5f5;
+        }
+
     </style>
 
     <!-- Hero Section -->
@@ -134,13 +166,10 @@
 
                 <!-- Always visible bottom overlay -->
                 <div class="feature-overlay">
-                    <div class="feature-icons">
-                        <i class="fa fa-heart"></i>
-                        <i class="fa fa-share-alt"></i>
-                        <i class="fa fa-download" aria-hidden="true"></i>
+                    <div class="text-center">
+                        <span >{{ $product->title ?? '' }}</span>
                     </div>
 
-                    <span>{{ $product->title ?? '' }}</span>
                 </div>
             </div>
 
@@ -150,8 +179,8 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
 
                     <div class="d-flex align-items-center">
-                        <a  target="_blank" href="{{ route('designer-profile',$product->user->id) }}">
-                        <img src="{{ $product->user && $product->user->image  ? asset($product->user->image)  : 'http://1.gravatar.com/avatar/7a20fad302fc2dd4b4649dc5bdb3c463?s=64&d=mm&r=g' }}"
+                        <a  target="_blank" href="{{ route('designer-profile',$product->designer->id) }}">
+                        <img src="{{ $product->designer && $product->designer->image  ? asset($product->designer->image)  : 'http://1.gravatar.com/avatar/7a20fad302fc2dd4b4649dc5bdb3c463?s=64&d=mm&r=g' }}"
                             class="rounded-circle mr-3"
                             width="50"
                             height="50"
@@ -162,7 +191,7 @@
                         <div>
 
                             <h6 class="mb-0 font-weight-bold">
-                                <a target="_blank" href="{{ route('designer-profile',$product->user->id) }}" class="text-dark">{{ $product->user?->name }}</a>
+                                <a target="_blank" href="{{ route('designer-profile',$product->designer->id) }}" class="text-dark">{{ $product->designer?->name }}</a>
                             </h6>
 
                             <small class="text-muted">
@@ -172,9 +201,28 @@
                         </div>
                     </div>
                     <div class="d-flex gap-3">
-                        <button type="button" class="btn btn-outline-secondary btn-sm">
-                            <i class="fa fa-heart mr-1"></i> Save
-                        </button>
+
+                        <div class="share-wrapper">
+                            <i class="fa fa-share-alt share-btn" title="Share"></i>
+
+                            <div class="share-dropdown">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
+                                    <i class="fa fa-facebook"></i> Facebook
+                                </a>
+
+                                <a href="https://api.whatsapp.com/send?text={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
+                                    <i class="fa fa-whatsapp"></i> WhatsApp
+                                </a>
+
+                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('product-details',$product->id)) }}&text={{ urlencode($product->title) }}" target="_blank">
+                                    <i class="fa fa-twitter"></i> Twitter
+                                </a>
+
+                                <a href="javascript:void(0)" onclick="copyToClipboard('{{ route('product-details',$product->id) }}')">
+                                    <i class="fa fa-link"></i> Copy Link
+                                </a>
+                            </div>
+                        </div>
 
                           @if($isPayment)
                             <a href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}"
@@ -195,7 +243,7 @@
 
 
                         <button type="button" class="btn btn-outline-secondary btn-sm">
-                            <i class="fa fa-list mr-1"></i> Total 10 Downloads
+                            <i class="fa fa-list mr-1"></i> Total  <strong>{{ $product->total_download }}</strong> Downloads
                         </button>
                     </div>
 

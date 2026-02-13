@@ -42,13 +42,9 @@ class PaymentController extends Controller
 
             session(['project_id' => $project->id]);
 
-//            $store_id      = env('STORE_ID');
-//            $signature_key = env('SIGNATURE_KEY');
-//            $url           = env('AMARPAY_URL');
-
-            $store_id      = "aamarpaytest";
-            $signature_key = "dbb74894e82415a2f7ff0ec3a97e4183";
-            $url           = "https://sandbox.aamarpay.com/jsonpost.php";
+            $store_id      = env('STORE_ID');
+            $signature_key = env('SIGNATURE_KEY');
+            $url           = env('AMARPAY_URL');
 
             $payload = [
                 "store_id"      => $store_id,
@@ -225,23 +221,41 @@ class PaymentController extends Controller
 
     public function purchaseSuccess(Request $request)
     {
-        $product_id = $request->opt_a;
-        $user_id = $request->opt_b;
-        $product = Product::find($product_id);
-        if (!$product) {
-            return redirect()->route('welcome')->with('error', 'Your Purchase Failed !');
-        }
-           Payment::create([
-                'product_id' => $product->id,
-                'user_id' => $user_id,
-                'amount' =>$request->amount,
-                'card_type'      => $request->card_type ?? null,
-                'bank_txn'       => $request->bank_txn ?? null,
+        DB::beginTransaction();
+
+        try {
+            $product_id = $request->opt_a;
+            $user_id    = $request->opt_b;
+
+            $product = Product::findOrFail($product_id);
+
+            Payment::create([
+                'product_id'  => $product->id,
+                'designer_id' => $product->user_id,
+                'user_id'     => $user_id,
+                'amount'      => $request->amount,
+                'card_type'   => $request->card_type ?? null,
+                'bank_txn'    => $request->bank_txn ?? null,
+                'is_counted'  => 0,
             ]);
 
-        Auth::loginUsingId($user_id);
-        return redirect()->route('welcome')->with('success', 'Your payment was successful!');
+            Auth::loginUsingId($user_id);
+
+            DB::commit();
+
+            // Pass download product_id to Blade
+            return redirect()->route('welcome')
+                ->with('download_product_id', base64_encode($product->id))
+                ->with('success', 'Payment successful! Download started.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
     }
+
+
+
 
     //  AmarPay Fail Callback
     public function purchaseFail(Request $request)

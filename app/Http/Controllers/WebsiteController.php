@@ -22,6 +22,7 @@ use App\Models\InfoSetup;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 class WebsiteController extends Controller
 {
@@ -317,7 +318,7 @@ class WebsiteController extends Controller
                 $query->orWhereHas('category', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%");
                 });
-                $query->orWhereHas('user', function ($q) use ($search) {
+                $query->orWhereHas('designer', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%");
                 });
             })
@@ -342,7 +343,7 @@ class WebsiteController extends Controller
 
     public function tagProduct($tag)
     {
-         $products = Product::with('user')
+         $products = Product::with('designer')
                 ->where(function ($query) use ($tag) {
                     $query->whereJsonContains('tags', $tag);
                 })
@@ -366,7 +367,7 @@ class WebsiteController extends Controller
     public function categoryProduct($id)
     {
         $category = Category::find($id);
-        $products = Product::with('user')
+        $products = Product::with('designer')
             ->where('status', 1)
             ->where('category_id', $id)
             ->paginate(8);
@@ -443,22 +444,71 @@ class WebsiteController extends Controller
     public function productImageDownload($id)
     {
         $id = base64_decode($id);
-        $product = Product::findOrFail($id);
+
         if (!auth()->check()) {
-            abort(403);
+            abort(403, 'Unauthorized');
         }
+
+        $product = Product::findOrFail($id);
+
+        $payment = Payment::where('product_id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$payment) {
+            abort(403, 'You did not purchase this product.');
+        }
+
+        // Count only once
+        if ($payment->is_counted == 0) {
+            $payment->update(['is_counted' => 1]);
+            $product->increment('total_download');
+        }
+
         $filePath = storage_path('app/' . $product->file_path);
+
         if (!file_exists($filePath)) {
-            abort(404);
+            abort(404, 'File not found.');
         }
+
         return response()->download(
             $filePath,
             $product->file_name,
-            [
-                'Content-Type' => $product->file_type
-            ]
+            ['Content-Type' => $product->file_type]
         );
     }
+
+    public function serveVideo($id)
+    {
+        $product = Product::findOrFail($id);
+
+        if (!Storage::disk('local')->exists($product->file_path)) {
+            abort(404);
+        }
+        $path = storage_path('app/' . $product->file_path);
+
+        return response()->file($path, [
+            'Content-Type' => $product->file_type,
+            'Accept-Ranges' => 'bytes',
+            'Content-Disposition' => 'inline'
+        ]);
+    }
+
+    public function downloadVideo($id)
+    {
+        $id = base64_decode($id); // যদি encode করে পাঠাও
+
+        $product = Product::findOrFail($id);
+
+        if (!Storage::disk('local')->exists($product->file_path)) {
+            abort(404);
+        }
+
+        $path = storage_path('app/' . $product->file_path);
+
+        return response()->download($path, $product->title . '.' . pathinfo($product->file_path, PATHINFO_EXTENSION));
+    }
+
 
 
 

@@ -108,31 +108,50 @@
                                 </tr>
                                 <tr>
                                     <th>
-                                        Image
+                                        Image/Video
                                     </th>
+
                                     @php
                                         $extension = strtolower(pathinfo($product->file_path, PATHINFO_EXTENSION));
                                         $isVideo = in_array($extension, ['mp4', 'webm', 'ogg', 'mov']);
                                     @endphp
+
                                     <td>
                                         @if ($isVideo)
                                             <div>
-                                                <video width="30%" height="60%" style="object-fit: cover; border-radius: 3px;" muted>
-                                                    <source src="{{ asset($product->file_path) }}"
-                                                            type="video/{{ $extension }}">
+                                                <video width="170"
+                                                       style="height:auto; border-radius:3px;"
+                                                       controls
+                                                       preload="metadata">
+                                                    <source src="{{ route('product.view.video', $product->id) }}"
+                                                            type="{{ $product->file_type }}">
+                                                    Your browser does not support the video tag.
                                                 </video>
-                                                @php $iconClass = 'bi-play-btn-fill'; @endphp
+
+                                                <div style="font-size:12px; color:#555;">
+                                                    Video Preview
+                                                </div>
                                             </div>
                                         @else
                                             <div>
-                                                <a target="_blank" href="{{ asset($product->file_path) }}" title="Click to download" download>
-                                                    <img src="{{ asset($product->file_path) }}" alt="Image" width="170" style="height:auto; cursor:pointer;">
+                                                <a target="_blank"
+                                                   href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}"
+                                                   title="Click to download"
+                                                   download>
+                                                    <img src="{{ route('product.file.view', $product->id) }}"
+                                                         alt="Image"
+                                                         width="170"
+                                                         style="height:auto; cursor:pointer;">
                                                 </a>
-                                                <div style="font-size:12px; color:#555;">Click image to download</div>
+
+                                                <div style="font-size:12px; color:#555;">
+                                                    Click image to download
+                                                </div>
                                             </div>
                                         @endif
                                     </td>
                                 </tr>
+
                                 <tr>
                                     <th>
                                         Status

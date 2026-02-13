@@ -1,54 +1,200 @@
 @extends('includes.master')
 @section('content')
     <style>
-        .feature-img {
+        /* ===============================
+        VIDEO CARD
+     =================================*/
+        .video-card {
             position: relative;
-            overflow: hidden;
+            border-radius: 12px;
+            overflow: visible; /* dropdown visibility ঠিক রাখবে */
         }
 
-        .feature-overlay {
+
+
+        /* Video hover zoom */
+        .video-card video {
+            transition: transform 0.4s ease;
+        }
+
+        /*.video-card:hover video {*/
+        /*    transform: scale(1.05);*/
+        /*}*/
+
+        /* ===============================
+           WATERMARK
+        =================================*/
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 40px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.15);
+            text-transform: uppercase;
+            pointer-events: none;
+            user-select: none;
+            z-index: 2;
+        }
+
+        /* ===============================
+           OVERLAY
+        =================================*/
+        .video-overlay {
             position: absolute;
             bottom: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.65);
+            padding: 16px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
             color: #fff;
-            padding: 10px 15px;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            z-index: 3;
+        }
+
+        .video-card:hover .video-overlay {
+            transform: translateY(0);
+        }
+
+        /* Title */
+        .video-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        /* Meta Row */
+        .video-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 13px;
         }
 
-        .feature-icons i {
-            margin-right: 10px;
-            font-size: 18px;
+        /* ===============================
+           ICON BUTTONS
+        =================================*/
+        .video-icons {
+            display: flex;
+            gap: 8px;
         }
 
-        .feature-img img {
-            height: auto;
-            width: 100%;
+        .video-icons a,
+        .video-icons button {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            transition: all 0.25s ease;
+            cursor: pointer;
         }
 
-        .image-card {
+        .video-icons a:hover,
+        .video-icons button:hover {
+            background: #ffc107;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        /* ===============================
+           SHARE DROPDOWN
+        =================================*/
+
+        /* ===============================
+        SHARE BUTTON ICON STYLE
+     =================================*/
+        .video-icons .share-wrapper {
             position: relative;
-            overflow: hidden;
         }
 
-        .image-overlay {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.65);
-            color: #fff;
-            padding: 8px 12px;
+        .video-icons .share-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-
-        .overlay-icons i {
-            margin-right: 8px;
+            justify-content: center;
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            transition: all 0.25s ease;
+            cursor: pointer;
             font-size: 16px;
         }
+
+        .video-icons .share-btn:hover {
+            background: #ffc107;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        /* ===============================
+           SHARE DROPDOWN - CENTERED
+        =================================*/
+        .video-icons .share-wrapper .share-dropdown {
+            position: absolute;
+            bottom: 50px; /* distance from button */
+            left: 50%;
+            transform: translateX(-50%); /* center horizontally */
+            background: #fff;
+            min-width: 140px;
+            border-radius: 6px;
+            padding: 8px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 10;
+            text-align: center;
+        }
+
+        /* Show dropdown on hover */
+        .video-icons .share-wrapper:hover .share-dropdown {
+            display: block;
+        }
+
+        /* Individual share links */
+        .video-icons .share-wrapper .share-dropdown a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.25s ease;
+            border-radius: 4px;
+            margin: 4px 1px -6px 30px;
+        }
+
+        /* Colors for each platform */
+        .share-dropdown a i.fa-facebook {
+            color: #3b5998;
+        }
+
+        .share-dropdown a i.fa-whatsapp {
+            color: #25D366;
+        }
+
+        .share-dropdown a i.fa-twitter {
+            color: #1DA1F2;
+        }
+
+        .share-dropdown a i.fa-link {
+            color: #333;
+        }
+
+        /* Hover effect for each */
+        .share-dropdown a:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
     </style>
     <main class="main">
 
@@ -63,16 +209,27 @@
 
                     <!-- Item -->
                     @foreach($products as $key=>$product)
+                        @php
+                            $isPayment = null;
+                            $authUser =  \Illuminate\Support\Facades\Auth::check() ? Auth::user() : null;
+                            if ($authUser) {
+                              $isPayment =  \App\Models\Payment::where('product_id', $product->id)->where('user_id',$authUser->id)->first();
+                           }
+                        @endphp
                     <div class="col-md-4">
-                        <div class="position-relative overflow-hidden rounded shadow-lg">
+                            <div class="video-card position-relative overflow-hidden rounded shadow-lg">
 
                             <!-- Video Wrapper -->
                             <div class="ratio ratio-16x9">
+                                <a href="{{ route('product-details',$product->id) }}">
                                 <video class="w-100" muted playsinline preload="metadata" onmouseenter="this.play()"
                                     onmouseleave="this.pause(); this.currentTime=0;">
-                                    <source src="{{ asset($product->file_path) }}" type="video/mp4">
+                                    <source src="{{ route('product.view.video', $product->id) }}" type="{{ $product->file_type }}">
                                 </video>
+                                </a>
                             </div>
+
+                            <div class="watermark">CHOBIDOKAN</div>
 
                             <!-- Play Icon -->
                             <a href="{{ route('product-details',$product->id) }}"
@@ -81,19 +238,66 @@
                                 <i class="fa fa-play-circle fa-3x opacity-75"></i>
                             </a>
                             <!-- Overlay -->
-                            <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
-                                style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
+                            <div class="video-overlay">
 
-                                <div class="fw-semibold">{{ $product->title ?? '' }}</div>
+                                <div class="video-title">
+                                    {{ $product->title ?? '' }}
+                                </div>
 
-                                <div class="d-flex justify-content-between align-items-center small mt-1">
+                                <div class="video-meta">
+
                                     <span>Tk {{ $product->price ?? '' }}</span>
 
-                                    <div class="d-flex gap-3">
-                                        <i class="fa fa-eye"></i>
-                                        <i class="fa fa-download"></i>
-                                        <i class="fa fa-share-alt"></i>
+                                    <div class="video-icons d-flex gap-2">
+
+                                        <!-- View -->
+                                        <a href="{{ route('product-details',$product->id) }}">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+
+                                        <!-- Download / Buy -->
+                                        @if($isPayment)
+                                            <a href="{{ route('product.video-download', ['id' => base64_encode($product->id)]) }}">
+                                                <i class="fa fa-download"></i>
+                                            </a>
+                                        @else
+                                            <form action="{{ route('product.purchase') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                <button type="submit">
+                                                    <i class="fa fa-download"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        <!-- Share -->
+                                        <div class="share-wrapper">
+                                            <i class="fa fa-share-alt share-btn" title="Share"></i>
+
+                                            <div class="share-dropdown">
+                                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
+                                                    <i class="fa fa-facebook"></i>
+                                                </a>
+
+                                                <a href="https://api.whatsapp.com/send?text={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
+                                                    <i class="fa fa-whatsapp"></i>
+                                                </a>
+
+                                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('product-details',$product->id)) }}&text={{ urlencode($product->title) }}" target="_blank">
+                                                    <i class="fa fa-twitter"></i>
+                                                </a>
+
+                                                <a href="javascript:void(0)" onclick="copyToClipboard('{{ route('product-details',$product->id) }}')">
+                                                    <i class="fa fa-link"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
+
+
+
                                     </div>
+
                                 </div>
                             </div>
 
@@ -106,4 +310,16 @@
             </div>
         </section>
     </main>
+
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Link copied to clipboard!');
+            }, function(err) {
+                alert('Could not copy link: ', err);
+            });
+        }
+
+    </script>
 @endsection
