@@ -206,7 +206,7 @@ class DesignerController extends Controller
     public function productList()
     {
 
-        $products = Product::where('user_id',Auth::id())->paginate(10);
+        $products = Product::where('designer_id',Auth::id())->paginate(10);
         return view('frontend.seller.upload-products', compact('products'));
     }
 
@@ -237,7 +237,7 @@ class DesignerController extends Controller
         $data = [
             'title'       => $request->title,
             'category_id' => $request->category_id,
-            'user_id'     => $product->user_id,
+            'designer_id' => $product->designer_id,
             'price'       => $request->price,
             'type'        => $request->type,
             'tags'        => $tags,
