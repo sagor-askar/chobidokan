@@ -140,6 +140,62 @@
             background: #f5f5f5;
         }
 
+        .image-watermark {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            font-size: 48px;
+            font-weight: bold;
+            color: rgba(255,255,255,0.3);
+            pointer-events: none;
+        }
+
+        .zoom-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 45px;
+            height: 45px;
+            font-size: 2rem;
+            color: white;
+            border: none;
+            background-color: transparent;
+        }
+
+        /* Popup background */
+        .image-popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Image */
+        .popup-image {
+            max-width: 95vw;
+            max-height: 95vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Close button */
+        .popup-close {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            font-size: 40px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .popup-close:hover {
+            color: #ff4d4f;
+        }
     </style>
 
     <!-- Hero Section -->
@@ -150,26 +206,148 @@
         <!-- Blog Container -->
         <div class=" border-0">
 
-            <!-- Feature Image -->
-            <div class="w-100 feature-img">
+            <div class="row">
 
-                <img src="{{ route('product.file.view', $product->id) }}"
-                     class="img-fluid"
-                     alt="{{ $product->file_name }}"
-                     oncontextmenu="return false"
-                     draggable="false">
+                <!-- Left Side: Image -->
+                <div class="col-md-8">
+                    <div class="position-relative bg-light p-3 rounded shadow-sm">
+                        <!-- Main Image Wrapper -->
+                        <div class="position-relative">
+                            <img src="{{ route('product.file.view', $product->id) }}"
+                                class="img-fluid w-100 rounded"
+                                alt="{{ $product->file_name }}"
+                                draggable="false">
 
-                <!-- Watermark text -->
-                <div class="image-watermark">
-                    CHOBIDOKAN
+                            <!-- Watermark -->
+                            <div class="image-watermark">
+                                CHOBIDOKAN
+                            </div>
+
+                            <!-- Zoom (+) Button -->
+                            <button type="button" class="zoom-btn" onclick="openImageModal()">
+                                <i class="fa fa-search-plus" aria-hidden="true"></i>
+                            </button>
+
+                        </div>
+
+                        <!-- Photo Formats -->
+                        <div class="mt-3">
+                            <small class="text-muted fw-semibold d-block mb-2">Photo formats</small>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    6000 × 4000 pixels • 20 × 13.3 in • DPI 300 • JPG
+                                </span>
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    1000 × 667 pixels • 3.3 × 2.2 in • DPI 300 • JPG
+                                </span>
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    500 × 334 pixels • 1.7 × 1.1 in • DPI 300 • JPG
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Always visible bottom overlay -->
-                <div class="feature-overlay">
-                    <div class="text-center">
-                        <span >{{ $product->title ?? '' }}</span>
-                    </div>
+                <!-- Custom Image Popup -->
+                <div id="imagePopup" class="image-popup">
 
+                    <span class="popup-close" onclick="closeImageModal()">&times;</span>
+
+                    <img src="{{ route('product.file.view', $product->id) }}"
+                        alt="{{ $product->file_name }}"
+                        class="popup-image">
+
+                </div>
+
+                <!-- Right Side: Options -->
+                <div class="col-md-4">
+                    <div class="p-3 bg-light h-100">
+
+                        <!-- Pricing Options -->
+                        <div class="mb-3">
+
+                            <!-- Single Image -->
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="plan" id="singleImage">
+                                    <label class="form-check-label fw-semibold" for="singleImage">
+                                        Buy Single Image
+                                    </label>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold">100 BDT</div>
+                                    <small class="text-muted">Per Image</small>
+                                </div>
+                            </div>
+
+                            <!-- Subscription -->
+                            <div class="d-flex justify-content-between align-items-start rounded" style="background:#eef4ff;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="plan" id="subscription" checked>
+                                    <label class="form-check-label fw-semibold" for="subscription">
+                                        <span class="badge bg-primary mb-1">Subscribe & Save</span><br>
+                                        15 Images Subscription
+                                    </label>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold">950 BDT</div>
+                                    <small class="text-muted">Per Month</small>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Download Button -->
+                        <button class="btn btn-sm w-100 text-white fw-semibold mb-2"
+                                style="background:#ff3b3f;">
+                            Download
+                        </button>
+
+                        <div class="text-center mb-2">
+                            <a href="#" class="text-decoration-none small text-dark fw-semibold">
+                                See all image plans
+                            </a>
+                        </div>
+
+                        <!-- Image Info -->
+                        <div>
+                            <small class="text-muted">Image Title</small>
+                            <h5 class="fw-bold mb-3">
+                                A rooftop Shot with Pigeon Flying
+                            </h5>
+
+                            <small class="text-muted d-block mb-2">Image details</small>
+                            <small class="text-muted d-block">
+                                Asset id: 1940756152
+                            </small>
+
+                            <small class="text-muted d-block">
+                                {!! $product->description !!}
+                            </small>
+
+                            <small class="text-muted d-block mt-2">
+                                Release information: Signed model release on file with chobidokan.com
+                            </small>
+
+                            <small class="text-muted d-block mt-2">
+                                Upload date: {{ \Carbon\Carbon::parse($product->created_at)->format('M d, Y') }}
+                            </small>
+
+                            <small class="text-muted d-block mt-2">
+                                Categories:
+                                <a href="#" class="text-decoration-none">People</a>,
+                                <a href="#" class="text-decoration-none">Business/Finance</a>
+                            </small>
+
+                            <!-- Author -->
+                            {{-- <div class="d-flex align-items-center mt-3">
+                                <div class="rounded-circle bg-secondary me-2"
+                                    style="width:40px;height:40px;"></div>
+                                <span class="fw-semibold">Mr. Designer</span>
+                            </div> --}}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -187,19 +365,17 @@
                             alt="Author">
                         </a>
 
-
-                        <div>
-
+                        <div style="padding: 5px;">
                             <h6 class="mb-0 font-weight-bold">
                                 <a target="_blank" href="{{ route('designer-profile',$product->designer->id) }}" class="text-dark">{{ $product->designer?->name }}</a>
                             </h6>
-
                             <small class="text-muted">
                                 <i class="fa fa-calendar mr-1"></i>
                                 {{ \Carbon\Carbon::parse($product->created_at)->format('M d, Y') }}
                             </small>
                         </div>
                     </div>
+
                     <div class="d-flex gap-3">
 
                         <div class="share-wrapper">
@@ -251,11 +427,6 @@
 
                 <!-- Blog Content -->
                 <div class="mb-4" style="line-height: 1.8;">
-                    <p class="text-secondary">
-                        {!! $product->description !!}
-                    </p>
-
-                    {{-- if the image is available --}}
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
                     <label class="form-check-label" for="flexCheckChecked">
                         Image Available.
@@ -311,4 +482,22 @@
             </div>
         </div>
     </section>
+
+    {{-- custom popup --}}
+    <script>
+        function openImageModal() {
+            document.getElementById('imagePopup').style.display = "flex";
+        }
+
+        function closeImageModal() {
+            document.getElementById('imagePopup').style.display = "none";
+        }
+
+        // Close when clicking outside image
+        document.getElementById('imagePopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageModal();
+            }
+        });
+    </script>
 @endsection
