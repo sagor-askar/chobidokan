@@ -62,8 +62,8 @@
 
 
         /* ==============================
-      MULTI-LAYER WATERMARK
-   =============================== */
+            MULTI-LAYER WATERMARK
+        =============================== */
         .watermark-multi {
             position: absolute;
             top: 0;
@@ -101,10 +101,7 @@
             }
         }
 
-
-
         /* share  */
-
         .share-wrapper {
             position: relative;
             display: inline-block;
@@ -132,6 +129,70 @@
             background: #f5f5f5;
         }
 
+        .image-popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-image {
+            max-width: 95vw;
+            max-height: 95vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            font-size: 40px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .watermark-multi {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .watermark-multi span {
+            color: rgba(255,255,255,0.08); /* very light */
+            font-size: 28px;
+            font-weight: bold;
+            margin: 40px;
+            transform: rotate(-25deg);
+        }
+
+        video {
+            position: relative;
+            z-index: 1;
+            background: #000;
+        }
+
+        .zoom-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            background: rgba(0,0,0,0.6);
+            border: none;
+            color: #fff;
+            padding: 10px 14px;
+            font-size: 1.8rem;
+        }
+
     </style>
 
     <!-- Hero Section -->
@@ -142,44 +203,142 @@
         <!-- Container -->
         <div class=" border-0">
 
-            <!-- Feature Image -->
-            <div class="w-100 feature-img rounded shadow-lg position-relative">
+            <div class="row">
 
-                <!-- Video Wrapper -->
-                <div class="ratio ratio-16x9 position-relative">
-                    <video id="productVideo" class="w-100" playsinline preload="metadata">
-                        <source src="{{ route('product.view.video', $product->id) }}" type="{{ $product->file_type }}">
-                    </video>
+                <div class="col-md-8">
+                    <div class="position-relative bg-light p-3 rounded shadow-sm">
 
-                    <!-- Multi Watermark -->
-                    <div class="watermark-multi">
-                        @for($i=0; $i<15; $i++)
-                            <span>CHOBIDOKAN</span>
-                        @endfor
+                        <!-- Video Wrapper -->
+                        <div class="position-relative ratio ratio-16x9">
+
+                            <video id="productVideo"
+                                class="w-100 rounded"
+                                playsinline
+                                preload="metadata"
+                                controlsList="nodownload">
+
+                                <source src="{{ route('product.view.video', $product->id) }}"
+                                        type="{{ $product->file_type }}">
+                            </video>
+
+                            <!-- Multi Watermark -->
+                            <div class="watermark-multi">
+                                @for($i=0; $i<15; $i++)
+                                    <span>CHOBIDOKAN</span>
+                                @endfor
+                            </div>
+
+                            <!-- Zoom Button -->
+                            <button type="button"
+                                    class="zoom-btn"
+                                    onclick="openVideoModal()">
+                                <i class="fa fa-search-plus"></i>
+                            </button>
+
+                        </div>
+
+                        <!-- Video Info -->
+                        <div class="mt-3">
+                            <small class="text-muted fw-semibold d-block mb-2">Video Format</small>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    Full HD • 1920x1080 • MP4
+                                </span>
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    Duration: 00:30
+                                </span>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-                <!-- Center Play Icon -->
-                <div id="centerPlayBtn" class="position-absolute top-50 start-50 translate-middle text-white"
-                     style="cursor: pointer; z-index: 5;">
-                    <i class="fa fa-play-circle fa-4x opacity-75"></i>
+
+                <div id="videoPopup" class="image-popup">
+
+                    <span class="popup-close" onclick="closeVideoModal()">&times;</span>
+
+                    <video class="popup-image"
+                        controls
+                        autoplay>
+
+                        <source src="{{ route('product.view.video', $product->id) }}"
+                                type="{{ $product->file_type }}">
+                    </video>
+
                 </div>
-                <!-- Bottom Overlay -->
-                <div class="feature-overlay">
-                    <div class="overlay-content">
-                        <div class="video-meta d-flex align-items-center gap-3">
-                            <h5 class="video-title mb-0">
-                                <strong>{{ $product->title }}</strong>
-                            </h5>
-                            <span>|</span>
-                            <div class="video-price mb-0">
-                                Tk {{ $product->price }}
+
+                <div class="col-md-4">
+                    <div class="p-3 bg-light h-100">
+
+                        <!-- Pricing Options -->
+                        <div class="mb-3">
+
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="plan" id="singleVideo">
+                                    <label class="form-check-label fw-semibold" for="singleVideo">
+                                        Buy Single Video
+                                    </label>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold">Tk {{ $product->price }}</div>
+                                    <small class="text-muted">Per Video</small>
+                                </div>
                             </div>
+
+                            <div class="d-flex justify-content-between align-items-start rounded mt-2 p-2"
+                                style="background:#eef4ff;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="plan" id="subscription" checked>
+                                    <label class="form-check-label fw-semibold" for="subscription">
+                                        <span class="badge bg-primary mb-1">Subscribe & Save</span><br>
+                                        Monthly Subscription
+                                    </label>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold">950 BDT</div>
+                                    <small class="text-muted">Per Month</small>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Download Button -->
+                        <button class="btn btn-sm w-100 text-white fw-semibold mb-2"
+                                style="background:#ff3b3f;">
+                            Download
+                        </button>
+
+                        <div class="text-center mb-2">
+                            <a href="#" class="text-decoration-none small text-dark fw-semibold">
+                                See all video plans
+                            </a>
+                        </div>
+
+                        <!-- Video Info -->
+                        <div>
+                            <small class="text-muted">Video Title</small>
+                            <h5 class="fw-bold mb-3">
+                                {{ $product->title }}
+                            </h5>
+
+                            <small class="text-muted d-block mb-2">Video details</small>
+
+                            <small class="text-muted d-block">
+                                {!! $product->description !!}
+                            </small>
+
+                            <small class="text-muted d-block mt-2">
+                                Upload date:
+                                {{ \Carbon\Carbon::parse($product->created_at)->format('M d, Y') }}
+                            </small>
+
                         </div>
                     </div>
                 </div>
+
             </div>
-
-
 
             <div class="card-body p-4">
 
@@ -260,9 +419,6 @@
 
                 <!-- Blog Content -->
                 <div class="mb-4" style="line-height: 1.8;">
-                    <p class="text-secondary">
-                        {!! $product->description !!}
-                    </p>
 
                     {{-- if the image is available --}}
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
@@ -344,10 +500,6 @@
                     </div>
                 </div>
                 @endforeach
-
-
-
-
             </div>
         </div>
     </section>
@@ -380,5 +532,18 @@
 
         // Prevent right-click / download
         video.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+
+    {{-- video popup --}}
+    <script>
+        function openVideoModal() {
+            document.getElementById('videoPopup').style.display = "flex";
+        }
+
+        function closeVideoModal() {
+            const popup = document.getElementById('videoPopup');
+            popup.style.display = "none";
+            popup.querySelector("video").pause();
+        }
     </script>
 @endsection

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('content')
     <div class="login-box">
-        <div class="login-logo">
-            <a href="{{ route('admin.home') }}">
+        <div class="login-logo" style="font-family: ui-rounded; font-weight: 600;">
+            <a href="{{ route('admin.home') }}" style="color: cadetblue;">
                 {{ trans('panel.site_title') }}
             </a>
         </div>
