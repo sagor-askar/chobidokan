@@ -312,7 +312,7 @@
         <!-- Hero Section -->
         @include('includes.hero')
 
-        <h5 class="text-center mt-4">{{ $products->total() }} + for "{{ $category->name }}"</h5>
+        <h5 class="text-center mt-4">{{ $products->total() }} + images for "{{ $category?->name }}"</h5>
 
         <div class="container gallery">
             <div class="row">

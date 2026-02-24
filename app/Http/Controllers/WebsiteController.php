@@ -31,17 +31,30 @@ class WebsiteController extends Controller
     {
         $settings = Setting::first();
         $categories = Category::where('status',1)->get();
-        $products = Product::where('type',1)->where('status', 1)->latest()->paginate(10);
 
+        // Category wise latest product
+        $products = Product::where('type',1)
+            ->where('status',1)
+            ->whereIn('id', function ($query) {
+                $query->selectRaw('MAX(id)')
+                    ->from('products')
+                    ->where('status',1)
+                    ->where('type',1)
+                    ->groupBy('category_id');
+            })
+            ->latest()
+            ->paginate(10);
 
         $allTags = collect();
-        $tagProducts = Product::where('status', 1)->get();
+        $tagProducts = Product::latest()->where('status', 1)->get();
 
         $tagProducts->each(function ($product) use (&$allTags) {
             $tags = json_decode($product->tags, true) ?? [];
             $allTags = $allTags->merge($tags);
         });
+
         $uniqueTags = $allTags->unique()->values();
+
         return view('welcome', compact('settings','products','categories','uniqueTags'));
     }
 
@@ -366,6 +379,7 @@ class WebsiteController extends Controller
 
     public function categoryProduct($id)
     {
+
         $category = Category::find($id);
         $products = Product::with('designer')
             ->where('status', 1)

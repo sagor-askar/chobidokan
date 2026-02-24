@@ -105,7 +105,7 @@
                                         type="{{ $product->file_type }}">
                             </video>
                         @else
-                            <a href="{{ route('product-details', $product->id) }}" style="color:white">
+                            <a href="{{ route('category-wise-product', $product->category_id) }}" style="color:white">
                             <img class="img"
                                  src="{{ route('product.file.view', $product->id) }}"
                                  alt="">
@@ -115,7 +115,7 @@
                         <div class="watermark">CHOBIDOKAN</div>
 
                         <div class="overlay">
-                            <a href="{{ route('product-details', $product->id) }}" style="color:white">
+                            <a href="{{ route('category-wise-product', $product->category_id) }}" style="color:white">
                                 {{ $product->title }} | Tk {{ $product->price }}
                             </a>
                         </div>
