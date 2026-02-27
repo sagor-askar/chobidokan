@@ -71,6 +71,29 @@
             margin-bottom: 10px;
             margin-right: 5px;
         }
+
+
+        .category-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            color: #fff;
+            font-size: 22px;        /* বড় font */
+            font-weight: 800;       /* বেশি bold */
+            text-align: center;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+
+            opacity: 0;             /* default এ hide */
+            transition: 0.3s ease;
+            z-index: 3;
+        }
+
+        /* Hover করলে show হবে */
+        .item:hover .category-overlay {
+            opacity: 1;
+        }
     </style>
     <main class="main">
 
@@ -111,6 +134,12 @@
                                  alt="">
                             </a>
                         @endif
+
+                            <div class="category-overlay">
+                                <a href="{{ route('category-wise-product', $product->category_id) }}" style="color:white">
+                                    <span>{{ $product->category?->name }}</span>
+                                </a>
+                            </div>
 
                         <div class="watermark">CHOBIDOKAN</div>
 

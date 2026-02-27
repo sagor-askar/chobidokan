@@ -63,7 +63,7 @@ Route::controller(WebsiteController::class)->group(function() {
 
     Route::get('/product/search', 'search')->name('product.search');
     Route::get('/tag/{tag}/product', 'tagProduct')->name('tag-wise-product');
-    Route::get('/category/{id}/product', 'categoryProduct')->name('category-wise-product');
+    Route::get('/category-wise/{id}/product', 'categoryProduct')->name('category-wise-product');
     Route::get('/product-details/{id}', 'productDetails')->name('product-details');
     Route::get('/product-file/view/{id}', 'productFileView')->name('product.file.view');
     Route::get('/product/view-video/{id}', 'serveVideo')->name('product.view.video');

@@ -143,11 +143,11 @@
         });
     </script>
 
-{{--    <script>--}}
-{{--        document.addEventListener('contextmenu', function(e) {--}}
-{{--            e.preventDefault();--}}
-{{--        });--}}
-{{--    </script>--}}
+    <script>
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    </script>
 
 
 
