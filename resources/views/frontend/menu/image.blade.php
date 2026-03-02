@@ -90,11 +90,27 @@
     color: #ffc107;
   }
 
+  .category-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 22px;
+      font-weight: 800;
+      text-align: center;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+      opacity: 0;
+      transition: 0.3s ease;
+      z-index: 3;
+  }
 
+  .gallery-item:hover .category-overlay {
+      opacity: 1;
+  }
 
 
   /* share  */
-
   .share-wrapper {
       position: relative;
       display: inline-block;
@@ -146,9 +162,17 @@
             @endphp
           <div class="col-md-4 mb-4">
             <div class="gallery-item">
-                <a href="{{ route('product-details',$product->id) }}">
+                <a href="{{ route('category-wise-product',$product->category_id) }}">
                     <img src="{{ route('product.file.view', $product->id) }}" alt="{{$product->file_name}}">
                 </a>
+
+
+                <div class="category-overlay">
+                    <a href="{{ route('category-wise-product', $product->category_id) }}" style="color:white">
+                        <span>{{ $product->category?->name }}</span>
+                    </a>
+                </div>
+
                 <div class="watermark">CHOBIDOKAN</div>
 
               <div class="overlay">

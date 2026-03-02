@@ -321,8 +321,8 @@ class WebsiteController extends Controller
         $type = $request->query('type');
         $search = $request->query('search');
         $products = Product::where('status', 1)
-                  ->where('type', $type)
-                  ->where(function($query) use ($search) {
+            ->where('type', $type)
+            ->where(function($query) use ($search) {
 
                 $query->where('title', 'like', "%{$search}%")
                     ->orWhere('tags', 'like', "%{$search}%")
@@ -331,10 +331,26 @@ class WebsiteController extends Controller
                 $query->orWhereHas('category', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%");
                 });
+
                 $query->orWhereHas('designer', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%");
                 });
             })
+            ->whereIn('id', function ($query) use ($type, $search) {
+
+                $query->selectRaw('MAX(id)')
+                    ->from('products')
+                    ->where('status', 1)
+                    ->where('type', $type)
+                    ->where(function($q) use ($search) {
+
+                        $q->where('title', 'like', "%{$search}%")
+                            ->orWhere('tags', 'like', "%{$search}%")
+                            ->orWhere('description', 'like', "%{$search}%");
+                    })
+                    ->groupBy('category_id');
+            })
+            ->latest()
             ->paginate(8);
         //tags
         $allTags = collect();
@@ -379,7 +395,6 @@ class WebsiteController extends Controller
 
     public function categoryProduct($id)
     {
-
         $category = Category::find($id);
         $products = Product::with('designer')
             ->where('status', 1)
