@@ -305,6 +305,28 @@
             transform: translateY(-2px);
         }
 
+
+        /* ===============================
+                 Add to wishlist
+               =================================*/
+        .wishlist-btn{
+            background:white;
+            border:none;
+            border-radius:50%;
+            padding:6px 8px;
+            box-shadow:0 2px 6px rgba(0,0,0,0.15);
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        .wishlist-btn:hover{
+            transform:scale(1.1);
+        }
+
+        .wishlist-btn i{
+            font-size:16px;
+        }
+
     </style>
 
     <main class="main">
@@ -338,6 +360,20 @@
                                     <h6>{{ $product->title ?? '' }}</h6>
                                     <div class="overlay-icons">
                                         <a href="{{ route('product-details',$product->id) }}">  <i class="fa fa-eye" title="View"></i></a>
+
+                                        <!-- add to wishlist -->
+                                        @if(auth()->check())
+                                            <button class="wishlist-btn" onclick="toggleWishlist({{ $product->id }})" id="wishlist-btn-{{ $product->id }}">
+                                                <i class="fa {{ auth()->check() && $product->wishlists->count() ? 'fa-heart text-danger' : 'fa-heart-o' }}">
+                                                </i>
+                                            </button>
+                                        @else
+                                            <a href="{{ route('signin') }}">
+                                                <i class="fa fa-heart-o"></i>
+                                            </a>
+                                        @endif
+
+
                                         @if($isPayment)
                                             <a href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}" >
                                                 <i class="fa fa-download" title="Download"></i>

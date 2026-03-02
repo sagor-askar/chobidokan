@@ -12,6 +12,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Artisan;
 
 Route::get('/cache-clear', function () {
@@ -164,6 +166,16 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('project/submitted-file-confirm/{id}', [ProjectController::class, 'submittedFileConfirm'])->name('project.submitted-file.confirm');
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
     Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
+
+    // add to wishlist
+    Route::post('/wishlist/{id}', [WishlistController::class,'toggle'])->name('wishlist.toggle');
+    Route::get('/wishlist', [WishlistController::class,'index'])->name('wishlist.page');
+    Route::delete('/wishlist/{id}', [WishlistController::class,'remove'])->name('wishlist.remove');
+
+    // Add to cart
+    Route::post('/cart/store',[CartController::class,'store'])->name('cart.store');
+    Route::get('/cart',[CartController::class,'index'])->name('cart.index');
+
     Route::get('/product-image/download/{id}', [WebsiteController::class, 'productImageDownload'])->name('product.image-download');
     Route::get('/product/video-download/{id}', [WebsiteController::class, 'downloadVideo'])->name('product.video-download');
     Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');

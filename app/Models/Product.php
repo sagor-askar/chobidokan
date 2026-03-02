@@ -30,6 +30,11 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
 //    public function order()
 //    {
 //        return $this->hasOne(Order::class, 'project_id');

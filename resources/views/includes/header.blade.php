@@ -1,4 +1,39 @@
 <!-- Sidenav content || to display category -->
+
+<style>
+    .wishlist-wrapper {
+        display: flex;
+        align-items: center;
+    }
+
+    .wishlist-icon {
+        position: relative;
+        font-size: 22px;
+        color: #333;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .wishlist-icon:hover {
+        /*color: #dc3545;*/
+        transform: scale(1.1);
+    }
+
+    .wishlist-badge {
+        position: absolute;
+        top: -6px;
+        right: -10px;
+        background: #dc3545;
+        color: white;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 6px;
+        border-radius: 50px;
+        min-width: 18px;
+        text-align: center;
+    }
+</style>
+
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <a href="#">Category 1</a>
@@ -30,6 +65,23 @@
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
+
+
+        @if(Auth::check())
+            <div class="wishlist-wrapper" style="position: relative; margin-right:15px;">
+                <a href="{{ route('wishlist.page') }}" class="wishlist-icon">
+                    <i class="fa fa-heart"></i>
+                    @php
+                       $wishlistCount = \App\Models\Wishlist::where('user_id',auth()->id())->count();
+                    @endphp
+                    @if($wishlistCount > 0)
+                        <span id="wishlist-count" class="wishlist-badge"> {{ $wishlistCount }} </span>
+                    @endif
+                </a>
+
+            </div>
+        @endif
+
 
 
         <!-- User Profile or Login / Registration -->
