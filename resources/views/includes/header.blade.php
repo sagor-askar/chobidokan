@@ -1,3 +1,45 @@
+{{-- custom css for cart --}}
+<style>
+    .cart-badge {
+        font-size: 12px;
+    }
+    .cart-dropdown {
+        width: 320px;
+    }
+    .cart-item img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+    .remove-btn {
+        cursor: pointer;
+        font-size: 18px;
+    }
+    .remove-btn:hover {
+        color: red;
+    }
+    @media (max-width: 991px) {
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            left: auto;
+        }
+    }
+    /* Desktop hover for cart dropdown */
+        @media (min-width: 992px) {
+            .nav-item.dropdown:hover .dropdown-menu {
+                display: block;
+            }
+        }
+
+        /* Mobile: position dropdown correctly */
+        @media (max-width: 991px) {
+            .dropdown-menu.show {
+                display: block !important;
+            }
+        }
+</style>
+
 <!-- Sidenav content || to display category -->
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -19,13 +61,57 @@
 
         <nav id="navmenu" class="navmenu">
             <ul>
-                <li><a href="{{ route('info') }}">Info</a></li>
+                <li class="nav-item dropdown position-relative">
+                    <!-- Cart Icon -->
+                    <a class="nav-link position-relative" 
+                        href="javascript:void(0);" 
+                        id="cartDropdown">
 
+                        <i class="bi bi-cart3 fs-5"></i>
+
+                        <span id="cart-count"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge"
+                            style="margin-top: 15px;">
+                            3
+                        </span>
+                    </a>
+
+                    <!-- Dropdown Menu -->
+                    <ul class="dropdown-menu dropdown-menu-end p-3 cart-dropdown"
+                        aria-labelledby="cartDropdown">
+
+                        <li class="cart-item d-flex align-items-center justify-content-between mb-3" data-price="20">
+                            <div class="d-flex align-items-center">
+                                <img src="https://via.placeholder.com/50" class="me-2 rounded">
+                                <div>
+                                    <h6 class="mb-0">Product 1</h6>
+                                    <small class="text-muted">$20</small>
+                                </div>
+                            </div>
+                            <i class="bi bi-x remove-btn"></i>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li class="d-flex justify-content-between mb-2">
+                            <strong>Total:</strong>
+                            <strong>$<span id="cart-total">20</span></strong>
+                        </li>
+
+                        <li>
+                            <a href="#" class="btn btn-sm btn-primary w-100 text-white">View Cart</a>
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                <li><a href="{{ route('info') }}">Info</a></li>
                 <li><a href="{{ route('customize') }}">Customize Jobs</a></li>
                 @if (Auth::check())
-                @if(Auth::user()->role_id == 2)
-                <li><a href="{{ route('designer.upload') }}">Upload</a></li>
-                @endif
+                    @if(Auth::user()->role_id == 2)
+                        <li><a href="{{ route('designer.upload') }}">Upload</a></li>
+                    @endif
                 @endif
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -83,5 +169,75 @@
             }
         });
 
+    </script>
+
+    {{-- cart script --}}
+    <script>
+        function updateCart() {
+            let total = 0;
+            let items = document.querySelectorAll('.cart-item');
+            
+            items.forEach(item => {
+                total += parseFloat(item.getAttribute('data-price'));
+            });
+
+            document.getElementById('cart-total').innerText = total;
+            document.getElementById('cart-count').innerText = items.length;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+
+                    e.preventDefault();
+                    e.stopPropagation();   // 🔥 This is the key line
+
+                    this.closest('.cart-item').remove();
+                    updateCart();
+                });
+            });
+
+        });
+
+        updateCart();
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const cartToggle = document.getElementById("cartDropdown");
+            const cartMenu = cartToggle.nextElementSibling;
+
+            function isMobile() {
+                return window.innerWidth < 992; // Bootstrap lg breakpoint
+            }
+
+            cartToggle.addEventListener("click", function (e) {
+
+                if (isMobile()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Toggle dropdown manually
+                    if (cartMenu.classList.contains("show")) {
+                        cartMenu.classList.remove("show");
+                    } else {
+                        cartMenu.classList.add("show");
+                    }
+                }
+            });
+
+            // Close when clicking outside (mobile only)
+            document.addEventListener("click", function (e) {
+                if (isMobile()) {
+                    if (!cartToggle.contains(e.target) &&
+                        !cartMenu.contains(e.target)) {
+                        cartMenu.classList.remove("show");
+                    }
+                }
+            });
+
+        });
     </script>
 </header>
