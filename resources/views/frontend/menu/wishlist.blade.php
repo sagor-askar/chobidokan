@@ -1,16 +1,7 @@
 @extends('includes.master')
 @section('content')
-
     <div class="container mt-5">
-
         <h3 class="fw-bold mb-4">My Wishlist</h3>
-
-{{--        @if(session('success'))--}}
-{{--            <div class="alert alert-success">--}}
-{{--                {{ session('success') }}--}}
-{{--            </div>--}}
-{{--        @endif--}}
-
         @if($wishlists->count())
 
             <div class="card shadow-sm">
@@ -104,5 +95,4 @@
             });
         });
     </script>
-
 @endsection

@@ -39,4 +39,10 @@ class Product extends Model
 //    {
 //        return $this->hasOne(Order::class, 'project_id');
 //    }
+
+
+    public function payment()
+    {
+        return $this->hasMany(Payment::class,'product_id');
+    }
 }

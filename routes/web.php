@@ -15,6 +15,7 @@ use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Artisan;
+use ZipStream\ZipStream;
 
 Route::get('/cache-clear', function () {
     Artisan::call('cache:clear');        // cache clear
@@ -175,6 +176,10 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     // Add to cart
     Route::post('/cart/store',[CartController::class,'store'])->name('cart.store');
     Route::get('/cart',[CartController::class,'index'])->name('cart.index');
+    Route::delete('/cart/remove/{id}',[CartController::class,'remove'])->name('cart.remove');
+
+    Route::post('/cart/checkout', [PaymentController::class, 'cartCheckout'])->name('cart.checkout');
+    Route::get('cart/download-zip/{tran_id}', [CartController::class,'cartDownloadZip'])->name('cart.download-zip');
 
     Route::get('/product-image/download/{id}', [WebsiteController::class, 'productImageDownload'])->name('product.image-download');
     Route::get('/product/video-download/{id}', [WebsiteController::class, 'downloadVideo'])->name('product.video-download');
@@ -246,6 +251,12 @@ Route::match(['get', 'post'], 'order/cancel', [PaymentController::class, 'orderC
 Route::post('purchase/success', [PaymentController::class,'purchaseSuccess'])->name('purchase.success');
 Route::match(['get', 'post'], 'purchase/fail', [PaymentController::class, 'purchaseFail'])->name('purchase.fail');
 Route::match(['get', 'post'], 'purchase/cancel', [PaymentController::class, 'purchaseCancel'])->name('purchase.cancel');
+
+
+// cart payment success
+Route::match(['get','post'],'cart/purchase/success',[PaymentController::class,'cartPurchaseSuccess'])->name('cart.purchase.success');
+Route::match(['get','post'],'/cart/purchase/fail',[PaymentController::class,'cartPurchaseFail'])->name('cart.purchase.fail');
+Route::match(['get','post'],'/cart/purchase/cancel',[PaymentController::class,'cartPurchaseCancel'])->name('cart.purchase.cancel');
 
 
 
