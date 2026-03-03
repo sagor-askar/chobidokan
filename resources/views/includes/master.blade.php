@@ -143,11 +143,11 @@
         });
     </script>
 
-    <script>
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-    </script>
+{{--    <script>--}}
+{{--        document.addEventListener('contextmenu', function(e) {--}}
+{{--            e.preventDefault();--}}
+{{--        });--}}
+{{--    </script>--}}
 
 
 
@@ -240,6 +240,28 @@
         }
     </script>
 
+{{--   Add to cart--}}
+    <script>
+        function removeCart(id){
+
+            fetch('/cart/remove/'+id,{
+                method:'DELETE',
+                headers:{
+                    'X-CSRF-TOKEN':'{{ csrf_token() }}'
+                }
+            })
+                .then(res=>res.json())
+                .then(data=>{
+
+                    location.reload();
+
+                    let cartCount = document.getElementById('cart-count');
+                    if(cartCount){
+                        cartCount.innerText = data.count;
+                    }
+                });
+        }
+    </script>
 
 </body>
 

@@ -13,6 +13,9 @@ class WishlistController extends Controller
     {
         $wishlists = Wishlist::with('product')
             ->where('user_id',auth()->id())
+            ->whereDoesntHave('product.payment', function($q){
+                $q->where('user_id',auth()->id());
+            })
             ->get();
 
         return view('frontend.menu.wishlist',compact('wishlists'));

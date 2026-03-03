@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 //use App\Mail\BookOrderEmail;
 
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\Subscription;
+use App\Models\TempPayment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use ZipStream\ZipStream;
+
+
 
 class PaymentController extends Controller
 {
@@ -231,7 +236,7 @@ class PaymentController extends Controller
 
             Payment::create([
                 'product_id'  => $product->id,
-                'designer_id' => $product->user_id,
+                'designer_id' => $product->designer_id,
                 'user_id'     => $user_id,
                 'amount'      => $request->amount,
                 'card_type'   => $request->card_type ?? null,
@@ -271,5 +276,150 @@ class PaymentController extends Controller
         $userId = $request->input('opt_b');
         Auth::loginUsingId($userId);
         return redirect()->route('welcome')->with('error', 'Payment cancelled!');
+    }
+
+
+
+
+
+    // cart payment integration for product
+    public function cartCheckout()
+    {
+        DB::beginTransaction();
+
+        try {
+            $user = Auth::user();
+            $carts = Cart::with('product')
+                ->where('user_id',$user->id)
+                ->get();
+            if($carts->isEmpty()){
+                return back()->with('error','Cart is empty!');
+            }
+            $totalAmount = $carts->sum(fn($item)=>$item->product->price);
+            $tran_id = (string) Str::uuid();
+
+            TempPayment::create([
+                'tran_id'      => $tran_id,
+                'user_id'      => $user->id,
+                'total_amount' => $totalAmount,
+                'product_ids'  => json_encode($carts->pluck('product_id')->toArray()),
+                'status'       => 'pending'
+            ]);
+
+            $payload = [
+                "store_id"      => env('STORE_ID'),
+                "tran_id"       => $tran_id,
+                "success_url"   => route('cart.purchase.success'),
+                "fail_url"      => route('purchase.fail'),
+                "cancel_url"    => route('purchase.cancel'),
+                "amount"        => $totalAmount,
+                "currency"      => "BDT",
+                "signature_key" => env('SIGNATURE_KEY'),
+                "desc"          => "Cart Purchase",
+                "cus_name"      => $user->name,
+                "cus_email"     => $user->email,
+                "cus_add1"      => $user->address ?? 'Dhaka',
+                "cus_phone"     => $user->phone,
+                "opt_b"         => $user->id,
+                "type"          => "json"
+            ];
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, env('AMARPAY_URL'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $responseObject = json_decode($response, true);
+
+            if(isset($responseObject['payment_url'])){
+                DB::commit();
+                return redirect()->away($responseObject['payment_url']);
+            }
+
+            DB::rollBack();
+            return back()->with('error','Payment URL generation failed!');
+
+        } catch(\Exception $e){
+
+            DB::rollBack();
+            return back()->with('error',$e->getMessage());
+        }
+    }
+
+    public function cartPurchaseSuccess(Request $request)
+    {
+        try {
+            $user_id = $request->input('opt_b');
+            Auth::loginUsingId($user_id);
+            $tran_id = $request->mer_txnid;
+            $tempPayment = TempPayment::where('tran_id', $tran_id)->firstOrFail();
+            $cart_products = Cart::with('product')->where('user_id', $user_id)->get();
+
+            if ($cart_products->isEmpty()) {
+                return redirect()->route('cart.index')->with('error', 'No products in cart!');
+            }
+
+            $download_files = [];
+            $product_ids = [];
+
+            foreach ($cart_products as $cart_item) {
+                $product = $cart_item->product;
+                $product_ids[] = $product->id;
+                if (!Payment::where('product_id', $product->id)->where('user_id', $user_id)->exists()) {
+                    Payment::create([
+                        'product_id'  => $product->id,
+                        'designer_id' => $product->designer_id,
+                        'user_id'     => $user_id,
+                        'amount'      => $product->price,
+                        'card_type'   => $request->card_type,
+                        'bank_txn'    => $request->bank_txn,
+                        'is_counted'  => 0,
+                    ]);
+                }
+
+                $download_files[] = storage_path('app/' . $product->file_path);
+            }
+
+            Cart::where('user_id', $user_id)->delete();
+//            TempPayment::where('tran_id', $tran_id)->delete();
+
+            return view('frontend.menu.cart-payment-success', [
+                'tran_id' => $tran_id,
+                'download_files' => $download_files
+            ]);
+
+        } catch (\Exception $e) {
+            return redirect()->route('cart.index')->with('error', 'Payment success but error: ' . $e->getMessage());
+        }
+    }
+
+    public function cartPurchaseFail(Request $request)
+    {
+        $tran_id = $request->mer_txnid ?? null;
+
+        if($tran_id){
+            TempPayment::where('tran_id',$tran_id)->delete();
+        }
+
+        $userId = $request->input('opt_b');
+        Auth::loginUsingId($userId);
+        return redirect()->route('welcome')->with('error','Payment failed!');
+    }
+
+    public function cartPurchaseCancel(Request $request)
+    {
+        $tran_id = $request->mer_txnid ?? null;
+
+        if($tran_id){
+            TempPayment::where('tran_id',$tran_id)->delete();
+        }
+
+        $userId = $request->input('opt_b');
+        Auth::loginUsingId($userId);
+
+        return redirect()->route('welcome')->with('error','Payment cancelled!');
     }
 }

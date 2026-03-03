@@ -1,43 +1,64 @@
 {{-- custom css for cart --}}
 <style>
-    .cart-badge {
-        font-size: 12px;
-    }
-    .cart-dropdown {
-        width: 320px;
-    }
-    .cart-item img {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-    }
-    .remove-btn {
-        cursor: pointer;
-        font-size: 18px;
-    }
-    .remove-btn:hover {
-        color: red;
-    }
-    @media (max-width: 991px) {
-        .dropdown-menu {
-            position: absolute;
-            right: 0;
-            left: auto;
-        }
-    }
-    /* Desktop hover for cart dropdown */
-        @media (min-width: 992px) {
-            .nav-item.dropdown:hover .dropdown-menu {
-                display: block;
-            }
-        }
+    /*.cart-badge {*/
+    /*    font-size: 12px;*/
+    /*}*/
+    /*.cart-dropdown {*/
+    /*    width: 320px;*/
+    /*}*/
+    /*.cart-item img {*/
+    /*    width: 50px;*/
+    /*    height: 50px;*/
+    /*    object-fit: cover;*/
+    /*}*/
+    /*.remove-btn {*/
+    /*    cursor: pointer;*/
+    /*    font-size: 18px;*/
+    /*}*/
+    /*.remove-btn:hover {*/
+    /*    color: red;*/
+    /*}*/
+    /*@media (max-width: 991px) {*/
+    /*    .dropdown-menu {*/
+    /*        position: absolute;*/
+    /*        right: 0;*/
+    /*        left: auto;*/
+    /*    }*/
+    /*}*/
+    /*!* Desktop hover for cart dropdown *!*/
+    /*    @media (min-width: 992px) {*/
+    /*        .nav-item.dropdown:hover .dropdown-menu {*/
+    /*            display: block;*/
+    /*        }*/
+    /*    }*/
 
-        /* Mobile: position dropdown correctly */
-        @media (max-width: 991px) {
-            .dropdown-menu.show {
-                display: block !important;
-            }
-        }
+    /*    !* Mobile: position dropdown correctly *!*/
+    /*    @media (max-width: 991px) {*/
+    /*        .dropdown-menu.show {*/
+    /*            display: block !important;*/
+    /*        }*/
+    /*    }*/
+
+
+    .cart-icon{
+        font-size:22px;
+        color:#333;
+        position:relative;
+        text-decoration:none;
+    }
+    .cart-icon:hover{
+        color:#198754;
+    }
+    .cart-badge{
+        position:absolute;
+        top:-6px;
+        right:-10px;
+        background:#dc3545;
+        color:#fff;
+        font-size:11px;
+        padding:3px 6px;
+        border-radius:50px;
+    }
 </style>
 
 <!-- Sidenav content || to display category -->
@@ -96,50 +117,50 @@
 
         <nav id="navmenu" class="navmenu">
             <ul>
-                <li class="nav-item dropdown position-relative">
-                    <!-- Cart Icon -->
-                    <a class="nav-link position-relative" 
-                        href="javascript:void(0);" 
-                        id="cartDropdown">
+{{--                <li class="nav-item dropdown position-relative">--}}
+{{--                    <!-- Cart Icon -->--}}
+{{--                    <a class="nav-link position-relative"--}}
+{{--                        href="javascript:void(0);"--}}
+{{--                        id="cartDropdown">--}}
 
-                        <i class="bi bi-cart3 fs-5"></i>
+{{--                        <i class="bi bi-cart3 fs-5"></i>--}}
 
-                        <span id="cart-count"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge"
-                            style="margin-top: 15px;">
-                            3
-                        </span>
-                    </a>
+{{--                        <span id="cart-count"--}}
+{{--                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge"--}}
+{{--                            style="margin-top: 15px;">--}}
+{{--                            3--}}
+{{--                        </span>--}}
+{{--                    </a>--}}
 
-                    <!-- Dropdown Menu -->
-                    <ul class="dropdown-menu dropdown-menu-end p-3 cart-dropdown"
-                        aria-labelledby="cartDropdown">
+{{--                    <!-- Dropdown Menu -->--}}
+{{--                    <ul class="dropdown-menu dropdown-menu-end p-3 cart-dropdown"--}}
+{{--                        aria-labelledby="cartDropdown">--}}
 
-                        <li class="cart-item d-flex align-items-center justify-content-between mb-3" data-price="20">
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/50" class="me-2 rounded">
-                                <div>
-                                    <h6 class="mb-0">Product 1</h6>
-                                    <small class="text-muted">$20</small>
-                                </div>
-                            </div>
-                            <i class="bi bi-x remove-btn"></i>
-                        </li>
+{{--                        <li class="cart-item d-flex align-items-center justify-content-between mb-3" data-price="20">--}}
+{{--                            <div class="d-flex align-items-center">--}}
+{{--                                <img src="https://via.placeholder.com/50" class="me-2 rounded">--}}
+{{--                                <div>--}}
+{{--                                    <h6 class="mb-0">Product 1</h6>--}}
+{{--                                    <small class="text-muted">$20</small>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                            <i class="bi bi-x remove-btn"></i>--}}
+{{--                        </li>--}}
 
-                        <li><hr class="dropdown-divider"></li>
+{{--                        <li><hr class="dropdown-divider"></li>--}}
 
-                        <li class="d-flex justify-content-between mb-2">
-                            <strong>Total:</strong>
-                            <strong>$<span id="cart-total">20</span></strong>
-                        </li>
+{{--                        <li class="d-flex justify-content-between mb-2">--}}
+{{--                            <strong>Total:</strong>--}}
+{{--                            <strong>$<span id="cart-total">20</span></strong>--}}
+{{--                        </li>--}}
 
-                        <li>
-                            <a href="#" class="btn btn-sm btn-primary w-100 text-white">View Cart</a>
-                        </li>
+{{--                        <li>--}}
+{{--                            <a href="#" class="btn btn-sm btn-primary w-100 text-white">View Cart</a>--}}
+{{--                        </li>--}}
 
-                    </ul>
+{{--                    </ul>--}}
 
-                </li>
+{{--                </li>--}}
 
                 <li><a href="{{ route('info') }}">Info</a></li>
                 <li><a href="{{ route('customize') }}">Customize Jobs</a></li>
@@ -166,6 +187,19 @@
                 </a>
 
             </div>
+
+            <div class="cart-wrapper position-relative me-3">
+                <a href="{{ route('cart.index') }}" class="cart-icon">
+                    <i class="fa fa-shopping-cart"></i>
+
+                    @if($globalCartCount > 0)
+                        <span id="cart-count" class="cart-badge">
+                {{ $globalCartCount }}
+            </span>
+                    @endif
+                </a>
+            </div>
+
         @endif
 
 
@@ -228,7 +262,7 @@
         function updateCart() {
             let total = 0;
             let items = document.querySelectorAll('.cart-item');
-            
+
             items.forEach(item => {
                 total += parseFloat(item.getAttribute('data-price'));
             });
