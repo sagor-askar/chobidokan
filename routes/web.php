@@ -174,6 +174,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::delete('/wishlist/{id}', [WishlistController::class,'remove'])->name('wishlist.remove');
 
     // Add to cart
+    Route::post('/add-to-cart', [CartController::class,'addToCart'])->name('add.to.cart');
     Route::post('/cart/store',[CartController::class,'store'])->name('cart.store');
     Route::get('/cart',[CartController::class,'index'])->name('cart.index');
     Route::delete('/cart/remove/{id}',[CartController::class,'remove'])->name('cart.remove');

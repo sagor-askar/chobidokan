@@ -179,68 +179,7 @@
         }
     </script>
 
-    <!-- script for Add to wishlist -->
-    <script>
-        function toggleWishlist(id){
-
-            fetch('/wishlist/'+id,{
-                method:'POST',
-                headers:{
-                    'X-CSRF-TOKEN':'{{ csrf_token() }}'
-                }
-            })
-                .then(res=>res.json())
-                .then(data=>{
-
-                    let icon = document.querySelector('#wishlist-btn-'+id+' i');
-
-                    if(data.status === 'added'){
-                        icon.classList.remove('fa-heart-o');
-                        icon.classList.add('fa-heart','text-danger');
-                    }else{
-                        icon.classList.remove('fa-heart','text-danger');
-                        icon.classList.add('fa-heart-o');
-                    }
-
-                    // update header count
-                    let countEl = document.getElementById('wishlist-count');
-                    if(countEl){
-                        countEl.innerText = data.count;
-                    }
-
-                    showToast(data.message, data.status);
-                });
-        }
-
-        function showToast(message, status){
-
-            let toast = document.createElement("div");
-            toast.innerText = message;
-
-            toast.style.position = "fixed";
-            toast.style.top = "20px";
-            toast.style.right = "20px";
-            toast.style.color = "white";
-            toast.style.padding = "10px 15px";
-            toast.style.borderRadius = "5px";
-            toast.style.zIndex = "9999";
-            toast.style.fontSize = "14px";
-
-            if(status === 'added'){
-                toast.style.background = "#28a745"; // green
-            }else{
-                toast.style.background = "#dc3545"; // red
-            }
-
-            document.body.appendChild(toast);
-
-            setTimeout(()=>{
-                toast.remove();
-            },2000);
-        }
-    </script>
-
-{{--   Add to cart--}}
+{{--   Remove from cart--}}
     <script>
         function removeCart(id){
 

@@ -35,6 +35,11 @@ class Product extends Model
         return $this->hasMany(Wishlist::class);
     }
 
+    public function carts()
+    {
+        return $this->hasMany(\App\Models\Cart::class);
+    }
+
 //    public function order()
 //    {
 //        return $this->hasOne(Order::class, 'project_id');

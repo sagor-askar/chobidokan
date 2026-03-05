@@ -8,6 +8,7 @@ use App\Models\TempPayment;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use ZipStream\ZipStream;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -25,6 +26,32 @@ class CartController extends Controller
         $total = $carts->sum(fn($item)=>$item->product->price);
 
         return view('frontend.menu.cart',compact('carts','total'));
+    }
+
+    public function addToCart(Request $request)
+    {
+        $product_id = $request->product_id;
+        $user_id = Auth::id();
+
+        $exists = Cart::where('product_id', $product_id)
+            ->where('user_id', $user_id)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()->with('warning','Already Added to Cart!');
+        }
+
+        // wishlist থেকে remove করবে যদি থাকে
+        Wishlist::where('product_id', $product_id)
+            ->where('user_id', $user_id)
+            ->delete();
+
+        Cart::create([
+            'product_id' => $product_id,
+            'user_id'    => $user_id
+        ]);
+
+        return redirect()->back()->with('success','Product moved to cart');
     }
 
     public function store(Request $request)
