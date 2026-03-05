@@ -25,30 +25,24 @@ class WishlistController extends Controller
     {
         $user = auth()->user();
 
-        $wishlist = Wishlist::where('user_id',$user->id)
-            ->where('product_id',$id)
+        $wishlist = Wishlist::where('user_id', $user->id)
+            ->where('product_id', $id)
             ->first();
 
-        if($wishlist){
+        if ($wishlist) {
             $wishlist->delete();
-            $status = 'removed';
-            $message = 'Removed from wishlist';
-        }else{
+            return redirect()->back()
+                ->with('warning', 'Removed from Wishlist');
+        } else {
+
             Wishlist::create([
-                'user_id'=>$user->id,
-                'product_id'=>$id
+                'user_id'    => $user->id,
+                'product_id' => $id
             ]);
-            $status = 'added';
-            $message = 'Added to wishlist successfully';
+
+            return redirect()->back()
+                ->with('success', 'Added to Wishlist Successfully');
         }
-
-        $count = Wishlist::where('user_id',$user->id)->count();
-
-        return response()->json([
-            'status'=>$status,
-            'count'=>$count,
-            'message'=>$message
-        ]);
     }
 
     public function remove($id)
