@@ -117,51 +117,6 @@
 
         <nav id="navmenu" class="navmenu">
             <ul>
-{{--                <li class="nav-item dropdown position-relative">--}}
-{{--                    <!-- Cart Icon -->--}}
-{{--                    <a class="nav-link position-relative"--}}
-{{--                        href="javascript:void(0);"--}}
-{{--                        id="cartDropdown">--}}
-
-{{--                        <i class="bi bi-cart3 fs-5"></i>--}}
-
-{{--                        <span id="cart-count"--}}
-{{--                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge"--}}
-{{--                            style="margin-top: 15px;">--}}
-{{--                            3--}}
-{{--                        </span>--}}
-{{--                    </a>--}}
-
-{{--                    <!-- Dropdown Menu -->--}}
-{{--                    <ul class="dropdown-menu dropdown-menu-end p-3 cart-dropdown"--}}
-{{--                        aria-labelledby="cartDropdown">--}}
-
-{{--                        <li class="cart-item d-flex align-items-center justify-content-between mb-3" data-price="20">--}}
-{{--                            <div class="d-flex align-items-center">--}}
-{{--                                <img src="https://via.placeholder.com/50" class="me-2 rounded">--}}
-{{--                                <div>--}}
-{{--                                    <h6 class="mb-0">Product 1</h6>--}}
-{{--                                    <small class="text-muted">$20</small>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <i class="bi bi-x remove-btn"></i>--}}
-{{--                        </li>--}}
-
-{{--                        <li><hr class="dropdown-divider"></li>--}}
-
-{{--                        <li class="d-flex justify-content-between mb-2">--}}
-{{--                            <strong>Total:</strong>--}}
-{{--                            <strong>$<span id="cart-total">20</span></strong>--}}
-{{--                        </li>--}}
-
-{{--                        <li>--}}
-{{--                            <a href="#" class="btn btn-sm btn-primary w-100 text-white">View Cart</a>--}}
-{{--                        </li>--}}
-
-{{--                    </ul>--}}
-
-{{--                </li>--}}
-
                 <li><a href="{{ route('info') }}">Info</a></li>
                 <li><a href="{{ route('customize') }}">Customize Jobs</a></li>
                 @if (Auth::check())
@@ -175,7 +130,7 @@
 
 
         @if(Auth::check())
-            <div class="wishlist-wrapper" style="position: relative; margin-right:15px;">
+            <div class="wishlist-wrapper" style="position: relative; margin-right:12px; margin-left: 12px;">
                 <a href="{{ route('wishlist.page') }}" class="wishlist-icon">
                     <i class="fa fa-heart"></i>
                     @php
