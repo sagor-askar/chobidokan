@@ -30,7 +30,7 @@ class WebsiteController extends Controller
     public function index()
     {
         $settings = Setting::first();
-        $categories = Category::where('status',1)->get();
+        $categories = Category::where('type',1)->where('status',1)->get();
 
         // Category wise latest product
         $products = Product::where('type',1)
@@ -61,7 +61,7 @@ class WebsiteController extends Controller
     // custom request
     public function customRequest()
     {
-        $categories = Category::where('status',1)->get();
+        $categories = Category::where("type",2)->where('status',1)->get();
         $subscriptions = Subscription::where('status',1)->get();
         return view('frontend.customRequest',compact('categories','subscriptions'));
     }
@@ -77,7 +77,7 @@ class WebsiteController extends Controller
     public function customization()
     {
         $status = 1;
-        $categories = Category::where('status',1)->get();
+        $categories = Category::where("type",2)->where('status',1)->get();
         $user = Auth::user();
         $projectsQuery = Project::with(['user', 'order', 'subscription'])
             ->withCount([
@@ -103,7 +103,7 @@ class WebsiteController extends Controller
     public function closedJobs()
     {
         $status = 0;
-        $categories = Category::where('status',1)->get();
+        $categories = Category::where("type",2)->where('status',1)->get();
         $user = Auth::user();
         $projectsQuery = Project::with(['user', 'order', 'subscription'])
             ->withCount([
@@ -284,7 +284,7 @@ class WebsiteController extends Controller
 
         $projects = $query->paginate(2);
         $totalProjects = $projects->total();
-        $categories = Category::where('status', 1)->get();
+        $categories = Category::where("type",2)->where('status', 1)->get();
         if ($status == 1){
             return view('frontend.menu.customize', compact('status','categories','projects','totalProjects'));
         }else{

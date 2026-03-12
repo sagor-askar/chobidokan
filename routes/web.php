@@ -207,6 +207,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::put('/update-password', [DesignerController::class, 'updatePassword'])->name('updatePassword');
 
         Route::get('/product-upload',  [ProductController::class, 'uploadProduct'])->name('upload');
+        Route::post('/add/category',[ProductController::class,'addCategory'])->name('add.category');
         Route::post('/product-store', [ProductController::class, 'storeProduct'])->name('products.store');
 
         Route::get('/product-list',  [DesignerController::class, 'productList'])->name('product-list');

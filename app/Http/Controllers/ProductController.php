@@ -11,8 +11,25 @@ class ProductController extends Controller
 {
     public function uploadProduct()
     {
-        $categories = Category::where('status',1)->get();
+        $categories = Category::where("type",1)->where('status',1)->get();
         return view('frontend.menu.fileUpload',compact('categories'));
+    }
+
+    public function addCategory(Request $request)
+    {
+        $request->validate([
+            'name'=>'required|string|max:255'
+        ]);
+
+        $category = Category::create([
+            'name'=>$request->name,
+            'type'=>1,
+            'status'=>1
+        ]);
+        return response()->json([
+            'success'=>true,
+            'category'=>$category
+        ]);
     }
 
 
