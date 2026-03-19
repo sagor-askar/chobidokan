@@ -4,19 +4,38 @@
         .container2 {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 20px;
             justify-content: center;
             padding: 0;
         }
 
         .item {
             position: relative;
-            width: calc((100% / 3) - 14px);
-            height: auto;
+            width: calc((100% / 4) - 15px); 
             aspect-ratio: 1 / 1;
-            display: inline-block;
             overflow: hidden;
             cursor: pointer;
+        }
+
+        /* Tablet (3 items) */
+        @media (max-width: 992px) {
+            .item {
+                width: calc((100% / 3) - 15px);
+            }
+        }
+
+        /* Mobile (2 items) */
+        @media (max-width: 768px) {
+            .item {
+                width: calc((100% / 2) - 15px);
+            }
+        }
+
+        /* Small mobile (1 item) */
+        @media (max-width: 480px) {
+            .item {
+                width: 100%;
+            }
         }
 
         .item img,
@@ -54,6 +73,7 @@
             gap: 20px;
             justify-content: center;
         }
+
         .overlay {
             position: absolute;
             bottom: 0;
@@ -67,34 +87,32 @@
             border-bottom-right-radius: 10px;
             z-index: 3;
         }
+
         .popularSearch {
             margin-bottom: 10px;
             margin-right: 5px;
         }
-
 
         .category-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-
             color: #fff;
-            font-size: 22px;        /* বড় font */
-            font-weight: 800;       /* বেশি bold */
+            font-size: 22px;  
+            font-weight: 800;    
             text-align: center;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
-
-            opacity: 0;             /* default এ hide */
+            opacity: 0;           
             transition: 0.3s ease;
             z-index: 3;
         }
 
-        /* Hover করলে show হবে */
         .item:hover .category-overlay {
             opacity: 1;
         }
     </style>
+    
     <main class="main">
 
         @include('includes.hero')
@@ -217,6 +235,7 @@
         </section>
     </main>
 @endsection
+
 @if(session('download_product_id'))
     <script>
         window.onload = function () {
