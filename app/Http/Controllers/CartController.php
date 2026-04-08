@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\TempPayment;
 use App\Models\Wishlist;
@@ -111,6 +112,22 @@ class CartController extends Controller
         }
 
         $zip->finish();
+
+
+  //    total Download count
+     foreach ($product_ids as $id) {
+         $product = Product::find($id);
+         $payment = Payment::where('product_id', $id)
+            ->where('user_id', $tempPayment->user_id)
+            ->first();
+        if ($payment){
+            if ($payment->is_counted == 0) {
+                $payment->update(['is_counted' => 1]);
+                $product->increment('total_download');
+            }
+        }
+     }
+
         TempPayment::where('tran_id', $tran_id)->delete();
     }
 }

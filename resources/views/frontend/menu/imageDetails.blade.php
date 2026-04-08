@@ -586,8 +586,26 @@
                 <div class="mb-4">
                     <h1 class="meta-title">{{ $product->title ?? 'A beautiful creation' }}</h1>
 
-                    <div class="text-secondary mb-4" style="font-size: 15.5px; line-height: 1.8;">
-                        {!! $product->description !!}
+                    <div class="text-secondary mb-4" id="descriptionContainer" style="font-size: 15.5px; line-height: 1.8;">
+                        @php
+                            $fullText = $product->description ?? '';
+                            $plainText = strip_tags($fullText);
+                            $isLong = strlen($plainText) > 500;
+                            $shortText = \Illuminate\Support\Str::limit($plainText, 500, '');
+                        @endphp
+
+                        @if($isLong)
+                            <div id="descShort">
+                                {{ $shortText }}<span id="dots"> ...</span>
+                                <a href="javascript:void(0)" onclick="toggleDesc()" id="seeMoreBtn" style="color: #1e90ff; font-weight: 400; text-decoration: none;"> See more</a>
+                            </div>
+                            <div id="descFull" style="display: none;">
+                                {!! $fullText !!}
+                                <a href="javascript:void(0)" onclick="toggleDesc()" id="seeLessBtn" style="color: #1e90ff; font-weight: 400; text-decoration: none; display: inline-block; margin-top: 5px;">See Less</a>
+                            </div>
+                        @else
+                            {!! $fullText !!}
+                        @endif
                     </div>
 
                     <div class="image-specs shadow-sm">
@@ -633,7 +651,7 @@
             <!-- Right Side: Pricing Options -->
             <div class="col-lg-4">
                 <div class="sidebar-panel">
-                    <form action="{{ $hasAccess ? route('product.image-download', ['id' => base64_encode($product->id)]) : route('product.purchase') }}" method="{{ $hasAccess ? 'GET' : 'POST' }}">
+                    <form action="{{ $hasAccess ? route('product.image-download', ['id' => base64_encode($product->id)]) : route('checkout.page') }}" method="{{ $hasAccess ? 'GET' : 'POST' }}">
                         @csrf
                         <input type="hidden" name="product_id" value="{{$product->id}}">
                         <!-- Dynamically updated price value -->
@@ -785,7 +803,7 @@
             <div class="popup-footer">
                 <div class="brand">chobidokan</div>
                 <div class="image-id">
-                    IMAGE ID: {{ 1000000000 + $product->id }}<br>
+                    IMAGE ID: {{  $product->asset_id ?? ''}}<br>
                     <span>www.chobidokan.com</span>
                 </div>
             </div>
@@ -879,6 +897,20 @@
             form.appendChild(subInput);
 
             form.submit();
+        }
+
+        // Description Toggle Logic
+        function toggleDesc() {
+            var shortDesc = document.getElementById("descShort");
+            var fullDesc = document.getElementById("descFull");
+
+            if (shortDesc.style.display === "none") {
+                shortDesc.style.display = "block";
+                fullDesc.style.display = "none";
+            } else {
+                shortDesc.style.display = "none";
+                fullDesc.style.display = "block";
+            }
         }
 
         // Custom Share Dropdown Logic
