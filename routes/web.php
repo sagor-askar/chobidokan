@@ -186,6 +186,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('/product/video-download/{id}', [WebsiteController::class, 'downloadVideo'])->name('product.video-download');
     Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
     Route::post('/product-purchase', [PaymentController::class, 'productPurchase'])->name('product.purchase');
+    Route::post('/subscription-purchase', [PaymentController::class, 'subscriptionPurchase'])->name('subscription.purchase');
 
 
     Route::group(['prefix' => 'designer', 'as' => 'designer.'], function () {
@@ -207,6 +208,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::put('/update-password', [DesignerController::class, 'updatePassword'])->name('updatePassword');
 
         Route::get('/product-upload',  [ProductController::class, 'uploadProduct'])->name('upload');
+        Route::post('/add/category',[ProductController::class,'addCategory'])->name('add.category');
         Route::post('/product-store', [ProductController::class, 'storeProduct'])->name('products.store');
 
         Route::get('/product-list',  [DesignerController::class, 'productList'])->name('product-list');
@@ -258,6 +260,13 @@ Route::match(['get', 'post'], 'purchase/cancel', [PaymentController::class, 'pur
 Route::match(['get','post'],'cart/purchase/success',[PaymentController::class,'cartPurchaseSuccess'])->name('cart.purchase.success');
 Route::match(['get','post'],'/cart/purchase/fail',[PaymentController::class,'cartPurchaseFail'])->name('cart.purchase.fail');
 Route::match(['get','post'],'/cart/purchase/cancel',[PaymentController::class,'cartPurchaseCancel'])->name('cart.purchase.cancel');
+
+// subscription Purchase Payment
+Route::post('subscription/success', [PaymentController::class,'subscriptionSuccess'])->name('subscription.success');
+Route::match(['get', 'post'], 'subscription/fail', [PaymentController::class, 'subscriptionFail'])->name('subscription.fail');
+Route::match(['get', 'post'], 'subscription/cancel', [PaymentController::class, 'subscriptionCancel'])->name('subscription.cancel');
+
+
 
 
 

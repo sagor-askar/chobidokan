@@ -43,9 +43,11 @@ class CategoryController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|in:1,2'
         ]);
         $category = new Category();
         $category->name = $request->name;
+        $category->type = $request->type;
         $category->description = $request->description;
         $category->status = $request->has('status') ? $request->status : 1;
         if ($request->hasFile('logo')) {
@@ -93,9 +95,11 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|in:1,2'
         ]);
 
         $category->name = $request->name;
+        $category->type = $request->type;
         $category->description = $request->description;
         $category->status = $request->has('status') ? $request->status : 1;
 
@@ -129,7 +133,7 @@ class CategoryController extends Controller
         }
         $category->delete();
 
-        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('admin.categories.index')->with('warning', 'Category deleted successfully.');
     }
 
     public function massDestroy(Request $request)

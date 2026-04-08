@@ -9,13 +9,6 @@
 
             </div>
         </div>
-        @if (session('success'))
-            <div class="alert alert-success" role="alert">
-                {{ session('success') }}
-            </div>
-        @endif
-
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
@@ -30,10 +23,12 @@
                                     <tr>
                                         <th></th>
                                         <th>Name</th>
-                                        <th>Designer</th>
-                                        <th>Design</th>
+                                        <th>Type</th>
                                         <th>Price</th>
                                         <th>Days</th>
+                                        <th>No of Image</th>
+                                        <th>Designer</th>
+                                        <th>Design</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -46,12 +41,20 @@
                                         <tr>
                                             <td></td>
                                             <td>{{ $subscription->name }}</td>
-                                            <td>{{ $subscription->designer }}</td>
-                                            <td>{{ $subscription->design }}</td>
-
-
-                                            <td>{{ $subscription->price }} Tk</td>
-                                            <td>{{ $subscription->days }} days</td>
+                                            @if($subscription->type == 1)
+                                                <td>
+                                                    <span class="badge badge-success" style="background-color: green">Image</span>
+                                                </td>
+                                            @else
+                                                <td>
+                                                    <span class="badge badge-primary" style="background-color: #c95846">Custom Design</span>
+                                                </td>
+                                            @endif
+                                            <td>{{ $subscription->price  }} Tk</td>
+                                            <td>{{ $subscription->days ?? ''}} days</td>
+                                            <td>{{ $subscription->total_image ?? '' }}</td>
+                                            <td>{{ $subscription->designer ?? '' }}</td>
+                                            <td>{{ $subscription->design ?? '' }}</td>
                                             @if ($subscription->status == 1)
                                                 <td>
                                                     <span class="badge badge-danger"

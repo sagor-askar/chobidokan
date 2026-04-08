@@ -18,6 +18,7 @@ class Payment extends Model
     protected $fillable = [
         'project_id',
         'order_id',
+        'subscription_id',
         'product_id',
         'designer_id',
         'user_id',
@@ -47,5 +48,10 @@ class Payment extends Model
     public function product()
     {
         return $this->belongsTo(Project::class, 'product_id');
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class, 'subscription_id');
     }
 }

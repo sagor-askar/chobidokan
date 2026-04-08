@@ -103,6 +103,28 @@
          min-height: 150px;
      }
 
+    .modal {
+        z-index: 2000 !important;
+    }
+
+    .modal-backdrop {
+        z-index: 1990 !important;
+    }
+
+    .modal-dialog {
+        pointer-events: auto;
+    }
+
+    .modal-dialog {
+        margin: 1.75rem auto;
+    }
+
+    @media (max-width: 576px) {
+        .modal-dialog {
+            margin: 10px;
+        }
+    }
+
 
 </style>
 
@@ -145,19 +167,29 @@
                                 <!-- Category -->
                                 <div class="col-md-6">
                                     <div class="mb-3 form-group position-relative">
-                                        <label for="category-select" class="form-label">Category</label>
-                                        <select id="category-select" name="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
-                                            <option selected disabled>All Categories ({{ count($categories) }})</option>
+                                        <label for="category-select" class="form-label d-flex justify-content-between">
+                                            <span>Category</span>
+
+                                            <!-- Add Category Button -->
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                        </label>
+
+                                        <select id="category-select" name="category_id"
+                                                class="form-control @error('category_id') is-invalid @enderror" required>
+                                            <option selected disabled>Select Category</option>
+
                                             @foreach($categories as $category)
-                                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                                <option value="{{ $category->id }}">
                                                     {{ $category->name }}
                                                 </option>
                                             @endforeach
                                         </select>
+
                                         @error('category_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
-                                        <i class="fa fa-chevron-down position-absolute" style="top: 40px; right: 20px; pointer-events: none; color: #aaa;"></i>
                                     </div>
                                 </div>
                          </div>
@@ -238,9 +270,45 @@
                         </form>
 
 
+
+                        <!-- Add Category Modal -->
+                        <div class="modal fade" id="addCategoryModal" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Add New Category</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <form id="categoryForm">
+                                            @csrf
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Category Name</label>
+                                                <input type="text" name="name" id="categoryName"
+                                                       class="form-control"
+                                                       placeholder="Enter Category Name"
+                                                       required>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-success w-100">
+                                                Save Category
+                                            </button>
+
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
+
+
 
             <!-- Sidebar -->
             <div class="col-lg-3 sidebar">
@@ -310,6 +378,50 @@
         tagsInput.insertBefore(tag, inputField);
     }
 
+</script>
+
+
+
+<!-- designer add category -->
+
+<script>
+    document.getElementById('categoryForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        let name = document.getElementById('categoryName').value;
+        fetch("{{ route('designer.add.category') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                name: name
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success){
+
+                    // add category to dropdown
+                    let select = document.getElementById('category-select');
+
+                    let option = document.createElement("option");
+                    option.value = data.category.id;
+                    option.text = data.category.name;
+                    option.selected = true;
+                    select.appendChild(option);
+                    document.getElementById('categoryForm').reset();
+                    let modal = bootstrap.Modal.getInstance(document.getElementById('addCategoryModal'));
+                    modal.hide();
+                    Swal.fire({
+                        icon:'success',
+                        title:'Category Added',
+                        text:'New category created successfully'
+                    });
+                }
+            });
+
+    });
 </script>
 
 

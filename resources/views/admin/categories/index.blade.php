@@ -8,11 +8,6 @@
             </a>
         </div>
     </div>
-    @if(session('success'))
-    <div class="alert alert-success" role="alert">
-        {{ session('success') }}
-    </div>
-    @endif
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
@@ -29,6 +24,10 @@
                                     </th>
                                     <th>
                                         Name
+                                    </th>
+
+                                    <th>
+                                        Type
                                     </th>
                                     <th>
                                         Logo
@@ -53,6 +52,16 @@
                                     <td>
                                         {{ $category->name ?? '' }}
                                     </td>
+
+                                    @if($category->type == 1)
+                                        <td>
+                                            <span class="badge badge-success" style="background-color: green">Image/Video</span>
+                                        </td>
+                                    @else
+                                        <td>
+                                            <span class="badge badge-primary" style="background-color: #c95846">Custom Design</span>
+                                        </td>
+                                    @endif
                                     @if($category->logo)
                                     <td><img src="{{ asset($category->logo) }}" alt="Image" width="40"></td>
                                     @else

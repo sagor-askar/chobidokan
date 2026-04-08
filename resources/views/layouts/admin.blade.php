@@ -28,7 +28,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/skins/_all-skins.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
-
     @yield('styles')
 </head>
 
@@ -139,6 +138,9 @@
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script>
 
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         var _token = '{{ csrf_token() }}';
 
@@ -174,6 +176,72 @@
         }
     </script>
 
+
+    <script>
+        $(document).ready(function() {
+            @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                animation: true,
+                text: "{{ session('success') }}",
+                position: 'top-right',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            @endif
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            @if (session('warning'))
+            Swal.fire({
+                icon: 'warning',
+                animation: true,
+                text: "{{ session('warning') }}",
+                position: 'top-right',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            @endif
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                animation: true,
+                text: "{{ session('error') }}",
+                position: 'top-right',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            @endif
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            @if (session('warning'))
+            Swal.fire({
+                icon: 'warning',
+                animation: true,
+                text: "{{ session('warning') }}",
+                position: 'top-right',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            @endif
+        });
+    </script>
     @yield('scripts')
 </body>
 

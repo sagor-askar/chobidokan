@@ -1,5 +1,12 @@
 @extends('layouts.admin')
 @section('content')
+
+    <style>
+        .show-image,
+        .show-customDesign {
+            display: none;
+        }
+    </style>
 <div class="content">
 
     <div class="row">
@@ -22,6 +29,15 @@
                                 @endif
                                 <span class="help-block">{{ trans('cruds.category.fields.name_helper') }}</span>
                             </div>
+
+                            <div class="form-group">
+                                <label class="required">Type</label>
+                                <select class="form-control" name="type" id="type" required>
+                                    <option value="1" {{ old('type', $subscription->type) == 1 ? 'selected' : '' }}>Image</option>
+                                    <option value="2" {{ old('type', $subscription->type) == 2 ? 'selected' : '' }}>Custom Design</option>
+                                </select>
+                            </div>
+
                             <div class="form-group {{ $errors->has('price') ? 'has-error' : '' }}">
                                 <label  class="required" for="price">Price</label>
                                 <input class="form-control" type="number" placeholder="Enter Price" name="price" id="price" value="{{ old('price', $subscription->price ?? '') }}" required>
@@ -32,8 +48,8 @@
                             </div>
 
                             <div class="form-group {{ $errors->has('days') ? 'has-error' : '' }}">
-                                <label  class="required" for="price">Days</label>
-                                <input class="form-control" type="number" placeholder="Enter Days" name="days" id="days" value="{{ old('days', $subscription->days ?? '') }}"  required>
+                                <label  for="price">Days</label>
+                                <input class="form-control" type="number" placeholder="Enter Days" name="days" id="days" value="{{ old('days', $subscription->days ?? '') }}" >
                                 @if($errors->has('days'))
                                     <span class="help-block" role="alert">{{ $errors->first('days') }}</span>
                                 @endif
@@ -51,20 +67,27 @@
 
                         <div class="col-md-6">
 
-                            <div class="form-group {{ $errors->has('designer') ? 'has-error' : '' }}">
-                                <label class="required" for="price">Designer</label>
-                                <input class="form-control" type="number" placeholder="Enter designer" name="designer" id="designer" value="{{ old('designer', $subscription->designer ?? '') }}" required>
-                                @if($errors->has('designer'))
-                                    <span class="help-block" role="alert">{{ $errors->first('designer') }}</span>
-                                @endif
+                            <div class="show-image">
+                                <div class="form-group">
+                                    <label>No of Image</label>
+                                    <input class="form-control" type="number" name="total_image" id="total_image"
+                                           value="{{ old('total_image', $subscription->total_image) }}">
+                                </div>
                             </div>
 
-                            <div class="form-group {{ $errors->has('design') ? 'has-error' : '' }}">
-                                <label  for="price">Design</label>
-                                <input class="form-control" type="number" placeholder="Enter design" name="design" id="design" value="{{ old('design', $subscription->design ?? '') }}">
-                                @if($errors->has('design'))
-                                    <span class="help-block" role="alert">{{ $errors->first('design') }}</span>
-                                @endif
+                            <!-- Custom Design Section -->
+                            <div class="show-customDesign">
+                                <div class="form-group">
+                                    <label>Designer</label>
+                                    <input class="form-control" type="number" name="designer" id="designer"
+                                           value="{{ old('designer', $subscription->designer) }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Design</label>
+                                    <input class="form-control" type="number" name="design" id="design"
+                                           value="{{ old('design', $subscription->design) }}">
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -132,4 +155,37 @@
         });
     });
 </script>
+
+    <script>
+        $(document).ready(function () {
+
+            function toggleFields() {
+                let type = $('#type').val();
+
+                if (type == 1) {
+                    $('.show-image').show();
+                    $('.show-customDesign').hide();
+
+                    $('#total_image').attr('required', true);
+                    $('#designer, #design').removeAttr('required');
+
+                } else if (type == 2) {
+                    $('.show-image').hide();
+                    $('.show-customDesign').show();
+
+                    $('#total_image').removeAttr('required');
+                    $('#designer').attr('required', true);
+                }
+            }
+
+            // page load
+            toggleFields();
+
+            // change
+            $('#type').on('change', function () {
+                toggleFields();
+            });
+
+        });
+    </script>
 @endsection

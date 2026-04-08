@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class SubscriptionDownloadProduct extends Model
 {
     use HasFactory;
-    public $table = 'categories';
+    public $table = 'subscription_download_products';
 
     protected $dates = [
         'created_at',
@@ -16,11 +16,8 @@ class Category extends Model
     ];
 
     protected $fillable = [
-        'name',
-        'type',
-        'logo',
-        'status',
-        'description',
+        'subscription_purchase_id',
+        'product_id',
         'created_at',
         'updated_at',
     ];

@@ -21,6 +21,20 @@
                                 <span class="help-block">{{ trans('cruds.category.fields.name_helper') }}</span>
                             </div>
 
+                            <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+                                <label class="required">Type</label>
+
+                                <select class="form-control" name="type" id="type" required>
+                                    <option value="">Select</option>
+                                    <option value="1" {{ old('type') == 1 ? 'selected' : '' }}>Image/Video</option>
+                                    <option value="2" {{ old('type') == 2 ? 'selected' : '' }}>Custom Design</option>
+                                </select>
+
+                                @error('type')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
                             <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
                                 <label>Logo</label>
                                 <input class="form-control" type="file" name="logo">

@@ -25,6 +25,10 @@ class VerifyCsrfToken extends Middleware
         'purchase/fail',
         'purchase/cancel',
 
+        'subscription/success',
+        'subscription/fail',
+        'subscription/cancel',
+
         'cart/purchase/success',
     ];
 }

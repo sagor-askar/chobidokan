@@ -1,5 +1,11 @@
 @extends('layouts.admin')
 @section('content')
+    <style>
+        .show-image,
+        .show-customDesign {
+            display: none;
+        }
+    </style>
 <div class="content">
     <div class="row">
         <div class="col-lg-12">
@@ -21,6 +27,18 @@
                                 <span class="help-block">{{ trans('cruds.category.fields.name_helper') }}</span>
                             </div>
 
+                            <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+                                <label class="required">Type</label>
+                                <select class="form-control" name="type" id="type" required>
+                                    <option selected value="1" {{ old('type') == 1 ? 'selected' : '' }}>Image</option>
+                                    <option value="2" {{ old('type') == 2 ? 'selected' : '' }}>Custom Design</option>
+                                </select>
+
+                                @error('type')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
                             <div class="form-group {{ $errors->has('price') ? 'has-error' : '' }}">
                                 <label class="required" for="price">Price</label>
                                 <input class="form-control" type="number" placeholder="Enter Price" name="price" id="price" value="{{ old('price', '') }}" required>
@@ -31,8 +49,8 @@
                             </div>
 
                             <div class="form-group {{ $errors->has('days') ? 'has-error' : '' }}">
-                                <label class="required" for="price">Days</label>
-                                <input class="form-control" type="number" placeholder="Enter Days" name="days" id="days" value="{{ old('days', '') }}" required>
+                                <label  for="price">Days</label>
+                                <input class="form-control" type="number" placeholder="Enter Days" name="days" id="days" value="{{ old('days', '') }}">
                                 @if($errors->has('days'))
                                     <span class="help-block" role="alert">{{ $errors->first('days') }}</span>
                                 @endif
@@ -50,21 +68,33 @@
 
                         <div class="col-md-6">
 
-                            <div class="form-group {{ $errors->has('designer') ? 'has-error' : '' }}">
-                                <label class="required" for="price">Designer</label>
-                                <input class="form-control" type="number" placeholder="Enter designer" name="designer" id="designer" value="{{ old('designer', '') }}" required>
-                                @if($errors->has('designer'))
-                                    <span class="help-block" role="alert">{{ $errors->first('designer') }}</span>
+                            <div class="show-image">
+                            <div class="form-group {{ $errors->has('total_image') ? 'has-error' : '' }}">
+                                <label class="required" for="total_image">No of Image</label>
+                                <input class="form-control" type="number" placeholder="Enter Total Image" name="total_image" id="total_image" value="{{ old('total_image', '') }}" required>
+                                @if($errors->has('total_image'))
+                                    <span class="help-block" role="alert">{{ $errors->first('total_image') }}</span>
                                 @endif
+                            </div>
                             </div>
 
-                            <div class="form-group {{ $errors->has('design') ? 'has-error' : '' }}">
-                                <label  for="price">Design</label>
-                                <input class="form-control" type="number" placeholder="Enter design" name="design" id="design" value="{{ old('design', '') }}">
-                                @if($errors->has('design'))
-                                    <span class="help-block" role="alert">{{ $errors->first('design') }}</span>
-                                @endif
-                            </div>
+                           <div class="show-customDesign">
+                               <div class="form-group {{ $errors->has('designer') ? 'has-error' : '' }}">
+                                   <label class="required" for="price">Designer</label>
+                                   <input class="form-control" type="number" placeholder="Enter designer" name="designer" id="designer" value="{{ old('designer', '') }}" required>
+                                   @if($errors->has('designer'))
+                                       <span class="help-block" role="alert">{{ $errors->first('designer') }}</span>
+                                   @endif
+                               </div>
+
+                               <div class="form-group {{ $errors->has('design') ? 'has-error' : '' }}">
+                                   <label  for="price">Design</label>
+                                   <input class="form-control" type="number" placeholder="Enter design" name="design" id="design" value="{{ old('design', '') }}">
+                                   @if($errors->has('design'))
+                                       <span class="help-block" role="alert">{{ $errors->first('design') }}</span>
+                                   @endif
+                               </div>
+                           </div>
 
 
                             <div class="form-group">
@@ -104,8 +134,6 @@
     </div>
 </div>
 
-
-<script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
@@ -131,11 +159,63 @@
     });
 </script>
 
-<script>
-    ClassicEditor
-        .create(document.querySelector('#descriptionstyle'))
-        .catch(error =>{
-            console.log(error);
+    <script>
+        $(document).ready(function () {
+            function toggleFields() {
+                let type = $('#type').val();
+
+                if (type == 1) {
+                    $('.show-image').show();
+                    $('.show-customDesign').hide();
+                } else if (type == 2) {
+                    $('.show-image').hide();
+                    $('.show-customDesign').show();
+                }
+            }
+            toggleFields();
+            $('#type').on('change', function () {
+                toggleFields();
+            });
+
         });
-</script>
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            function toggleFields() {
+                let type = $('#type').val();
+
+                if (type == 1) {
+                    $('.show-image').show();
+                    $('.show-customDesign').hide();
+
+                    // Image field required
+                    $('#total_image').attr('required', true);
+
+                    // Custom Design fields remove required
+                    $('#designer, #design').removeAttr('required');
+
+                } else if (type == 2) {
+                    $('.show-image').hide();
+                    $('.show-customDesign').show();
+
+                    // Image field remove required
+                    $('#total_image').removeAttr('required');
+
+                    // Custom Design required
+                    $('#designer').attr('required', true);
+                }
+            }
+
+            // page load
+            toggleFields();
+
+            // on change
+            $('#type').on('change', function () {
+                toggleFields();
+            });
+
+        });
+    </script>
 @endsection
