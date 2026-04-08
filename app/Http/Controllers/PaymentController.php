@@ -162,6 +162,54 @@ class PaymentController extends Controller
 
     //========== Product Purchase Payment=============//
 
+    public function checkoutPage(Request $request)
+    {
+        $product = Product::findOrFail($request->product_id);
+        $subscription = null;
+        $price = $request->price;
+        $subscription_id = $request->subscription_id ?? 0;
+
+        if ($subscription_id && $subscription_id != 0) {
+            $subscription = Subscription::find($subscription_id);
+            if ($subscription) {
+                $price = $subscription->price;
+            }
+        }
+
+        return view('frontend.menu.checkout', compact('product', 'subscription', 'price', 'subscription_id'));
+    }
+
+    public function applyCoupon(Request $request)
+    {
+        $couponCode = $request->coupon_code;
+        $amount = $request->amount;
+
+        $coupon = \App\Models\Coupon::where('code', $couponCode)->where('status', 1)->first();
+
+        if(!$coupon) {
+            return response()->json(['success' => false, 'message' => 'Invalid or expired coupon']);
+        }
+
+        $discountAmount = 0;
+        if($coupon->type == 'percentage') {
+            $discountAmount = ($amount * $coupon->discount) / 100;
+        } else {
+            $discountAmount = $coupon->discount;
+        }
+
+        // Ensure discount doesn't exceed total amount
+        if($discountAmount > $amount) {
+            $discountAmount = $amount;
+        }
+
+        return response()->json([
+            'success' => true,
+            'discount' => $discountAmount,
+            'new_total' => $amount - $discountAmount,
+            'message' => 'Coupon applied successfully'
+        ]);
+    }
+
     public function productPurchase(Request $request)
     {
         DB::beginTransaction();
@@ -307,7 +355,7 @@ class PaymentController extends Controller
 
 
     // cart payment integration for product
-    public function cartCheckout()
+    public function cartCheckout(Request $request)
     {
         DB::beginTransaction();
 
@@ -319,7 +367,7 @@ class PaymentController extends Controller
             if($carts->isEmpty()){
                 return back()->with('error','Cart is empty!');
             }
-            $totalAmount = $carts->sum(fn($item)=>$item->product->price);
+            $totalAmount = $request->total_amount ?? $carts->sum(fn($item)=>$item->product->price);
             $tran_id = (string) Str::uuid();
 
             TempPayment::create([
@@ -339,7 +387,7 @@ class PaymentController extends Controller
                 "amount"        => $totalAmount,
                 "currency"      => "BDT",
                 "signature_key" => env('SIGNATURE_KEY'),
-                "desc"          => "Cart Purchase",
+                "desc"          => "Cart Order Purchase",
                 "cus_name"      => $user->name,
                 "cus_email"     => $user->email,
                 "cus_add1"      => $user->address ?? 'Dhaka',

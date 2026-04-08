@@ -98,6 +98,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('categories/destroy', 'CategoryController@massDestroy')->name('categories.massDestroy');
     Route::resource('categories', 'CategoryController');
 
+    // Coupons
+    Route::delete('coupons/destroy', 'CouponController@massDestroy')->name('coupons.massDestroy');
+    Route::resource('coupons', 'CouponController');
+
     // Subscription
     Route::delete('subscriptions/destroy', 'SubscriptionController@massDestroy')->name('subscriptions.massDestroy');
     Route::resource('subscriptions', 'SubscriptionController');
@@ -186,6 +190,8 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('/product/video-download/{id}', [WebsiteController::class, 'downloadVideo'])->name('product.video-download');
     Route::post('/project-order', [PaymentController::class, 'projectOrder'])->name('project.order');
     Route::post('/product-purchase', [PaymentController::class, 'productPurchase'])->name('product.purchase');
+    Route::post('/checkout-page', [PaymentController::class, 'checkoutPage'])->name('checkout.page');
+    Route::post('/apply-coupon', [PaymentController::class, 'applyCoupon'])->name('apply.coupon');
     Route::post('/subscription-purchase', [PaymentController::class, 'subscriptionPurchase'])->name('subscription.purchase');
 
 

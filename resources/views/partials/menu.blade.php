@@ -77,6 +77,14 @@
                     </li>
 
                     <li
+                        class="{{ request()->is('admin/coupons') || request()->is('admin/coupons/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.coupons.index') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Coupons</span>
+                        </a>
+                    </li>
+
+                    <li
                         class="{{ request()->is('admin/subscriptions') || request()->is('admin/subscriptions/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.subscriptions.index') }}">
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
