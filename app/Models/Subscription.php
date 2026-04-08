@@ -17,8 +17,10 @@ class Subscription extends Model
 
     protected $fillable = [
         'name',
+        'type',
         'points',
         'price',
+        'total_image',
         'designer',
         'design',
         'days',

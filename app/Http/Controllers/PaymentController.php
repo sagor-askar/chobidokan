@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\Subscription;
+use App\Models\SubscriptionPurchase;
 use App\Models\TempPayment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -159,22 +160,18 @@ class PaymentController extends Controller
         return redirect()->route('welcome')->with('error', 'Payment cancelled!');
     }
 
-
-
-
-
-
-
     //========== Product Purchase Payment=============//
 
     public function productPurchase(Request $request)
     {
-
         DB::beginTransaction();
         try {
             $transaction_id = (string) Str::uuid();
             $product = Product::find($request->product_id);
             $user = Auth::user();
+            $amount = $request->price;
+            $subscription_id = $request->subscription_id;
+
             session(['product_id' => $product->id]);
 
             $store_id      = env('STORE_ID');
@@ -187,7 +184,7 @@ class PaymentController extends Controller
                 "success_url"   => route('purchase.success'),
                 "fail_url"      => route('purchase.fail'),
                 "cancel_url"    => route('purchase.cancel'),
-                "amount"        => $product->price,
+                "amount"        => $amount,
                 "currency"      => "BDT",
                 "signature_key" => $signature_key,
                 "desc"          => "Product Purchase Payment",
@@ -197,6 +194,7 @@ class PaymentController extends Controller
                 "cus_phone"     => $user?->phone,
                 "opt_a"         => $product->id,  // pass product_id for callback
                 "opt_b"         => $user->id,  // pass user_id for callback
+                "opt_c"         => $subscription_id,  // pass subscription_id for callback
                 "type"          => "json"
             ];
 
@@ -229,20 +227,46 @@ class PaymentController extends Controller
         DB::beginTransaction();
 
         try {
-            $product_id = $request->opt_a;
-            $user_id    = $request->opt_b;
+            $product_id      = $request->opt_a;
+            $user_id         = $request->opt_b;
+            $subscription_id = $request->opt_c;
 
             $product = Product::findOrFail($product_id);
+            if ($subscription_id == 0){
+                $subscription_id = null;
+                $payment = Payment::create([
+                    'product_id'      => $product->id,
+                    'subscription_id' => $subscription_id,
+                    'designer_id'     => $product->designer_id,
+                    'user_id'         => $user_id,
+                    'amount'          => $request->amount,
+                    'card_type'       => $request->card_type ?? null,
+                    'bank_txn'        => $request->bank_txn ?? null,
+                    'is_counted'      => 0,
+                ]);
+            }else{
+                $payment = Payment::create([
+                    'subscription_id' => $subscription_id,
+                    'user_id'         => $user_id,
+                    'amount'          => $request->amount,
+                    'card_type'       => $request->card_type ?? null,
+                    'bank_txn'        => $request->bank_txn ?? null,
+                    'is_counted'      => 0,
+                ]);
+            }
 
-            Payment::create([
-                'product_id'  => $product->id,
-                'designer_id' => $product->designer_id,
-                'user_id'     => $user_id,
-                'amount'      => $request->amount,
-                'card_type'   => $request->card_type ?? null,
-                'bank_txn'    => $request->bank_txn ?? null,
-                'is_counted'  => 0,
-            ]);
+            if ($subscription_id != null){
+                $subscription = Subscription::where('id', $subscription_id)->first();
+
+                SubscriptionPurchase::create([
+                    'payment_id'      => $payment->id,
+                    'subscription_id' => $subscription_id,
+                    'user_id'         => $user_id,
+                    'total_image'     => $subscription->total_image,
+                    'total_purchase'  => 0,
+                    'expire_date'     => Carbon::now()->addDays($subscription->days)->format('Y-m-d'),
+                ]);
+            }
 
             Auth::loginUsingId($user_id);
 
@@ -421,5 +445,117 @@ class PaymentController extends Controller
         Auth::loginUsingId($userId);
 
         return redirect()->route('welcome')->with('error','Payment cancelled!');
+    }
+
+
+    //========== Subscription Purchase Payment=============//
+
+    public function subscriptionPurchase(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $transaction_id = (string) Str::uuid();
+            $user = Auth::user();
+            $subscription_id = $request->subscription_id;
+            $subscription = Subscription::findOrFail($subscription_id);
+            $amount = $subscription->price;
+
+            session(['subscription_id' => $subscription_id]);
+
+            $store_id      = env('STORE_ID');
+            $signature_key = env('SIGNATURE_KEY');
+            $url           = env('AMARPAY_URL');
+
+            $payload = [
+                "store_id"      => $store_id,
+                "tran_id"       => $transaction_id,
+                "success_url"   => route('subscription.success'),
+                "fail_url"      => route('subscription.fail'),
+                "cancel_url"    => route('subscription.cancel'),
+                "amount"        => $amount,
+                "currency"      => "BDT",
+                "signature_key" => $signature_key,
+                "desc"          => "Subscription Purchase Payment",
+                "cus_name"      => $user->name,
+                "cus_email"     => $user?->email ?? 'customer@example.com',
+                "cus_add1"      => $user->address ?? 'Dhaka',
+                "cus_phone"     => $user?->phone,
+                "opt_a"         => $subscription->id,  // pass subscription id for callback
+                "opt_b"         => $user->id,  // pass user_id for callback
+                "type"          => "json"
+            ];
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $responseObject = json_decode($response, true);
+
+            if (isset($responseObject['payment_url']) && $responseObject['payment_url']) {
+                DB::commit();
+                return redirect()->away($responseObject['payment_url']);
+            } else {
+                DB::rollBack();
+                return back()->with('error', 'Payment URL generation failed! Response: ' . $response);
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+    public function subscriptionSuccess(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $subscription_id      = $request->opt_a;
+            $user_id         = $request->opt_b;
+
+            $subscription = Subscription::findOrFail($subscription_id);
+            $payment = Payment::create([
+                'subscription_id' => $subscription_id,
+                'user_id'         => $user_id,
+                'amount'          => $request->amount,
+                'card_type'       => $request->card_type ?? null,
+                'bank_txn'        => $request->bank_txn ?? null,
+                'is_counted'      => 0,
+            ]);
+
+                SubscriptionPurchase::create([
+                    'payment_id'      => $payment->id,
+                    'subscription_id' => $subscription_id,
+                    'user_id'         => $user_id,
+                    'total_image'     => $subscription->total_image,
+                    'total_purchase'  => 0,
+                    'expire_date'     => Carbon::now()->addDays($subscription->days)->format('Y-m-d'),
+                ]);
+            Auth::loginUsingId($user_id);
+            DB::commit();
+            // Pass download product_id to Blade
+            return redirect()->route('welcome')->with('success', 'Payment Successfully Done .');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    public function subscriptionFail(Request $request)
+    {
+        $userId = $request->input('opt_b');
+        Auth::loginUsingId($userId);
+        return redirect()->route('welcome')->with('error', 'Payment failed!');
+    }
+
+    public function subscriptionCancel(Request $request)
+    {
+        $userId = $request->input('opt_b');
+        Auth::loginUsingId($userId);
+        return redirect()->route('welcome')->with('error', 'Payment cancelled!');
     }
 }

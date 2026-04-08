@@ -16,7 +16,7 @@ class Product extends Model
     ];
 
     protected $fillable = [
-        'title', 'category_id','designer_id', 'price','type','tags', 'description',
+        'title','asset_id', 'category_id','designer_id', 'price','type','tags', 'description',
         'file_path', 'file_name', 'file_type','total_download','status'
     ];
 

@@ -40,14 +40,19 @@ class SubscriptionController extends Controller
         $request->validate([
             'name' => 'required|string',
             'price' => 'required|numeric',
-            'designer' => 'required',
-            'days' => 'required',
+            'type' => 'required',
+            'total_image' => 'required_if:type,1|nullable|numeric',
+            'designer' => 'required_if:type,2|nullable|numeric',
+            'design'   => 'nullable|numeric',
         ]);
 
         $data = $request->all();
-        $data['points'] =  json_encode($request->points);
+        $data['points'] = json_encode($request->points);
+
         Subscription::create($data);
-        return redirect()->route('admin.subscriptions.index')->with('success', 'Subscription Plan Created successfully.');
+
+        return redirect()->route('admin.subscriptions.index')
+            ->with('success', 'Subscription Plan Created successfully.');
     }
 
     /**
@@ -82,16 +87,22 @@ class SubscriptionController extends Controller
     public function update(Request $request, Subscription $subscription)
     {
         $request->validate([
-            'name' => 'required|string',
+            'name'  => 'required|string',
             'price' => 'required|numeric',
-            'designer' => 'required',
-            'days' => 'required',
+            'type'  => 'required',
+            'total_image' => 'required_if:type,1|nullable|numeric',
+            'designer' => 'required_if:type,2|nullable|numeric',
+            'design'   => 'nullable|numeric',
+            'days' => 'nullable|numeric',
         ]);
 
         $data = $request->all();
         $data['points'] = json_encode($request->points);
+
         $subscription->update($data);
-        return redirect()->route('admin.subscriptions.index')->with('success', 'Subscription Plan Updated Successfully.');
+
+        return redirect()->route('admin.subscriptions.index')
+            ->with('success', 'Subscription Plan Updated Successfully.');
     }
 
     /**

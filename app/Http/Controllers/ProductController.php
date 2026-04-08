@@ -51,6 +51,8 @@ class ProductController extends Controller
             $tags = NULL;
         }
 
+        $assetId = mt_rand(100000000, 999999999);
+
         $file = $request->file('file');
         $ext = strtolower($file->getClientOriginalExtension());
         $sizeMB = $file->getSize() / 1048576;
@@ -76,6 +78,7 @@ class ProductController extends Controller
 
         Product::create([
             'title'       => $request->title,
+            'asset_id' => $assetId,
             'category_id' => $request->category_id,
             'designer_id'     => Auth::id(),
             'price'       => $request->price,
