@@ -4,18 +4,33 @@
     <div class="row pt-5">
         <div class="col-lg-8 mx-auto">
             <h2 class="mb-4 font-weight-bold" style="color: #2d3436; border-bottom: 2px solid #f1f2f6; padding-bottom: 10px;">Checkout Summary</h2>
-            
+
             <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px; overflow: hidden;">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-4">
+                        @if($product && $product->type == 1)
                         <img src="{{ route('product.file.view', $product->id) }}" alt="{{ $product->title }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #f1f2f6;">
+                        @else
+                        <div class="ratio ratio-16x9" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #f1f2f6;">
+                                <video class="w-100" muted playsinline preload="metadata" controlsList="nodownload" oncontextmenu="return false;">
+                                    <source src="{{ route('product.view.video', $product->id) }}" type="{{ $product->file_type }}">
+                                </video>
+
+                            <a href="{{ route('product-details',$product->id) }}"
+                               class="position-absolute top-50 start-50 translate-middle text-white d-flex align-items-center justify-content-center"
+                               style="z-index: 5; width: 100%; height: 100%; text-decoration: none;">
+
+                                <i class="fa fa-play-circle fa-2x" style="opacity: 0.9;"></i>
+                            </a>
+                        </div>
+                        @endif
                         <div class="ms-4 pl-4" style="padding-left: 20px;">
                             <h5 class="font-weight-bold mb-1">{{ $product->title ?? 'Product Item' }}</h5>
                             <p class="text-muted mb-0">ID: {{ $product->asset_id ?? $product->id }}</p>
                             @if($subscription)
                                 <span class="badge bg-primary mt-2">{{ $subscription->name }} Plan</span>
                             @else
-                                <span class="badge bg-secondary mt-2">Single Image License</span>
+                                <span class="badge bg-secondary mt-2"> Single  @if($product && $product->type == 1) Image @else Video @endif License</span>
                             @endif
                         </div>
                     </div>
@@ -25,7 +40,7 @@
             <div class="card shadow-sm border-0" style="border-radius: 12px;">
                 <div class="card-body p-4">
                     <h5 class="font-weight-bold mb-4">Order Summary</h5>
-                    
+
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Subtotal</span>
                         <span class="font-weight-bold">Tk {{ $price }}</span>
@@ -35,7 +50,7 @@
                         <span class="text-success"><i class="fa fa-tag"></i> Discount</span>
                         <span class="font-weight-bold text-success">- Tk <span id="discountValue">0</span></span>
                     </div>
-                    
+
                     <hr class="my-3">
 
                     <div class="d-flex justify-content-between mb-4">
@@ -70,7 +85,7 @@
 
 <script>
     let basePrice = {{ $price }};
-    
+
     function applyCoupon() {
         let code = document.getElementById('couponCode').value;
         if (!code) {
@@ -98,7 +113,7 @@
                 document.getElementById('discountRow').style.setProperty("display", "flex", "important");
                 document.getElementById('discountValue').innerText = data.discount;
                 document.getElementById('finalTotal').innerText = data.new_total;
-                
+
                 // Update form hidden fields
                 document.getElementById('formPrice').value = data.new_total;
                 document.getElementById('formCoupon').value = code;

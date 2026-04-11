@@ -137,13 +137,6 @@
                     <h3 class="mb-2 mb-md-0">Upload Your Design</h3>
                     <hr>
                 </div>
-
-                @if(session('success'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
                 <!-- Upload Form (Hidden initially) -->
                 <div class="container" id="uploadForm">
                     <div class="card shadow p-4">

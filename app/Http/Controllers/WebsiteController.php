@@ -439,6 +439,7 @@ class WebsiteController extends Controller
         $similarProducts = Product::where('status', 1)
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
+            ->where('type', $product->type)
             ->latest()
             ->take(12)
             ->get();

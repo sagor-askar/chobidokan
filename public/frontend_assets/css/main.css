@@ -820,9 +820,8 @@ section,
 /* Hero Section */
 .hero {
     width: 100%;
-    min-height: 40vh;
     position: relative;
-    padding: 80px 0 10px 0;
+    padding: 130px 0 10px 0; /* Huge top padding to clear fixed header, tight bottom padding to stay near premium section */
     display: flex;
     align-items: center;
     background-size: cover;

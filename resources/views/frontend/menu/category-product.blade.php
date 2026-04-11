@@ -208,12 +208,12 @@
         font-size: 16px !important;
         color: #555 !important;
     }
-    
+
     .share-dropdown a:hover {
         background: #f1f2f6 !important;
         color: #1e90ff !important;
     }
-    
+
     .share-dropdown a:hover i {
         color: #1e90ff !important;
     }
@@ -235,7 +235,7 @@
         <!-- Hero Section -->
         @include('includes.hero')
 
-        <h5 class="text-center mt-4">{{ $products->total() }} + images for "{{ $category?->name }}"</h5>
+        <h5 class="text-center mt-4">{{ $products->total() }} + Product of Category <strong> "{{ $category?->name }}"</strong></h5>
 
         <div class="container gallery">
             <div class="row">
@@ -354,12 +354,13 @@
                     @else
                         <!-- Video Card -->
                         <div class="col-md-4 mb-4">
-                            <div class="video-card position-relative overflow-hidden rounded shadow-lg">
+                            <div class="video-card position-relative overflow-hidden rounded shadow-lg"
+                                 onmouseenter="const v=this.querySelector('video'); if(v) v.play();"
+                                 onmouseleave="const v=this.querySelector('video'); if(v){ v.pause(); v.currentTime=0; }">
                                 <!-- Video Wrapper -->
                                 <div class="ratio ratio-16x9">
                                     <a href="{{ route('product-details',$product->id) }}">
-                                        <video class="w-100" muted playsinline preload="metadata" onmouseenter="this.play()"
-                                               onmouseleave="this.pause(); this.currentTime=0;">
+                                        <video class="w-100" muted playsinline preload="metadata">
                                             <source src="{{ route('product.view.video', $product->id) }}" type="{{ $product->file_type }}">
                                         </video>
                                     </a>
@@ -367,12 +368,12 @@
 
                                 <div class="watermark">CHOBIDOKAN</div>
 
-                                <!-- Play Icon -->
-                                <a href="{{ route('product-details',$product->id) }}"
-                                   class="position-absolute top-50 start-50 translate-middle text-white"
-                                   style="z-index: 5;">
-                                    <i class="fa fa-play-circle fa-3x opacity-75"></i>
-                                </a>
+{{--                                <!-- Play Icon -->--}}
+{{--                                <a href="{{ route('product-details',$product->id) }}"--}}
+{{--                                   class="position-absolute top-50 start-50 translate-middle text-white"--}}
+{{--                                   style="z-index: 5;">--}}
+{{--                                    <i class="fa fa-play-circle fa-3x opacity-75"></i>--}}
+{{--                                </a>--}}
 
                                 <!-- Overlay -->
                                 <div class="video-overlay overlay">
@@ -380,20 +381,41 @@
                                         <!-- Top Left: Title and Price -->
                                         <div class="overlay-top-left">
                                             <div class="video-title">{{ $product->title ?? '' }}</div>
-                                            <div class="price-tag">Tk {{ $product->price ?? '' }}</div>
                                         </div>
 
                                         <!-- Top Right: Cart (since videos do not have wishlist based on old code, I'll add cart) -->
                                         <div class="overlay-top-right">
-                                            @if(!$isPayment)
-                                                <form action="{{ route('add.to.cart') }}" method="POST" class="cart-btn-form">
+
+                                            <!-- Wishlist -->
+                                            @if(auth()->check())
+                                                <form action="{{ route('wishlist.toggle', $product->id) }}" method="POST" class="wishlist-btn">
                                                     @csrf
-                                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                    <button type="submit" class="action-btn">
-                                                        <i class="fa fa-cart-plus"></i>
+                                                    <button type="submit" class="action-btn" title="Save">
+                                                        <i class="fa {{ $product->wishlists->where('user_id', auth()->id())->count() ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
                                                     </button>
                                                 </form>
+                                            @else
+                                                <a href="{{ route('signin') }}" class="action-btn">
+                                                    <i class="fa fa-heart-o"></i>
+                                                </a>
                                             @endif
+
+                                            @if(!$isPayment)
+                                                @if(auth()->check())
+                                                    <form action="{{ route('add.to.cart') }}" method="POST" class="cart-btn-form">
+                                                        @csrf
+                                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                        <button type="submit" class="action-btn" title="Add to Cart">
+                                                            <i class="fa fa-cart-plus"></i>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <a href="{{ route('signin') }}" class="action-btn">
+                                                        <i class="fa fa-cart-plus"></i>
+                                                    </a>
+                                                @endif
+                                            @endif
+
                                         </div>
                                     </div>
 
