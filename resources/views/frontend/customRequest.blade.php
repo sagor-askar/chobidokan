@@ -111,6 +111,54 @@
         margin-bottom: 10px;
     }
 
+    /* Pricing Table Redesign */
+    .pricing-table {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .pricing-table:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        border: 2px solid rgba(0,0,0,0.1);
+    }
+
+    .price-button {
+        transition: all 0.3s ease;
+    }
+
+    .pricing-table:hover .price-button, .pricing-column.selected .price-button {
+        background: #000;
+        color: #fff;
+    }
+
+    .pricing-features .feature {
+        transition: all 0.3s ease;
+    }
+
+    .pricing-table:hover .feature {
+        transform: translateX(5px);
+    }
+
+    .pricing-table h2 {
+        transition: all 0.3s ease;
+    }
+
+    .pricing-table:hover h2 {
+        letter-spacing: 1px;
+    }
+
+    .pricing-column.selected .pricing-table {
+        border: 2px solid #007bff;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    }
+
 </style>
 
 <section class="mt-5">
@@ -201,28 +249,36 @@
                                 <div class="row">
                                     @foreach($subscriptions as $key=>$subscription)
                                         @php
-                                            $points = json_decode($subscription->points)
+                                            $colors = ['purple','turquoise','red'];
+                                            $points = json_decode($subscription->points);
                                         @endphp
-                                        <div class="pricing-column col-lg-4 col-md-6" data-id="{{ $subscription->id }}">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h3 class="text-center">{{ $subscription->name }}</h3>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <div class="form-check mt-2 subscription-checkbox d-flex justify-content-center" style="display: none;">
-                                                        <input class="form-check-input colorful-checkbox" type="checkbox" disabled>
-                                                    </div>
+                                        <div class="pricing-column col-lg-4 col-md-6 d-flex mb-4" data-id="{{ $subscription->id }}">
+                                            <div class="pricing-table w-100 {{ $colors[$key % count($colors)] }} position-relative border border-1 border-light">
 
-                                                    <h2 id="price">৳ {{ $subscription->price }}</h2>
-                                                    <p> <strong>{{ $subscription->designer }} </strong>designer</p>
-                                                    @if($subscription->design)
-                                                    <p><strong>{{ $subscription->design }} </strong> design</p>
-                                                    @endif
-                                                    @foreach($points as $i => $point)
-                                                        <p>{{ $point }}</p>
-                                                    @endforeach
-                                                    <button class="btn btn-sm btn-block btn-dark" type="button">Select</button>
+                                                <div class="form-check subscription-checkbox d-flex justify-content-center position-absolute" style="display: none !important; top: 5px; right: 5px; z-index: 10;">
+                                                    <input class="form-check-input colorful-checkbox" type="checkbox" disabled checked>
                                                 </div>
+
+                                                <div class="pricing-label text-center pt-3"><h2 class="text-center mb-0 mt-2">{{ $subscription->name }}</h2></div>
+
+
+                                                <div class="pricing-features px-3 py-1">
+                                                    @foreach($points as $val)
+                                                        <div class="feature text-muted border-bottom py-1" style="font-size: 13px;">{{$val}}</div>
+                                                    @endforeach
+                                                   <div class="feature text-muted border-bottom py-1" style="font-size: 13px;">Total Designer <span class="float-end fw-bold text-dark">{{ $subscription->designer ?? '0' }} </span></div>
+                                                     <div class="feature text-muted border-bottom py-1" style="font-size: 13px;">Total Design <span class="float-end fw-bold text-dark">{{ $subscription->design ?? '0' }} </span></div>
+                                                    <div class="feature text-muted py-1" style="font-size: 13px;">Support<span class="float-end fw-bold text-dark">Only Mail</span></div>
+                                                </div>
+                                                <div class="price-tag text-center py-1">
+                                                    <span class="symbol">TK.</span>
+                                                    <span class="amount fw-bold" style="font-size: 26px;">{{ $subscription->price }}</span>
+                                                    <span class="after text-muted" style="line-height: normal;">/{{ $subscription->days }} days</span>
+                                                </div>
+
+                                                <button class="btn price-button w-100 btn-dark py-2 mt-auto" type="button" style="display: block; border-radius: 0 0 12px 12px;">
+                                                    Select
+                                                </button>
                                             </div>
                                         </div>
                                     @endforeach
@@ -476,9 +532,9 @@
 
         const selectedSubscription = document.querySelector('.pricing-column.selected');
         if (selectedSubscription) {
-            const name = selectedSubscription.querySelector('.card-header h3').innerText;
-            const price = selectedSubscription.querySelector('h2').innerText;
-            document.getElementById('showPrice').innerText = `${name} - ${price}`;
+            const name = selectedSubscription.querySelector('h2').innerText;
+            const price = selectedSubscription.querySelector('.amount').innerText;
+            document.getElementById('showPrice').innerText = `${name} - Tk. ${price}`;
         } else {
             document.getElementById('showPrice').innerText = '';
         }

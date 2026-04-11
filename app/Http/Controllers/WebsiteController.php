@@ -64,7 +64,7 @@ class WebsiteController extends Controller
     public function customRequest()
     {
         $categories = Category::where("type",2)->where('status',1)->get();
-        $subscriptions = Subscription::where('status',1)->get();
+        $subscriptions = Subscription::where('type',2)->where('status',1)->get();
         return view('frontend.customRequest',compact('categories','subscriptions'));
     }
 
@@ -182,7 +182,7 @@ class WebsiteController extends Controller
     // pricing table
     public function pricingTable()
     {
-        $subscriptions = Subscription::where('status',1)->get();
+        $subscriptions = Subscription::where('type',1)->where('status',1)->get();
         return view('frontend.footer.pricing',compact('subscriptions'));
     }
 
@@ -489,7 +489,6 @@ class WebsiteController extends Controller
     public function productImageDownload($id)
     {
         $id = base64_decode($id);
-
         if (!auth()->check()) {
             abort(403, 'Unauthorized');
         }
@@ -571,9 +570,55 @@ class WebsiteController extends Controller
 
     public function downloadVideo($id)
     {
-        $id = base64_decode($id); // যদি encode করে পাঠাও
+        $id = base64_decode($id);
 
+        if (!auth()->check()) {
+            abort(403, 'Unauthorized');
+        }
         $product = Product::findOrFail($id);
+
+        $hasAccess = false;
+        $payment = Payment::where('product_id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        $isActiveSubscription = SubscriptionPurchase::where('user_id', auth()->id())
+            ->where('status', 1)
+            ->first();
+        $hasAccess = ($payment !== null) || ($isActiveSubscription !== null);
+
+        if (!$hasAccess) {
+            abort(403, 'You did not purchase this product.');
+        }
+
+        // Count only once
+        if ($payment !== null){
+            if ($payment->is_counted == 0) {
+                $payment->update(['is_counted' => 1]);
+                $product->increment('total_download');
+            }
+        }
+        if ($isActiveSubscription !== null){
+            $subscriptionDownloadProduct = SubscriptionDownloadProduct::where('subscription_purchase_id', $isActiveSubscription->id)->where('product_id', $id)->first();
+            $paymentData = Payment::findOrFail($isActiveSubscription->payment_id);
+            if ($subscriptionDownloadProduct == null) {
+                if ($paymentData->is_counted == 0) {
+                    $paymentData->update(['is_counted' => 1]);
+
+                }
+                if ($isActiveSubscription->total_purchase < $isActiveSubscription->total_image) {
+                    SubscriptionDownloadProduct::create([
+                        'product_id'      => $product->id,
+                        'subscription_purchase_id' => $isActiveSubscription->id,
+                    ]);
+                    $isActiveSubscription->increment('total_purchase');
+                    $product->increment('total_download');
+                }
+                if ($isActiveSubscription->total_purchase == $isActiveSubscription->total_image) {
+                    $isActiveSubscription->update(['status' => 0]);
+                }
+            }
+        }
 
         if (!Storage::disk('local')->exists($product->file_path)) {
             abort(404);

@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\OrderDetails;
+use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Project;
+use App\Models\SubscriptionDownloadProduct;
+use App\Models\SubscriptionPurchase;
 use App\Models\Upload;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
@@ -91,6 +96,32 @@ class UserController extends Controller
         return view('frontend.user.order-history', compact('orderHistoryProjects'));
     }
 
+
+    public function productPurchaseHistory()
+    {
+        $purchaseHistories = Payment::with(['product','subscription','designer'])
+            ->where('order_id', null)
+            ->where('project_id', null)
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return view('frontend.user.purchase-history', compact('purchaseHistories'));
+    }
+
+    public function subscriptionProductPurchaseHistory($id)
+    {
+        $subcriptionPurchaseProductHistories = [];
+        $subcriptionPurchaseHistory = SubscriptionPurchase::where('payment_id',$id)->first();
+        if($subcriptionPurchaseHistory) {
+            $subcriptionPurchaseProductHistories = SubscriptionDownloadProduct::with('product')
+                ->where('subscription_purchase_id', $subcriptionPurchaseHistory->id)
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+        }
+
+        return view('frontend.user.subscription-wise-purchase-history', compact('subcriptionPurchaseProductHistories'));
+    }
+
     public function manageProfile()
     {
         $user = User::findOrFail( Auth::id());
@@ -138,5 +169,58 @@ class UserController extends Controller
         $user->save();
 
         return back()->with('success', 'Password updated successfully!');
+    }
+
+
+    public function subscriptionProductImageDownload($id)
+    {
+        $id = base64_decode($id);
+
+        if (!auth()->check()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $product = Product::findOrFail($id);
+
+        $subscriptionDownloadProduct = SubscriptionDownloadProduct::where('product_id', $id)->first();
+        if ($subscriptionDownloadProduct == null) {
+          abort(403, 'You did not purchase this product.');
+        }
+
+
+        $filePath = storage_path('app/' . $product->file_path);
+
+        if (!file_exists($filePath)) {
+            abort(404, 'File not found.');
+        }
+
+        return response()->download(
+            $filePath,
+            $product->file_name,
+            ['Content-Type' => $product->file_type]
+        );
+    }
+
+    public function subscriptionProductVideoDownload($id)
+    {
+        $id = base64_decode($id);
+
+        if (!auth()->check()) {
+            abort(403, 'Unauthorized');
+        }
+        $product = Product::findOrFail($id);
+
+        $subscriptionDownloadProduct = SubscriptionDownloadProduct::where('product_id', $id)->first();
+        if ($subscriptionDownloadProduct == null) {
+            abort(403, 'You did not purchase this product.');
+        }
+
+        if (!Storage::disk('local')->exists($product->file_path)) {
+            abort(404);
+        }
+
+        $path = storage_path('app/' . $product->file_path);
+
+        return response()->download($path, $product->title . '.' . pathinfo($product->file_path, PATHINFO_EXTENSION));
     }
 }

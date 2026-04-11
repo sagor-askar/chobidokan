@@ -1,14 +1,14 @@
 @extends('layouts.designer_panel')
 @section('panel_content')
-        <div class="content">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="card-header">
-                          Upload Products
-                        </div>
-                        <div class="panel-body">
-                            @if(count($products) > 0 )
+    <div class="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="card-header">
+                        <h4>Product Sales History</h4>
+                    </div>
+                    <div class="panel-body">
+                        @if(count($productSalesHistories) > 0 )
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover datatable datatable-SubCompany" id="subCompany-dataTable">
                                     <thead>
@@ -17,25 +17,26 @@
                                         <th>Product Name</th>
                                         <th>Category</th>
                                         <th>Image/Video</th>
-                                        <th>Price</th>
-                                        <th> Status</th>
-                                        <th>Action</th>
+                                        <th>Customer</th>
+                                        <th>Amount</th>
+                                        <th>Payment Method </th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($products as $index => $product)
+                                    @foreach($productSalesHistories as $index => $productSalesHistory)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $product->title }}</td>
-                                            <td>{{ $product->category?->name ?? 'N/A' }}</td>
+                                            <td>{{ $productSalesHistory->product->title }}</td>
+                                            <td>{{ $productSalesHistory->product->category?->name ?? 'N/A' }}</td>
 
                                             <td class="text-center align-middle" style="width: 120px;">
                                                 <div class="position-relative overflow-hidden rounded shadow-sm d-flex align-items-center justify-content-center"
                                                      style="width: 100px; height: 70px; margin: 0 auto; cursor: pointer; border: 1px solid #e0e0e0; background: #f8f9fa;"
                                                      data-bs-toggle="modal" data-bs-target="#mediaModal{{ $index }}">
 
-                                                    @if($product->type == 1)
-                                                        <img src="{{ route('product.file.view', $product->id) }}" alt="Image"
+                                                    @if($productSalesHistory->product->type == 1)
+                                                        <img src="{{ route('product.file.view', $productSalesHistory->product->id) }}" alt="Image"
                                                              style="width: 100%; height: 100%; object-fit: cover; border-radius: 3px;">
                                                         <div class="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center shadow"
                                                              style="width: 32px; height: 32px; background: rgba(0,0,0,0.6); border-radius: 50%; color: #fff;">
@@ -43,7 +44,7 @@
                                                         </div>
                                                     @else
                                                         <video style="width: 100%; height: 100%; object-fit: cover; border-radius: 3px;" muted onmouseover="this.play()" onmouseout="this.pause()">
-                                                            <source src="{{ route('product.view.video', $product->id) }}" type="{{ $product->file_type }}">
+                                                            <source src="{{ route('product.view.video', $productSalesHistory->product->id) }}" type="{{ $productSalesHistory->product->file_type }}">
                                                         </video>
                                                         <div class="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center shadow"
                                                              style="width: 32px; height: 32px; background: rgba(0,0,0,0.6); border-radius: 50%; color: #fff;">
@@ -63,11 +64,11 @@
                                                                     </span>
 
                                                                 <div class="flex-grow-1 position-relative d-flex justify-content-center align-items-center overflow-hidden w-100 h-100" style="background: #111;">
-                                                                    @if($product->type == 1)
-                                                                        <img src="{{ route('product.file.view', $product->id) }}" alt="{{ $product->title }}" class="w-100 h-100 d-block" style="object-fit: contain;">
+                                                                    @if($productSalesHistory->product->type == 1)
+                                                                        <img src="{{ route('product.file.view', $productSalesHistory->product->id) }}" alt="{{ $productSalesHistory->product->title }}" class="w-100 h-100 d-block" style="object-fit: contain;">
                                                                     @else
                                                                         <video controls class="w-100 h-100 d-block" style="object-fit: contain;" controlsList="nodownload">
-                                                                            <source src="{{ route('product.view.video', $product->id) }}" type="{{ $product->file_type }}">
+                                                                            <source src="{{ route('product.view.video', $productSalesHistory->product->id) }}" type="{{ $productSalesHistory->product->file_type }}">
                                                                         </video>
                                                                     @endif
                                                                 </div>
@@ -75,7 +76,7 @@
                                                                 <div class="d-flex justify-content-between align-items-center" style="background: #2a2c31; padding: 12px 24px;">
                                                                     <div style="font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">chobidokan</div>
                                                                     <div class="text-end" style="font-size: 11px; font-weight: 600; color: #ffffff; line-height: 1.4;">
-                                                                        IMAGE ID: {{ $product->asset_id ?? '' }}<br>
+                                                                        IMAGE ID: {{ $productSalesHistory->product->asset_id ?? '' }}<br>
                                                                         <span style="color: #9ba0a9; font-weight: normal;">www.chobidokan.com</span>
                                                                     </div>
                                                                 </div>
@@ -84,29 +85,18 @@
                                                     </div>
                                                 </div>
                                             </td>
+                                            <td> {{ $productSalesHistory->user?->name ?? 'N/A' }}</td>
+                                            @if($productSalesHistory->subscription_id == null)
+                                                <td> Tk. {{ $productSalesHistory->amount  }}</td>
+                                                <td>{{ $productSalesHistory->card_type  }}</td>
 
-                                            <td>{{ $product->price  }}</td>
-                                            <td>
-                                                @if($product->status == 1)
-                                                    <span class="badge bg-success">Active</span>
-                                                 @else
-                                                    <span class="badge bg-danger">Inactive</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-xs btn-info" href="{{ route('designer.product.edit', $product->id) }}">
-                                                    {{ trans('global.edit') }}
-                                                </a>
-
-                                                <form action="{{ route('designer.product.delete', $product->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                                    <input type="hidden" name="_method" value="DELETE">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    <input type="submit" class="btn btn-xs btn-danger" value="{{ __('global.delete') }}">
-                                                </form>
-                                            </td>
+                                            @else
+                                                <td><span class="badge bg-success">Subscription Package</span></td>
+                                                <td><span class="badge bg-success">Subscription Package</span></td>
+                                            @endif
                                         </tr>
 
-                                     @endforeach
+                                    @endforeach
                                     </tbody>
 
 
@@ -114,43 +104,43 @@
 
                             </div>
                             <div class="pagination-wrapper d-flex justify-content-center mt-4">
-                                {{ $products->withQueryString()->links('pagination.custom') }}
+                                {{ $productSalesHistories->withQueryString()->links('pagination.custom') }}
                             </div>
-                            @else
-                                <div class="col-12 text-center py-4">
-                                    <p class="mb-0 text-danger">No Product available yet.</p>
-                                </div>
-                            @endif
-                        </div>
+                        @else
+                            <div class="col-12 text-center py-4">
+                                <p class="mb-0 text-danger">No Product available yet.</p>
+                            </div>
+                        @endif
                     </div>
-
-
-
                 </div>
+
+
+
             </div>
         </div>
+    </div>
 
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var modals = document.querySelectorAll('.modal');
-                modals.forEach(function (modal) {
-                    modal.addEventListener('shown.bs.modal', function () {
-                        var video = this.querySelector('video');
-                        if (video) {
-                            video.play();
-                        }
-                    });
-                    modal.addEventListener('hidden.bs.modal', function () {
-                        var video = this.querySelector('video');
-                        if (video) {
-                            video.pause();
-                            video.currentTime = 0;
-                        }
-                    });
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var modals = document.querySelectorAll('.modal');
+            modals.forEach(function (modal) {
+                modal.addEventListener('shown.bs.modal', function () {
+                    var video = this.querySelector('video');
+                    if (video) {
+                        video.play();
+                    }
+                });
+                modal.addEventListener('hidden.bs.modal', function () {
+                    var video = this.querySelector('video');
+                    if (video) {
+                        video.pause();
+                        video.currentTime = 0;
+                    }
                 });
             });
-        </script>
+        });
+    </script>
 
 
 

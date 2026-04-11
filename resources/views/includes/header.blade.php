@@ -97,12 +97,15 @@
     }
 </style>
 
+    @php
+     $categories = \App\Models\Category::where('type',1)->where('status',1)->get();
+    @endphp
+
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <a href="#">Category 1</a>
-    <a href="#">Category 2</a>
-    <a href="#">Category 3</a>
-    <a href="#">Category 4</a>
+    @foreach($categories as $key=> $category)
+    <a href="{{ route('category-wise-product',$category?->id) }}">{{ $category?->name }}</a>
+    @endforeach
 </div>
 
 <header id="header" class="header d-flex align-items-center fixed-top">

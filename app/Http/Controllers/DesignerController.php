@@ -6,9 +6,12 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Order;
 use App\Models\OrderDetails;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\ProjectSubmit;
+use App\Models\SubscriptionDownloadProduct;
+use App\Models\SubscriptionPurchase;
 use App\Models\Upload;
 use App\Models\User;
 use Carbon\Carbon;
@@ -309,6 +312,75 @@ class DesignerController extends Controller
         }
         $product->delete();
         return redirect()->back()->with('success', 'Product deleted successfully!');
+    }
+
+
+    public function salesHistory()
+    {
+        $designer_id = Auth::id();
+
+        // 1. Direct Product Sales
+        $directSales = Payment::with(['product', 'product.category', 'user'])
+            ->whereNull('order_id')
+            ->whereNull('project_id')
+            ->where('designer_id', $designer_id)
+            ->get();
+
+        // 2. Subscription Product Downloads
+        $downloadHistories = SubscriptionDownloadProduct::with(['product', 'product.category'])
+            ->whereHas('product', function ($q) use ($designer_id) {
+                $q->where('designer_id', $designer_id);
+            })
+            ->get();
+
+        // Fetch user data for subscription downloads efficiently
+        $subPurchaseIds = $downloadHistories->pluck('subscription_purchase_id')->unique();
+        $subPurchases = SubscriptionPurchase::with('user')->whereIn('id', $subPurchaseIds)->get()->keyBy('id');
+
+        $combinedSales = collect();
+
+        foreach ($directSales as $sale) {
+            $combinedSales->push((object)[
+                'type' => 'direct',
+                'product' => $sale->product,
+                'user' => $sale->user,
+                'amount' => $sale->amount,
+                'card_type' => $sale->card_type,
+                'subscription_id' => $sale->subscription_id,
+                'created_at' => $sale->created_at,
+            ]);
+        }
+
+        foreach ($downloadHistories as $download) {
+            $subPurchase = $subPurchases->get($download->subscription_purchase_id);
+
+            $combinedSales->push((object)[
+                'type' => 'subscription',
+                'product' => $download->product,
+                'user' => $subPurchase ? $subPurchase->user : null,
+                'amount' => null,
+                'card_type' => null,
+                'subscription_id' => 1, // Triggers standard UI "Subscription Package"
+                'created_at' => $download->created_at,
+            ]);
+        }
+
+        // Sort descending by creation date
+        $combinedSales = $combinedSales->sortByDesc('created_at');
+
+        // Handle Pagination for combined arrays
+        $page = request()->get('page', 1);
+        $perPage = 10;
+
+        $productSalesHistories = new \Illuminate\Pagination\LengthAwarePaginator(
+            $combinedSales->forPage($page, $perPage)->values(),
+            $combinedSales->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('frontend.seller.product-sales-history', compact('productSalesHistories'));
     }
 
 

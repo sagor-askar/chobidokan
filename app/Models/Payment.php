@@ -35,6 +35,11 @@ class Payment extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function designer()
+    {
+        return $this->belongsTo(User::class, 'designer_id');
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id');
@@ -47,7 +52,7 @@ class Payment extends Model
 
     public function product()
     {
-        return $this->belongsTo(Project::class, 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function subscription()

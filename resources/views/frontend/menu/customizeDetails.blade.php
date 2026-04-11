@@ -51,7 +51,7 @@
                                     {{ \Carbon\Carbon::parse($project->publish_date)->format('d-M-Y') }}</small>
                                 <br>
                                 <small class="text-muted"> <strong>Expire Date:</strong> :
-                                    {{ \Carbon\Carbon::parse($project->expireDate)->format('d-M-Y') }}</small>
+                                    {{ \Carbon\Carbon::parse($project->expire_date)->format('d-M-Y') }}</small>
                             </p>
                         </div>
                     </div>
