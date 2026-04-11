@@ -1,463 +1,470 @@
 @extends('includes.master')
 @section('content')
-<style>
 
-    .gallery {
-        margin-top: 40px;
-    }
+    <style>
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+        }
 
-    .gallery-item {
-        position: relative;
-        width: 100%;
-        height: 250px; /* Fixed height (You can adjust) */
-        border-radius: 8px;
-        overflow: hidden;
-    }
+        .gallery-item img, .video-card {
+            transition: transform 0.3s ease, filter 0.3s ease !important;
+        }
 
-    .gallery-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Maintain same size for all images */
-        display: block;
-        transition: transform 0.4s ease;
-    }
+        .gallery-item:hover img, .video-card:hover {
+            transform: scale(1.03) !important;
+            filter: brightness(0.95);
+        }
 
-    .gallery-item:hover img {
-        transform: scale(1.08);
-    }
+        .gallery-item .overlay,
+        .video-card .video-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            height: 100%;
+            /* Dark gradient at top AND bottom for layout readability */
+            background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.8) 100%) !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px !important;
+            opacity: 0 !important;
+            transform: translateY(0) !important;
+            transition: opacity 0.3s ease !important;
+            pointer-events: none;
+            z-index: 5;
+        }
 
-    .watermark {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(-25deg);
-        font-size: 40px;
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.2);
-        text-transform: uppercase;
-        white-space: nowrap;
-        pointer-events: none;
-        user-select: none;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-        z-index: 2;
-    }
+        .gallery-item:hover .overlay,
+        .video-card:hover .video-overlay {
+            opacity: 1 !important;
+            pointer-events: auto;
+        }
 
+        .overlay-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            gap: 10px;
+        }
 
+        .overlay-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            gap: 10px;
+        }
 
+        .overlay-top-left {
+            flex: 1;
+            overflow: hidden;
+        }
 
+        .overlay-top-right, .overlay-bottom-left, .overlay-bottom-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
-    /* Overlay */
-    .overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0, 0, 0, 0.6);
-        color: white;
-        height: 80px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        transform: translateY(100%);
-        transition: all 0.4s ease;
-    }
+        .gallery-item .overlay h6,
+        .video-card .video-title {
+            color: white !important;
+            margin-top: 0 !important;
+            margin-bottom: 5px !important;
+            font-weight: 500 !important;
+            font-size: 16px !important;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+            text-align: left;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            white-space: normal;
+            line-height: 1.3;
+        }
 
-    .gallery-item:hover .overlay {
-        opacity: 1;
-        transform: translateY(0);
-    }
+        .video-card .price-tag {
+            color: white !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+        }
 
-    .overlay h6 {
-        margin: 0;
-        font-size: 14px;
-        font-weight: 500;
-        color: #fff;
-    }
+        /* Icon styling - professional look */
+        .overlay-icons a,
+        .overlay-icons button,
+        .video-icons a,
+        .video-icons button,
+        .action-btn,
+        .action-btn button.icon-circle,
+        .action-btn a.icon-circle,
+        .share-wrapper {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: none !important;
+            border-radius: 50% !important;
+            width: 40px !important;
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-decoration: none !important;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15) !important;
+            padding: 0 !important;
+            position: relative;
+        }
 
-    .overlay-icons {
-        margin-top: 5px;
-    }
+        .action-btn i, .share-wrapper i {
+            margin: 0 !important;
+            font-size: 17px !important;
+            color: #4b4b4b !important; /* Premium neutral grey for base */
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
 
-    .overlay i {
-        font-size: 18px;
-        margin: 0 10px;
-        cursor: pointer;
-        transition: color 0.2s;
-    }
+        /* Keep the already liked icon Red */
+        .action-btn i.fa-heart.text-danger {
+            color: #ff4757 !important;
+        }
 
-    .overlay i:hover {
-        color: #ffc107;
-    }
+        /* Hover effects for the buttons */
+        .action-btn:hover,
+        .share-wrapper:hover {
+            background: #ffffff !important;
+            transform: translateY(-3px) scale(1.05) !important;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.25) !important;
+        }
 
+        /* Individual Colorization on Hover */
+        .action-btn:hover i.fa-heart-o,
+        .action-btn:hover i.fa-heart {
+            color: #ff4757 !important; /* Soft Red */
+        }
 
+        .action-btn:hover i.fa-cart-plus {
+            color: #1e90ff !important; /* Professional Blue */
+        }
 
+        .action-btn:hover i.fa-clone {
+            color: #ffa502 !important; /* Warm Orange */
+        }
 
-    /* share  */
+        .action-btn:hover i.fa-eye {
+            color: #3742fa !important; /* Deep Indigo/Purple */
+        }
 
-    .share-wrapper {
-        position: relative;
-        display: inline-block;
-    }
+        .share-wrapper:hover i.fa-share-alt {
+            color: #2ed573 !important; /* Fresh Green */
+        }
 
-    .share-dropdown {
-        position: absolute;
-        bottom: 40px;
-        right: 0;
-        background: #fff;
-        min-width: 160px;
-        border-radius: 6px;
-        padding: 8px 0;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        display: none;
-        z-index: 10;
-    }
+        .action-btn:hover i.fa-download {
+            color: #00b894 !important; /* Mint Teal */
+        }
 
-    .share-dropdown a {
-        display: block;
-        padding: 8px 12px;
-        color: #333;
-        text-decoration: none;
-        font-size: 14px;
-    }
+        .share-dropdown {
+            position: absolute;
+            bottom: 50px !important;
+            right: 0 !important;
+            left: auto !important;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+            width: 140px;
+            transform: translateY(10px);
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
 
-    .share-dropdown a:hover {
-        background: #f5f5f5;
-    }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
 
+        .share-dropdown a {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px;
+            color: #555 !important;
+            text-decoration: none !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 6px !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border-radius: 4px !important;
+            width: auto !important;
+            height: auto !important;
+            transform: none !important;
+            transition: all 0.2s !important;
+        }
 
+        .share-dropdown a i {
+            font-size: 16px !important;
+            color: #555 !important;
+        }
 
-  /* ===============================
-    VIDEO CARD
- =================================*/
-  .video-card {
-      position: relative;
-      border-radius: 12px;
-      overflow: visible; /* dropdown visibility ঠিক রাখবে */
-  }
-  /* Video hover zoom */
-  .video-card video {
-      transition: transform 0.4s ease;
-  }
-  /*.video-card:hover video {*/
-  /*    transform: scale(1.05);*/
-  /*}*/
+        .share-dropdown a:hover {
+            background: #f1f2f6 !important;
+            color: #1e90ff !important;
+        }
 
-  /* ===============================
-     WATERMARK
-  =================================*/
-  .watermark {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-25deg);
-      font-size: 40px;
-      font-weight: 800;
-      color: rgba(255, 255, 255, 0.15);
-      text-transform: uppercase;
-      pointer-events: none;
-      user-select: none;
-      z-index: 2;
-  }
+        .share-dropdown a:hover i {
+            color: #1e90ff !important;
+        }
 
-  /* ===============================
-     OVERLAY
-  =================================*/
-  .video-overlay {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-      color: #fff;
-      transform: translateY(100%);
-      transition: transform 0.4s ease;
-      z-index: 3;
-  }
+        .wishlist-btn form, .cart-btn-form {
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline-block !important;
+        }
 
-  .video-card:hover .video-overlay {
-      transform: translateY(0);
-  }
+        .wishlist-btn button, .cart-btn-form button {
+            border: none;
+            outline: none;
+        }
+    </style>
 
-  /* Title */
-  .video-title {
-      font-weight: 600;
-      font-size: 15px;
-      margin-bottom: 6px;
-  }
+    <main class="main">
 
-  /* Meta Row */
-  .video-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-  }
+        <!-- Hero Section -->
+        @include('includes.hero')
 
-  /* ===============================
-     ICON BUTTONS
-  =================================*/
-  .video-icons {
-      display: flex;
-      gap: 8px;
-  }
+        <h5 class="text-center mt-4">{{ $products->total() }} + Product of Tag <strong>"{{ $tag }}"</strong> </h5>
 
-  .video-icons a,
-  .video-icons button {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255,255,255,0.12);
-      color: #fff;
-      transition: all 0.25s ease;
-      cursor: pointer;
-  }
+        <div class="container gallery">
+            <div class="row">
 
-  .video-icons a:hover,
-  .video-icons button:hover {
-      background: #ffc107;
-      color: #000;
-      transform: translateY(-2px);
-  }
+                @foreach($products as $key=>$product)
+                    @php
+                        $isPayment = null;
+                         $authUser =  \Illuminate\Support\Facades\Auth::check() ? Auth::user() : null;
+                        if ($authUser) {
+                          $isPayment =  \App\Models\Payment::where('product_id', $product->id)->where('user_id',$authUser->id)->first();
+                       }
+                    @endphp
 
-  /* ===============================
-     SHARE DROPDOWN
-  =================================*/
+                    @if($product->type == 1)
+                        <div class="col-md-4 mb-4">
+                            <div class="gallery-item">
+                                <a href="{{ route('product-details',$product->id) }}">
+                                    <img src="{{ route('product.file.view', $product->id) }}" alt="{{$product->file_name}}">
+                                </a>
+                                <div class="watermark">CHOBIDOKAN</div>
 
-  /* ===============================
-  SHARE BUTTON ICON STYLE
-=================================*/
-  .video-icons .share-wrapper {
-      position: relative;
-  }
-  .video-icons .share-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255,255,255,0.12);
-      color: #fff;
-      transition: all 0.25s ease;
-      cursor: pointer;
-      font-size: 16px;
-  }
-  .video-icons .share-btn:hover {
-      background: #ffc107;
-      color: #000;
-      transform: translateY(-2px);
-  }
+                                <div class="overlay">
+                                    <div class="overlay-top">
+                                        <!-- Top Left: Title -->
+                                        <div class="overlay-top-left">
+                                            <h6>{{ $product->title ?? '' }}</h6>
+                                        </div>
 
-  /* ===============================
-     SHARE DROPDOWN - CENTERED
-  =================================*/
-  .video-icons .share-wrapper .share-dropdown {
-      position: absolute;
-      bottom: 50px; /* distance from button */
-      left: 50%;
-      transform: translateX(-50%); /* center horizontally */
-      background: #fff;
-      min-width: 140px;
-      border-radius: 6px;
-      padding: 8px 0;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 10;
-      text-align: center;
-  }
-  .video-icons .share-wrapper:hover .share-dropdown {
-      display: block;
-  }
-  .video-icons .share-wrapper .share-dropdown a {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 12px;
-      color: #fff;
-      text-decoration: none;
-      font-size: 16px;
-      transition: all 0.25s ease;
-      border-radius: 4px;
-      margin: 4px 1px -6px 30px;
-  }
-  .share-dropdown a i.fa-facebook {
-      color: #3b5998;
-  }
-  .share-dropdown a i.fa-whatsapp {
-      color: #25D366;
-  }
-  .share-dropdown a i.fa-twitter {
-      color: #1DA1F2;
-  }
-  .share-dropdown a i.fa-link {
-      color: #333;
-  }
-  .share-dropdown a:hover {
-      opacity: 0.85;
-      transform: translateY(-2px);
-  }
+                                        <!-- Top Right: Wishlist and Cart -->
+                                        <div class="overlay-top-right">
+                                            <!-- Wishlist -->
+                                            @if(auth()->check())
+                                                <form action="{{ route('wishlist.toggle', $product->id) }}" method="POST" class="wishlist-btn">
+                                                    @csrf
+                                                    <button type="submit" class="action-btn" title="Save">
+                                                        <i class="fa {{ $product->wishlists->where('user_id', auth()->id())->count() ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <a href="{{ route('signin') }}" class="action-btn">
+                                                    <i class="fa fa-heart-o"></i>
+                                                </a>
+                                            @endif
 
-</style>
-
-<main class="main">
-
-  <!-- Hero Section -->
-  @include('includes.hero')
-
-  <h5 class="text-center mt-4">{{ $products->total() }} + images for "{{ $tag }}"</h5>
-
-  <div class="container gallery">
-    <div class="row">
-
-      @foreach($products as $key=>$product)
-            @php
-                $isPayment = null;
-                $authUser =  \Illuminate\Support\Facades\Auth::check() ? Auth::user() : null;
-                if ($authUser) {
-                  $isPayment =  \App\Models\Payment::where('product_id', $product->id)->where('user_id',$authUser->id)->first();
-               }
-            @endphp
-
-          @if($product->type == 1)
-                <div class="col-md-4 mb-4">
-                    <div class="gallery-item">
-                        <a href="{{ route('product-details',$product->id) }}">
-                            <img src="{{ route('product.file.view', $product->id) }}" alt="{{$product->file_name}}">
-                        </a>
-                        <div class="watermark">CHOBIDOKAN</div>
-
-                        <div class="overlay">
-                            <h6>{{ $product->title ?? '' }}</h6>
-                            <div class="overlay-icons">
-                                <a href="{{ route('product-details',$product->id) }}">  <i class="fa fa-eye" title="View"></i></a>
-                                @if($isPayment)
-                                    <a href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}" >
-                                        <i class="fa fa-download" title="Download"></i>
-                                    </a>
-                                @else
-                                    <form action="{{ route('product.purchase') }}"
-                                          method="POST"
-                                          style="display:inline;">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{$product->id}}">
-                                        <button type="submit">
-                                            <i class="fa fa-download" title="Buy"></i>
-                                        </button>
-                                    </form>
-                                @endif
-                                <div class="share-wrapper">
-                                    <i class="fa fa-share-alt share-btn" title="Share"></i>
-
-                                    <div class="share-dropdown">
-                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
-                                            <i class="fa fa-facebook"></i> Facebook
-                                        </a>
-
-                                        <a href="https://api.whatsapp.com/send?text={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
-                                            <i class="fa fa-whatsapp"></i> WhatsApp
-                                        </a>
-
-                                        <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('product-details',$product->id)) }}&text={{ urlencode($product->title) }}" target="_blank">
-                                            <i class="fa fa-twitter"></i> Twitter
-                                        </a>
-
-                                        <a href="javascript:void(0)" onclick="copyToClipboard('{{ route('product-details',$product->id) }}')">
-                                            <i class="fa fa-link"></i> Copy Link
-                                        </a>
+                                            <!-- Cart -->
+                                            @if(!$isPayment)
+                                                @if(auth()->check())
+                                                    <form action="{{ route('add.to.cart') }}" method="POST" class="cart-btn-form">
+                                                        @csrf
+                                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                        <button type="submit" class="action-btn" title="Add to Cart">
+                                                            <i class="fa fa-cart-plus"></i>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <a href="{{ route('signin') }}" class="action-btn">
+                                                        <i class="fa fa-cart-plus"></i>
+                                                    </a>
+                                                @endif
+                                            @endif
+                                        </div>
                                     </div>
-                                </div>
 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-              @else
-                <div class="col-md-4 mb-4">
-                    <div class="video-card position-relative overflow-hidden rounded shadow-lg">
-                        <!-- Video Wrapper -->
-                        <div class="ratio ratio-16x9">
-                            <a href="{{ route('product-details',$product->id) }}">
-                                <video class="w-100" muted playsinline preload="metadata" onmouseenter="this.play()"
-                                       onmouseleave="this.pause(); this.currentTime=0;">
-                                    <source src="{{ route('product.view.video', $product->id) }}" type="{{ $product->file_type }}">
-                                </video>
-                            </a>
-                        </div>
-
-                        <div class="watermark">CHOBIDOKAN</div>
-                        <!-- Play Icon -->
-                        <a href="{{ route('product-details',$product->id) }}"
-                           class="position-absolute top-50 start-50 translate-middle text-white"
-                           style="z-index: 5;">
-                            <i class="fa fa-play-circle fa-3x opacity-75"></i>
-                        </a>
-                        <!-- Overlay -->
-                        <div class="video-overlay">
-                            <div class="video-title">
-                                {{ $product->title ?? '' }}
-                            </div>
-                            <div class="video-meta">
-                                <span>Tk {{ $product->price ?? '' }}</span>
-                                <div class="video-icons d-flex gap-2">
-                                    <!-- View -->
-                                    <a href="{{ route('product-details',$product->id) }}">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-
-                                    <!-- Download / Buy -->
-                                    @if($isPayment)
-                                        <a href="{{ route('product.video-download', ['id' => base64_encode($product->id)]) }}">
-                                            <i class="fa fa-download"></i>
-                                        </a>
-                                    @else
-                                        <form action="{{ route('product.purchase') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <button type="submit">
-                                                <i class="fa fa-download"></i>
-                                            </button>
-                                        </form>
-                                    @endif
-                                    <!-- Share -->
-                                    <div class="share-wrapper">
-                                        <i class="fa fa-share-alt share-btn" title="Share"></i>
-
-                                        <div class="share-dropdown">
-                                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
-                                                <i class="fa fa-facebook"></i>
+                                    <div class="overlay-bottom">
+                                        <!-- Bottom Left: Similar and View -->
+                                        <div class="overlay-bottom-left">
+                                            <a href="{{ route('category-wise-product',$product->category_id) }}" class="action-btn" title="Find Similar">
+                                                <i class="fa fa-clone"></i>
                                             </a>
 
-                                            <a href="https://api.whatsapp.com/send?text={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
-                                                <i class="fa fa-whatsapp"></i>
+                                            <a href="{{ route('product-details',$product->id) }}" class="action-btn" title="View">
+                                                <i class="fa fa-eye"></i>
                                             </a>
+                                        </div>
 
-                                            <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('product-details',$product->id)) }}&text={{ urlencode($product->title) }}" target="_blank">
-                                                <i class="fa fa-twitter"></i>
-                                            </a>
+                                        <!-- Bottom Right: Share and Download -->
+                                        <div class="overlay-bottom-right">
+                                            <!-- Share -->
+                                            <div class="share-wrapper action-btn">
+                                                <i class="fa fa-share-alt share-btn" title="Share"></i>
+                                                <div class="share-dropdown">
+                                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
+                                                        <i class="fa fa-facebook"></i> Facebook
+                                                    </a>
+                                                    <a href="https://api.whatsapp.com/send?text={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
+                                                        <i class="fa fa-whatsapp"></i> WhatsApp
+                                                    </a>
+                                                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('product-details',$product->id)) }}&text={{ urlencode($product->title) }}" target="_blank">
+                                                        <i class="fa fa-twitter"></i> Twitter
+                                                    </a>
+                                                    <a href="javascript:void(0)" onclick="copyToClipboard('{{ route('product-details',$product->id) }}')">
+                                                        <i class="fa fa-link"></i> Copy Link
+                                                    </a>
+                                                </div>
+                                            </div>
 
-                                            <a href="javascript:void(0)" onclick="copyToClipboard('{{ route('product-details',$product->id) }}')">
-                                                <i class="fa fa-link"></i>
-                                            </a>
+                                            <!-- Download / Buy -->
+                                            @if($isPayment)
+                                                <a href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}" class="action-btn" title="Download">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+                                            @else
+                                                <form action="{{ route('product.purchase') }}" method="POST" class="cart-btn-form">
+                                                    @csrf
+                                                    <input type="hidden" name="product_id" value="{{$product->id}}">
+                                                    <button type="submit" class="action-btn" title="Buy">
+                                                        <i class="fa fa-download"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    @else
+                        <!-- Video Card -->
+                        <div class="col-md-4 mb-4">
+                            <div class="video-card position-relative overflow-hidden rounded shadow-lg"
+                                 onmouseenter="const v=this.querySelector('video'); if(v) v.play();"
+                                 onmouseleave="const v=this.querySelector('video'); if(v){ v.pause(); v.currentTime=0; }">
+                                <!-- Video Wrapper -->
+                                <div class="ratio ratio-16x9">
+                                    <a href="{{ route('product-details',$product->id) }}">
+                                        <video class="w-100" muted playsinline preload="metadata" controlsList="nodownload" oncontextmenu="return false;">
+                                            <source src="{{ route('product.view.video', $product->id) }}" type="{{ $product->file_type }}">
+                                        </video>
+                                    </a>
+                                </div>
 
-                    </div>
-                </div>
-            @endif
-    @endforeach
+                                <div class="watermark">CHOBIDOKAN</div>
+                                <!-- Overlay -->
+                                <div class="video-overlay overlay">
+                                    <div class="overlay-top">
+                                        <!-- Top Left: Title and Price -->
+                                        <div class="overlay-top-left">
+                                            <div class="video-title">{{ $product->title ?? '' }}</div>
+                                        </div>
 
-    </div>
-  </div>
-</main>
+                                        <!-- Top Right: Cart (since videos do not have wishlist based on old code, I'll add cart) -->
+                                        <div class="overlay-top-right">
+
+                                            <!-- Wishlist -->
+                                            @if(auth()->check())
+                                                <form action="{{ route('wishlist.toggle', $product->id) }}" method="POST" class="wishlist-btn">
+                                                    @csrf
+                                                    <button type="submit" class="action-btn" title="Save">
+                                                        <i class="fa {{ $product->wishlists->where('user_id', auth()->id())->count() ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <a href="{{ route('signin') }}" class="action-btn">
+                                                    <i class="fa fa-heart-o"></i>
+                                                </a>
+                                            @endif
+                                            @if(!$isPayment)
+                                                @if(auth()->check())
+                                                    <form action="{{ route('add.to.cart') }}" method="POST" class="cart-btn-form">
+                                                        @csrf
+                                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                        <button type="submit" class="action-btn" title="Add to Cart">
+                                                            <i class="fa fa-cart-plus"></i>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <a href="{{ route('signin') }}" class="action-btn">
+                                                        <i class="fa fa-cart-plus"></i>
+                                                    </a>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="overlay-bottom">
+                                        <!-- Bottom Left: Similar and View -->
+                                        <div class="overlay-bottom-left">
+                                            <a href="javascript:void(0);" class="action-btn" title="Find Similar">
+                                                <i class="fa fa-clone"></i>
+                                            </a>
+                                            <a href="{{ route('product-details',$product->id) }}" class="action-btn">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </div>
+
+                                        <!-- Bottom Right: Share and Download -->
+                                        <div class="overlay-bottom-right">
+                                            <!-- Share -->
+                                            <div class="share-wrapper action-btn">
+                                                <i class="fa fa-share-alt share-btn" title="Share"></i>
+                                                <div class="share-dropdown">
+                                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
+                                                        <i class="fa fa-facebook"></i> Facebook
+                                                    </a>
+                                                    <a href="https://api.whatsapp.com/send?text={{ urlencode(route('product-details',$product->id)) }}" target="_blank">
+                                                        <i class="fa fa-whatsapp"></i> WhatsApp
+                                                    </a>
+                                                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('product-details',$product->id)) }}&text={{ urlencode($product->title) }}" target="_blank">
+                                                        <i class="fa fa-twitter"></i> Twitter
+                                                    </a>
+                                                    <a href="javascript:void(0)" onclick="copyToClipboard('{{ route('product-details',$product->id) }}')">
+                                                        <i class="fa fa-link"></i> Copy Link
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <!-- Download / Buy -->
+                                            @if($isPayment)
+                                                <a href="{{ route('product.video-download', ['id' => base64_encode($product->id)]) }}" class="action-btn">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+                                            @else
+                                                <form action="{{ route('product.purchase') }}" method="POST" class="cart-btn-form">
+                                                    @csrf
+                                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                    <button type="submit" class="action-btn">
+                                                        <i class="fa fa-download"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+
+            </div>
+        </div>
+    </main>
+
 @endsection

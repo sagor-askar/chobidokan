@@ -2,53 +2,99 @@
 @section('content')
     <style>
         .container2 {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 200px;
+            gap: 12px;
+            width: 100%;
+            padding: 0 15px; /* Added symmetric horizontal gap on both sides */
+            margin: 0 auto;
+            grid-auto-flow: dense;
         }
 
         .item {
             position: relative;
-            width: calc((100% / 4) - 15px); 
-            aspect-ratio: 1 / 1;
             overflow: hidden;
+            border-radius: 4px; /* ImagesBazaar sharp/minimal curve */
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* Tablet (3 items) */
-        @media (max-width: 992px) {
-            .item {
-                width: calc((100% / 3) - 15px);
+        /* 
+         * Strict Dimension Limiting (Maps to ImagesBazaar Max Limits)
+         * Base Size: 1x1 (Approx 400w x 200h)
+         */
+
+        /* Tall Portrait Boxes (~620px Height Max, mimicking your 690 max) */
+        .item:nth-child(10n + 1),
+        .item:nth-child(10n + 6) {
+            grid-row: span 3;
+        }
+
+        /* Medium Square/Vertical Boxes (~412px Height, mimicking your 547 max) */
+        .item:nth-child(5n + 2),
+        .item:nth-child(7n + 4) {
+            grid-row: span 2;
+        }
+
+        /* Wide Landscape Box */
+        .item:nth-child(14n + 8) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        /* Responsive Flow overrides */
+        @media (max-width: 1200px) {
+            .container2 {
+                grid-template-columns: repeat(3, 1fr);
             }
+            .item { grid-column: span 1 !important; }
         }
 
-        /* Mobile (2 items) */
         @media (max-width: 768px) {
-            .item {
-                width: calc((100% / 2) - 15px);
+            .container2 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
             }
+            .item { grid-row: span 2 !important; }
+            .item:nth-child(4n + 1) { grid-row: span 3 !important; }
         }
 
-        /* Small mobile (1 item) */
-        @media (max-width: 480px) {
-            .item {
-                width: 100%;
+        @media (max-width: 576px) {
+            .container2 {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 240px;
             }
+            .item { grid-row: span 1 !important; }
         }
 
         .item img,
         .item video {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: 0.3s;
+            object-fit: cover; /* Forces intrinsically crazy images to respect bounds */
+            transition: transform 0.5s ease;
         }
 
         .item:hover img,
         .item:hover video {
-            transform: scale(1.05);
+            transform: scale(1.08); /* Zoom effect similar to pro domains */
+        }
+
+        /* Hover Overlay */
+        .item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .item:hover::before {
+            opacity: 1;
         }
 
         .watermark {
@@ -56,7 +102,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-25deg);
-            font-size: 50px;
+            font-size: 3vw;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.2);
             text-transform: uppercase;
@@ -67,49 +113,33 @@
             z-index: 2;
         }
 
-        .container2 {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .overlay {
-            position: absolute;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            color: #fff;
-            width: 100%;
-            text-align: center;
-            padding: 5px 0;
-            font-size: 14px;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            z-index: 3;
-        }
-
         .popularSearch {
             margin-bottom: 10px;
             margin-right: 5px;
         }
 
+        /* Center Category Text on hover */
         .category-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -30%);
             color: #fff;
-            font-size: 22px;  
+            font-size: 20px;  
             font-weight: 800;    
             text-align: center;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0px 4px 15px rgba(0,0,0,0.9);
             opacity: 0;           
-            transition: 0.3s ease;
-            z-index: 3;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+            pointer-events: none;
         }
 
         .item:hover .category-overlay {
             opacity: 1;
+            transform: translate(-50%, -50%);
         }
     </style>
     
@@ -138,7 +168,8 @@
                          data-designer="{{ $designer }}"
                          data-designer_id="{{ $designer_id }}"
                          data-type="{{ $product->type }}"
-                         data-product-id="{{ $product->id }}">
+                         data-product-id="{{ $product->id }}"
+                         onclick="window.location='{{ route('category-wise-product', $product->category_id) }}'">
 
                         @if ($isVideo)
                             <video class="img video-thumb" muted loop preload="metadata">
@@ -146,26 +177,16 @@
                                         type="{{ $product->file_type }}">
                             </video>
                         @else
-                            <a href="{{ route('category-wise-product', $product->category_id) }}" style="color:white">
                             <img class="img"
                                  src="{{ route('product.file.view', $product->id) }}"
                                  alt="">
-                            </a>
                         @endif
 
                             <div class="category-overlay">
-                                <a href="{{ route('category-wise-product', $product->category_id) }}" style="color:white">
-                                    <span>{{ $product->category?->name }}</span>
-                                </a>
+                                <span>{{ $product->category?->name ?? 'Collection' }}</span>
                             </div>
 
                         <div class="watermark">CHOBIDOKAN</div>
-
-                        <div class="overlay">
-                            <a href="{{ route('category-wise-product', $product->category_id) }}" style="color:white">
-                                {{ $product->title }} | Tk {{ $product->price }}
-                            </a>
-                        </div>
                     </div>
                 @endforeach
             </main>

@@ -380,45 +380,221 @@
             text-align: right;
         }
 
-        /* Similar Images */
-        .similar-card {
+        /* Similar Images overlay styles */
+        .gallery-item {
             position: relative;
             width: 100%;
-            height: 220px;
-            border-radius: 10px;
+            height: 250px;
+            border-radius: 6px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            display: block;
         }
-        .similar-card img {
+
+        .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.4s ease;
+            display: block;
+            transition: transform 0.3s ease, filter 0.3s ease !important;
         }
-        .similar-card:hover img {
-            transform: scale(1.05);
+
+        .gallery-item:hover img {
+            transform: scale(1.03) !important;
+            filter: brightness(0.95);
         }
-        .similar-overlay-info {
+
+        .watermark {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            padding: 20px 15px 15px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 40px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            pointer-events: none;
+            user-select: none;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 2;
         }
-        .similar-card:hover .similar-overlay-info {
-            opacity: 1;
-            transform: translateY(0);
+
+        .gallery-item .overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.8) 100%) !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px !important;
+            opacity: 0 !important;
+            transform: translateY(0) !important;
+            transition: opacity 0.3s ease !important;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1 !important;
+            pointer-events: auto;
+        }
+
+        .overlay-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .overlay-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .overlay-top-left {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .overlay-top-right, .overlay-bottom-left, .overlay-bottom-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .gallery-item .overlay h6 {
+            color: white !important;
+            margin-top: 0 !important;
+            margin-bottom: 5px !important;
+            font-weight: 500 !important;
+            font-size: 16px !important;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+            text-align: left;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            white-space: normal;
+            line-height: 1.3;
+        }
+
+        .action-btn,
+        .gallery-item .share-wrapper {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: none !important;
+            border-radius: 50% !important;
+            width: 40px !important;
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-decoration: none !important;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15) !important;
+            padding: 0 !important;
+            position: relative;
+        }
+
+        .action-btn i, .gallery-item .share-wrapper i.share-btn {
+            margin: 0 !important;
+            font-size: 17px !important;
+            color: #4b4b4b !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .action-btn i.fa-heart.text-danger {
+            color: #ff4757 !important;
+        }
+
+        .action-btn:hover,
+        .gallery-item .share-wrapper:hover {
+            background: #ffffff !important;
+            transform: translateY(-3px) scale(1.05) !important;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.25) !important;
+        }
+
+        .action-btn:hover i.fa-heart-o,
+        .action-btn:hover i.fa-heart { color: #ff4757 !important; }
+        .action-btn:hover i.fa-cart-plus { color: #1e90ff !important; }
+        .action-btn:hover i.fa-clone { color: #ffa502 !important; }
+        .action-btn:hover i.fa-eye { color: #3742fa !important; }
+        .gallery-item .share-wrapper:hover i.share-btn { color: #2ed573 !important; }
+        .action-btn:hover i.fa-download { color: #00b894 !important; }
+
+        .gallery-item .share-dropdown {
+            position: absolute;
+            bottom: 50px !important;
+            right: 0 !important;
+            left: auto !important;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+            width: 140px;
+            transform: translateY(10px);
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+            border: none;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gallery-item .share-dropdown a {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px;
+            color: #555 !important;
+            text-decoration: none !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 6px !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border-radius: 4px !important;
+            width: auto !important;
+            height: auto !important;
+            transform: none !important;
+            transition: all 0.2s !important;
+        }
+
+        .gallery-item .share-dropdown a i {
+            font-size: 16px !important;
+            color: #555 !important;
+        }
+
+        .gallery-item .share-dropdown a:hover {
+            background: #f1f2f6 !important;
+            color: #1e90ff !important;
+        }
+
+        .gallery-item .share-dropdown a:hover i {
+            color: #1e90ff !important;
+        }
+
+        .gallery-item .share-wrapper:hover .share-dropdown {
+            display: flex;
+        }
+
+        .wishlist-btn form, .cart-btn-form {
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline-block !important;
+        }
+
+        .wishlist-btn button, .cart-btn-form button {
+            border: none;
+            outline: none;
         }
 
         /* Custom Popup */
@@ -523,6 +699,16 @@
                     <!-- Formats Badge Overlay -->
                     <div class="position-absolute d-flex gap-2" style="top: 20px; left: 20px; z-index: 20;">
                         <span class="badge bg-dark text-white shadow-sm" style="opacity:0.85;">High-Res {{ strtoupper($product->file_type ?? 'JPG') }}</span>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <small class="text-muted fw-semibold d-block mb-2">Photo formats</small>
+
+                    <div class="d-flex flex-wrap gap-2" id="dynamicPhotoFormatsBox">
+                        <span class="badge bg-secondary-subtle text-dark border">
+                            <i class="fa fa-spinner fa-spin"></i> Loading sizes...
+                        </span>
                     </div>
                 </div>
 
@@ -770,18 +956,111 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="font-weight-bold mb-0" style="color:#2d3436;">Similar Images</h3>
-                <a href="#" class="btn btn-outline-secondary btn-sm rounded-pill px-4 font-weight-bold">View all</a>
+                <a href="{{ route('category-wise-product', $product->category_id) }}" class="btn btn-outline-secondary btn-sm rounded-pill px-4 font-weight-bold">View all</a>
             </div>
 
             <div class="row">
                 @foreach ($similarProducts as $key => $similarProduct)
+                    @php
+                        $isSimilarPayment = null;
+                        $authUser = \Illuminate\Support\Facades\Auth::check() ? Auth::user() : null;
+                        if ($authUser) {
+                            $isSimilarPayment = \App\Models\Payment::where('product_id', $similarProduct->id)->where('user_id',$authUser->id)->first();
+                        }
+                    @endphp
                     <div class="col-6 col-md-4 col-lg-3 mb-4">
-                        <a href="{{ route('product-details', $similarProduct->id) }}" class="similar-card">
-                            <img src="{{ route('product.file.view', $similarProduct->id) }}" alt="{{ $similarProduct->file_name }}" oncontextmenu="return false" draggable="false">
-                            <div class="similar-overlay-info">
-                                {{ $similarProduct->title ?? 'Beautiful Asset' }}
+                        <div class="gallery-item">
+                            <a href="{{ route('product-details', $similarProduct->id) }}">
+                                <img src="{{ route('product.file.view', $similarProduct->id) }}" alt="{{ $similarProduct->file_name }}" oncontextmenu="return false" draggable="false">
+                            </a>
+                            <div class="watermark">CHOBIDOKAN</div>
+
+                            <div class="overlay">
+                                <div class="overlay-top">
+                                    <div class="overlay-top-left">
+                                        <h6>{{ $similarProduct->title ?? 'Beautiful Asset' }}</h6>
+                                    </div>
+                                    <div class="overlay-top-right">
+                                        <!-- Wishlist -->
+                                        @if(auth()->check())
+                                            <form action="{{ route('wishlist.toggle', $similarProduct->id) }}" method="POST" class="wishlist-btn">
+                                                @csrf
+                                                <button type="submit" class="action-btn" title="Save">
+                                                    <i class="fa {{ $similarProduct->wishlists->where('user_id', auth()->id())->count() ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <a href="{{ route('signin') }}" class="action-btn">
+                                                <i class="fa fa-heart-o"></i>
+                                            </a>
+                                        @endif
+
+                                        <!-- Cart -->
+                                        @if(!$isSimilarPayment)
+                                            @if(auth()->check())
+                                                <form action="{{ route('add.to.cart') }}" method="POST" class="cart-btn-form">
+                                                    @csrf
+                                                    <input type="hidden" name="product_id" value="{{ $similarProduct->id }}">
+                                                    <button type="submit" class="action-btn" title="Add to Cart">
+                                                        <i class="fa fa-cart-plus"></i>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <a href="{{ route('signin') }}" class="action-btn">
+                                                    <i class="fa fa-cart-plus"></i>
+                                                </a>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="overlay-bottom">
+                                    <div class="overlay-bottom-left">
+                                        <a href="{{ route('category-wise-product', $similarProduct->category_id) }}" class="action-btn" title="Find Similar">
+                                            <i class="fa fa-clone"></i>
+                                        </a>
+
+                                        <a href="{{ route('product-details', $similarProduct->id) }}" class="action-btn" title="View">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </div>
+
+                                    <div class="overlay-bottom-right">
+                                        <div class="share-wrapper action-btn">
+                                            <i class="fa fa-share-alt share-btn" title="Share"></i>
+                                            <div class="share-dropdown">
+                                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('product-details', $similarProduct->id)) }}" target="_blank">
+                                                    <i class="fa fa-facebook"></i> Facebook
+                                                </a>
+                                                <a href="https://api.whatsapp.com/send?text={{ urlencode(route('product-details', $similarProduct->id)) }}" target="_blank">
+                                                    <i class="fa fa-whatsapp"></i> WhatsApp
+                                                </a>
+                                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('product-details', $similarProduct->id)) }}&text={{ urlencode($similarProduct->title) }}" target="_blank">
+                                                    <i class="fa fa-twitter"></i> Twitter
+                                                </a>
+                                                <a href="javascript:void(0)" onclick="copyToClipboard('{{ route('product-details', $similarProduct->id) }}')">
+                                                    <i class="fa fa-link"></i> Copy Link
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <!-- Download / Buy -->
+                                        @if($isSimilarPayment)
+                                            <a href="{{ route('product.image-download', ['id' => base64_encode($similarProduct->id)]) }}" class="action-btn" title="Download">
+                                                <i class="fa fa-download"></i>
+                                            </a>
+                                        @else
+                                            <form action="{{ route('product.purchase') }}" method="POST" class="cart-btn-form">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $similarProduct->id }}">
+                                                <button type="submit" class="action-btn" title="Buy">
+                                                    <i class="fa fa-download"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -965,5 +1244,46 @@
             }
             document.body.removeChild(textArea);
         }
+
+        // Dynamic Photo Formats Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            let img = document.querySelector('.image-preview-wrapper img');
+            if(img) {
+                function renderFormats() {
+                    let w = img.naturalWidth || 6000;
+                    let h = img.naturalHeight || 4000;
+                    
+                    let extMatch = img.src.match(/\.([a-zA-Z0-9]+)(\?.*)?$/);
+                    let ext = extMatch ? extMatch[1].toUpperCase() : '{{ strtoupper($product->file_type ?? "JPG") }}';
+                    let dpi = 300;
+
+                    let formats = [
+                        { width: w, height: h },
+                        { width: Math.round(w / 3.5), height: Math.round(h / 3.5) },
+                        { width: Math.round(w / 6.5), height: Math.round(h / 6.5) }
+                    ];
+
+                    let container = document.getElementById('dynamicPhotoFormatsBox');
+                    if(container) {
+                        container.innerHTML = '';
+                        formats.forEach((fmt, index) => {
+                            let inW = parseFloat((fmt.width / dpi).toFixed(1));
+                            let inH = parseFloat((fmt.height / dpi).toFixed(1));
+                            
+                            let span = document.createElement('span');
+                            span.className = "badge bg-secondary-subtle text-dark border";
+                            span.innerText = `${fmt.width} × ${fmt.height} pixels • ${inW} × ${inH} in • DPI ${dpi} • ${ext}`;
+                            container.appendChild(span);
+                        });
+                    }
+                }
+
+                if(img.complete && img.naturalWidth > 0) {
+                    renderFormats();
+                } else {
+                    img.addEventListener('load', renderFormats);
+                }
+            }
+        });
     </script>
 @endsection
