@@ -49,6 +49,10 @@
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-list-alt mr-2"></i>Product List </a>
 
+        <a href="{{ route('designer.product-sales-history') }}"
+           class="list-group-item list-group-item-action d-flex align-items-center">
+            <i class="fa fa-list-alt mr-2"></i>Product Sales History </a>
+
         <a href="{{ route('designer.manage.profile') }}"
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-cog mr-2"></i> Manage Profile

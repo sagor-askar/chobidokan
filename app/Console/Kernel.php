@@ -16,6 +16,13 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+
+        // Expire subscription purchases automatically
+        $schedule->call(function () {
+            \App\Models\SubscriptionPurchase::where('status', 1)
+                ->whereDate('expire_date', '<', now()->toDateString())
+                ->update(['status' => 0]);
+        })->everyMinute();
     }
 
     /**

@@ -222,17 +222,28 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::put('/product-update/{id}',  [DesignerController::class, 'productUpdate'])->name('products.update');
         Route::delete('/product-delete/{id}',  [DesignerController::class, 'productDelete'])->name('product.delete');
 
+        Route::get('/product-sales-history', [DesignerController::class, 'salesHistory'])->name('product-sales-history');
+
     });
 
     Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
         Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
         Route::get('/about', [UserController::class, 'about'])->name('about');
+
         Route::get('/orders', [UserController::class, 'orders'])->name('orders');
         Route::get('/order/submitted-file/{id}', [UserController::class, 'submittedOrderFile'])->name('order.submitted-file');
         Route::put('/order/project-approve/{id}', [UserController::class, 'projectApprove'])->name('order.project.approve');
        // Route::put('/order/submission-reject/{id}', [UserController::class, 'submissionReject'])->name('order.submission.reject');
         Route::get('/order-history', [UserController::class, 'orderHistory'])->name('order-history');
         Route::get('/submitted-works/{id}', [UserController::class, 'submittedWorks'])->name('submittedWorks');
+
+        Route::get('/product-purchase-history', [UserController::class, 'productPurchaseHistory'])->name('product-purchase-history');
+        Route::get('/subscription-wise-purchase-history/{id}', [UserController::class, 'subscriptionProductPurchaseHistory'])->name('subscription-wise-purchase-history');
+
+
+        Route::get('/subscription-product-image/download/{id}', [UserController::class, 'subscriptionProductImageDownload'])->name('subscription.product.image-download');
+        Route::get('/subscription-product/video-download/{id}', [UserController::class, 'subscriptionProductVideoDownload'])->name('subscription.product.video-download');
+
         Route::get('/manage-profile', [UserController::class, 'manageProfile'])->name('manage.profile');
         Route::put('/profile-update', [UserController::class, 'updateProfile'])->name('profile.update');
         Route::get('/change-password', [UserController::class, 'changePassword'])->name('change.password');
