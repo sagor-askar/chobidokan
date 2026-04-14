@@ -13,7 +13,7 @@ class ProjectSubmit extends Model
         'project_id',
         'visibility',
         'stock',
-        'user_id',
+        'designer_id',
         'submit_date',
     ];
 
@@ -33,8 +33,8 @@ class ProjectSubmit extends Model
         return $this->hasMany(Upload::class, 'project_submit_id');
     }
 
-    public function user()
+    public function designer()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'designer_id');
     }
 }

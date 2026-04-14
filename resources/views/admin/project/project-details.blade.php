@@ -75,10 +75,11 @@
                                 <tbody>
                                 @foreach($designers as $key => $designer)
                                     @php
-                                    //dd($designer);
+
+                                   //  dd($designer);
 
                                        $totalSubmit = \App\Models\ProjectSubmit::where('project_id', $designer->project_id)
-                                                        ->where('user_id', $designer->user_id)
+                                                        ->where('designer_id', $designer->designer_id)
                                                         ->withCount('uploads')
                                                         ->get()
                                                         ->sum('uploads_count');
@@ -90,7 +91,7 @@
                                                        ->whereHas('project', function ($query){
                                                       $query->where('status', 2);
                                                        })
-                                                   ->where('project_id',$designer->project_id)->where('user_id',$designer->user_id)->first();
+                                                   ->where('project_id',$designer->project_id)->where('designer_id',$designer->designer_id)->first();
 
                                         $orderDetails = \App\Models\OrderDetails::with('order')->whereHas('order', function ($query){
                                                       $query->where('status', 0);
@@ -98,7 +99,7 @@
                                                        ->whereHas('project', function ($query){
                                                       $query->where('status', 2);
                                                        })
-                                                   ->where('project_id',$designer->project_id)->where('user_id',$designer->user_id)->first();
+                                                   ->where('project_id',$designer->project_id)->where('designer_id',$designer->designer_id)->first();
 
                                     @endphp
 
@@ -108,13 +109,13 @@
                                         </td>
 
                                         <td>
-                                           {{ $designer->user?->name ?? '' }}
+                                           {{ $designer->designer?->name ?? '' }}
                                         </td>
                                         <td>
-                                          {{ $designer->user?->email ?? '' }}
+                                          {{ $designer->designer?->email ?? '' }}
                                         </td>
                                         <td>
-                                            {{ $designer->user?->phone ?? '' }}
+                                            {{ $designer->designer?->phone ?? '' }}
                                         </td>
 
 
@@ -142,7 +143,7 @@
                                         @endif
 
                                         <td>
-                                            <a class="btn btn-xs btn-primary" href="{{ route('admin.project.design-submit-show', [$designer->project_id,$designer->user_id]) }}">
+                                            <a class="btn btn-xs btn-primary" href="{{ route('admin.project.design-submit-show', [$designer->project_id,$designer->designer_id]) }}">
                                                 {{ trans('global.view') }}
                                             </a>
 
@@ -152,7 +153,7 @@
                                                       style="display:inline;">
                                                     @csrf
                                                     <input type="hidden" name="project_id" value="{{$designer->project_id}}">
-                                                    <input type="hidden" name="designer_id" value="{{$designer->user_id}}">
+                                                    <input type="hidden" name="designer_id" value="{{$designer->designer_id}}">
                                                     <button type="submit" class="btn btn-xs btn-success">
                                                         Payment
                                                     </button>

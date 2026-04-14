@@ -26,12 +26,6 @@
 
     <div class="container">
         <div class="row">
-            @if(session('success'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
-
             <div class="form-section">
 
                 @if(count($orderSubmittedFiles) > 0 )

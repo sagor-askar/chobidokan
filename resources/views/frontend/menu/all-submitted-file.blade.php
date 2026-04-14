@@ -75,9 +75,9 @@
                                             <!-- Footer -->
                                             <div class="card-footer bg-white border-top text-center small">
                                                 <div class="fw-semibold mb-1">
-                                                    <a href="{{ route('designer-profile',$uploadData->projectSubmits?->user?->id) }}"
+                                                    <a href="{{ route('designer-profile',$uploadData->projectSubmit?->designer?->id) }}"
                                                        class="text-decoration-none text-primary">
-                                                        {{ $uploadData->projectSubmits?->user?->name }}
+                                                        {{ $uploadData->projectSubmit?->designer?->name }}
                                                     </a>
                                                 </div>
                                                 <div class="text-muted mb-2">

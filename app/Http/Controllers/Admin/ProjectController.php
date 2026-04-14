@@ -22,8 +22,8 @@ class ProjectController extends Controller
     {
         $projectsQuery = Project::with(['user', 'order', 'subscription'])
             ->withCount([
-                'projectSubmits as total_designer' => function ($query) {
-                    $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                'projectSubmit as total_designer' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT designer_id)'));
                 },
                 'uploads as total_submitted_design'
             ])
@@ -35,9 +35,9 @@ class ProjectController extends Controller
     public function projectDetails($id)
     {
         $designers = ProjectSubmit::where('project_id', $id)
-            ->with(['user', 'uploads'])
+            ->with(['designer', 'uploads'])
             ->get()
-            ->unique('user_id')
+            ->unique('designer_id')
             ->values();
         return view('admin.project.project-details', compact('designers'));
 
@@ -48,7 +48,7 @@ class ProjectController extends Controller
 
         $designerSubmitfiles = Upload::with(['project','projectSubmit'])->whereHas('projectSubmit', function ($query) use ($projectId, $designerId) {
                                 $query->where('project_id', $projectId)
-                                      ->where('user_id', $designerId);
+                                      ->where('designer_id', $designerId);
                                        })
                                 ->get();
         return view('admin.project.submit-design-show', compact('designerSubmitfiles'));

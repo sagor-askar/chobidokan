@@ -83,8 +83,8 @@ class WebsiteController extends Controller
         $user = Auth::user();
         $projectsQuery = Project::with(['user', 'order', 'subscription'])
             ->withCount([
-                'projectSubmits as total_designer' => function ($query) {
-                    $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                'projectSubmit as total_designer' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT designer_id)'));
                 },
                 'uploads as total_submitted_design'
             ])
@@ -109,8 +109,8 @@ class WebsiteController extends Controller
         $user = Auth::user();
         $projectsQuery = Project::with(['user', 'order', 'subscription'])
             ->withCount([
-                'projectSubmits as total_designer' => function ($query) {
-                    $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                'projectSubmit as total_designer' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT designer_id)'));
                 },
                 'uploads as total_submitted_design'
             ])
@@ -137,11 +137,11 @@ class WebsiteController extends Controller
         $user = User::findOrFail($id);
         $uploads = Upload::with(['projectSubmit', 'project'])
             ->whereHas('projectSubmit', function ($q) use ($id) {
-                $q->where('user_id', $id);
+                $q->where('designer_id', $id);
             })
             ->paginate(6);
         $totalSubmit = $uploads->total();
-        $totalProject = ProjectSubmit::where('user_id', $id)
+        $totalProject = ProjectSubmit::where('designer_id', $id)
             ->distinct('project_id')
             ->count('project_id');
 
@@ -260,8 +260,8 @@ class WebsiteController extends Controller
         $user = Auth::user();
         $query = Project::with(['user', 'order', 'subscription'])
             ->withCount([
-                'projectSubmits as total_designer' => function ($q) {
-                    $q->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                'projectSubmit as total_designer' => function ($q) {
+                    $q->select(\DB::raw('COUNT(DISTINCT designer_id)'));
                 },
                 'uploads as total_submitted_design'
             ]);

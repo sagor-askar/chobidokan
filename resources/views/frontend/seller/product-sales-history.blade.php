@@ -15,11 +15,13 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Product Name</th>
-                                        <th>Category</th>
                                         <th>Image/Video</th>
+                                        <th>Price</th>
                                         <th>Customer</th>
-                                        <th>Amount</th>
-                                        <th>Payment Method </th>
+                                        <th> Earning Amount <br>
+                                         <small>(Off Authority percentage)</small>
+                                        </th>
+                                        <th>Date </th>
 
                                     </tr>
                                     </thead>
@@ -27,9 +29,8 @@
                                     @foreach($productSalesHistories as $index => $productSalesHistory)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $productSalesHistory->product->title }}</td>
-                                            <td>{{ $productSalesHistory->product->category?->name ?? 'N/A' }}</td>
-
+                                            <td>
+                                                <a target="_blank" href="{{ route("product-details",$productSalesHistory->product->id) }}">{{ $productSalesHistory->product->title }}</a></td>
                                             <td class="text-center align-middle" style="width: 120px;">
                                                 <div class="position-relative overflow-hidden rounded shadow-sm d-flex align-items-center justify-content-center"
                                                      style="width: 100px; height: 70px; margin: 0 auto; cursor: pointer; border: 1px solid #e0e0e0; background: #f8f9fa;"
@@ -85,15 +86,11 @@
                                                     </div>
                                                 </div>
                                             </td>
+                                            <td> Tk. {{ $productSalesHistory->amount }}</td>
                                             <td> {{ $productSalesHistory->user?->name ?? 'N/A' }}</td>
-                                            @if($productSalesHistory->subscription_id == null)
-                                                <td> Tk. {{ $productSalesHistory->amount  }}</td>
-                                                <td>{{ $productSalesHistory->card_type  }}</td>
+                                            <td> Tk. {{ number_format($productSalesHistory->earning_amount ?? 0, 2)  }}</td>
+                                            <td>{{ $productSalesHistory->created_at ?? 'N/A'  }}</td>
 
-                                            @else
-                                                <td><span class="badge bg-success">Subscription Package</span></td>
-                                                <td><span class="badge bg-success">Subscription Package</span></td>
-                                            @endif
                                         </tr>
 
                                     @endforeach

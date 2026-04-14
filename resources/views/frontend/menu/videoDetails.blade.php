@@ -672,6 +672,45 @@
         .popup-close:hover {
             color: #ff3b3f;
         }
+
+        .subscription-alert {
+            background: linear-gradient(145deg, #ffffff, #fafafa);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .subscription-alert:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        .subscription-alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #ffb142;
+            border-radius: 12px 0 0 12px;
+        }
+        .subscription-alert .icon-box {
+            width: 42px;
+            height: 42px;
+            background: #fff8eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid #ffeed2;
+            color: #f39c12;
+            font-size: 18px;
+        }
+
     </style>
 
     <!-- Hero Section -->
@@ -909,6 +948,27 @@
                              <div class="alert alert-success text-center py-3 mb-3" style="font-size: 15px; font-weight: 600;">
                                         <i class="fa fa-check-circle me-1"></i> You have access to Download this image .
                               </div>
+
+                            @if($isActiveSubscription)
+                                @php
+                                    $expireDate = \Carbon\Carbon::parse($isActiveSubscription->expire_date)->startOfDay();
+                                    $daysLeft = intval(\Carbon\Carbon::now()->startOfDay()->diffInDays($expireDate, false));
+                                    $daysLeft = $daysLeft < 0 ? 0 : $daysLeft;
+                                @endphp
+                                <div class="subscription-alert mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-box">
+                                            <i class="fa fa-exclamation-triangle"></i>
+                                        </div>
+                                        <div class="ms-3 flex-grow-1 text-start">
+                                            <h6 class="mb-1 fw-bold" style="color: #2d3436; font-size: 15px;">Subscription Warning</h6>
+                                            <p class="mb-0 text-muted" style="font-size: 13px;">
+                                                Your plan will expire in <strong style="color: #f39c12;">{{ $daysLeft }} {{ $daysLeft == 1 ? 'day' : 'days' }}</strong> !
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
 
                         @endif
 

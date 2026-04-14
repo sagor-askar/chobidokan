@@ -54,7 +54,7 @@ class UserController extends Controller
 
     public function submittedOrderFile($id)
     {
-        $orderSubmittedFiles = OrderDetails::with(['project','user'])
+        $orderSubmittedFiles = OrderDetails::with(['project','designer'])
             ->where('project_id', $id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);

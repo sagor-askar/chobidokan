@@ -1,20 +1,24 @@
 <footer id="footer" class="footer">
-
     <div class="container footer-top">
         <div class="row gy-4">
             <div class="col-lg-4 col-md-6 footer-about">
-                <a href="index.html" class="d-flex align-items-center">
+                <a href="{{ route('welcome') }}" class="d-flex align-items-center">
                     <span class="sitename">Chobi Dokan</span>
                 </a>
+
+                @php
+                    $settings = \App\Models\Setting::first();
+                @endphp
+
                 <div class="footer-contact pt-3">
                     <p><strong>Email:</strong> <span>{{ $settings->email ?? '' }}</span></p>
                     <p class="mt-3"><strong>Phone:</strong> <span>{{ $settings->phone ?? '' }}</span></p>
                 </div>
                 <div class="social-links d-flex">
-                    <a href="{{ $setting->twitter ?? '' }}"><i class="bi bi-twitter-x"></i></a>
-                    <a href="{{ $setting->facebook ?? '' }}"><i class="bi bi-facebook"></i></a>
-                    <a href="{{ $setting->instagram ?? '' }}"><i class="bi bi-instagram"></i></a>
-                    <a href="{{ $setting->linkedin ?? '' }}"><i class="bi bi-linkedin"></i></a>
+                    <a href="{{ $settings->twitter ?? '' }}"><i class="bi bi-twitter-x"></i></a>
+                    <a href="{{ $settings->facebook ?? '' }}"><i class="bi bi-facebook"></i></a>
+                    <a href="{{ $settings->instagram ?? '' }}"><i class="bi bi-instagram"></i></a>
+                    <a href="{{ $settings->linkedin ?? '' }}"><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
 

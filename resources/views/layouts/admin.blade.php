@@ -28,6 +28,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/skins/_all-skins.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+    <style>
+        /* Increase SweetAlert2 Toast Font Size */
+        .swal2-toast .swal2-title, 
+        .swal2-toast .swal2-html-container {
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            line-height: 1.5 !important;
+            margin-top: 5px !important;
+        }
+        .swal2-toast {
+            padding: 12px !important;
+        }
+    </style>
     @yield('styles')
 </head>
 

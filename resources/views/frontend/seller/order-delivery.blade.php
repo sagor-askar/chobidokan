@@ -77,12 +77,6 @@
 
     <div class="container">
         <div class="row">
-        @if(session('success'))
-            <div class="alert alert-success" role="alert">
-                {{ session('success') }}
-            </div>
-        @endif
-
             <div class="form-section">
                 <div class="card-header">
                     <h4>{{$selectedImages[0]->project?->name}} (Selected Image)</h4>

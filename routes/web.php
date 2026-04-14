@@ -170,7 +170,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('project/submitted-file-view-all/{id}', [ProjectController::class, 'submittedFileViewAll'])->name('submitted-file-view-all');
     Route::get('project/submitted-file-confirm/{id}', [ProjectController::class, 'submittedFileConfirm'])->name('project.submitted-file.confirm');
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
-    Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
+    Route::post('job-submit/{id}', [ProjectController::class, 'submit'])->name('job.submit');
 
     // add to wishlist
     Route::post('/wishlist/{id}', [WishlistController::class,'toggle'])->name('wishlist.toggle');

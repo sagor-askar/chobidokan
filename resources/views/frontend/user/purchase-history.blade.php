@@ -63,7 +63,7 @@
                                                     <div class="modal fade" id="mediaModal{{ $index }}" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
                                                         <div class="modal-dialog modal-fullscreen m-0" style="max-width: 100vw; height: 100vh;">
                                                             <div class="modal-content border-0 rounded-0" style="background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-                                                                
+
                                                                 <span class="position-absolute" data-bs-dismiss="modal" style="top: 20px; right: 30px; font-size: 32px; font-weight: lighter; color: #fff; cursor: pointer; transition: color 0.2s; z-index: 10000;" onmouseover="this.style.color='#ff3b3f'" onmouseout="this.style.color='#fff'">
                                                                     <i class="fa fa-times"></i>
                                                                 </span>
@@ -113,7 +113,7 @@
 
                                                     @endif
                                                 @else
-                                                    <a href="#" class="btn btn-secondary btn-sm d-inline-flex align-items-center gap-1" title="Details">
+                                                    <a href="{{ route('user.subscription-wise-purchase-history',$purchaseHistory->id) }}" class="btn btn-secondary btn-sm d-inline-flex align-items-center gap-1" title="Details">
                                                         <i class="fa fa-list"></i> Details
                                                     </a>
                                                 @endif

@@ -53,11 +53,6 @@
             <div class="col-md-8">
                 <div class="form-section">
                     <h4>Upload Design File</h4>
-
-                    @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
-
                     <form action="{{route('job.submit',$project->id)}}" method="POST" enctype="multipart/form-data">
                         @csrf
 
@@ -73,7 +68,7 @@
                             </p>
 
                             <input type="file" name="design_file[]" id="design_file"
-                                   class="d-none" accept=".png,.jpg,.jpeg,.gif" multiple>
+                                   class="d-none"   required accept=".png,.jpg,.jpeg,.gif" multiple>
 
                             <small>We accept up to 15MB (PNG, JPG, JPEG, GIF)</small>
 

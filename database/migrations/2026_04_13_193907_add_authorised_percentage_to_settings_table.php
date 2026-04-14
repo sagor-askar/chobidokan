@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('uploads', function (Blueprint $table) {
-            $table->integer('status')->default(0)->after('file_type')->comment('0=>Pending, 1=>Approved');
+        Schema::table('settings', function (Blueprint $table) {
+            $table->integer('admin_percentage')->default(0)->after('logo');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('uploads', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('settings', function (Blueprint $table) {
+            $table->dropColumn('admin_percentage');
         });
     }
 };
