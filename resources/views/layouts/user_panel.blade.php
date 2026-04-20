@@ -88,9 +88,32 @@
             font-size: 18px;
         }
 
+        @media (min-width: 992px) {
+            .custom-dashboard-container {
+                max-width: 1350px;
+                margin: 0 auto;
+            }
+        }
+        
+        .dashboard-section-spacing {
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+        @media (max-width: 991px) {
+            .dashboard-section-spacing {
+                padding-top: 120px; /* More space on mobile for the header */
+            }
+        }
+
+        /* Force solid header background on dashboard */
+        .header {
+            background-color: #ffffff !important;
+            box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+
     </style>
-    <section style="margin-top: 4rem;">
-        <div class="container">
+    <section class="dashboard-section-spacing">
+        <div class="container-fluid px-4 custom-dashboard-container">
             <div class="row d-flex align-items-start">
                 @include('partials.user_menu')
                 <div class="col-lg-9 col-xl-9">

@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\DesignerPayment;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\ProjectSubmit;
+use App\Models\Setting;
 use App\Models\SubscriptionDownloadProduct;
 use App\Models\SubscriptionPurchase;
 use App\Models\Upload;
@@ -28,7 +30,44 @@ class DesignerController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
-        return view('frontend.seller.dashboard',compact('user'));
+        $totalProduct  = Product::where('designer_id',Auth::id())->count();
+        $totalProductSales  = DesignerPayment::where('product_id','!=',null)->where('designer_id',Auth::id())->get();
+        $totalProject = Project::with('projectSubmit','orderDetails')
+            ->where('status', 2)
+            ->whereHas('projectSubmit', function ($q) {
+                $q->where('designer_id', Auth::id());
+            })
+            ->whereHas('orderDetails', function ($d) {
+                $d->where('designer_id', Auth::id());
+            })->get();
+
+        $totalProjectSales  = DesignerPayment::where('project_id','!=',null)->where('designer_id',Auth::id())->get();
+
+
+       $orderDuePayment = 0;
+        $adminPercentage = Setting::first()->admin_percentage;
+        $orderDetails =OrderDetails::with('order','project','designer')
+            ->whereHas('order', function ($query){
+                $query->where('status', 0);
+            })
+            ->whereHas('project', function ($query){
+                $query->where('status', 2);
+            })
+            ->where('designer_id', Auth::id())->get();
+
+        foreach ($orderDetails->unique('order_id') as $orderDetail) {
+            $orderDuePayment += $orderDetail->order->amount - ($orderDetail->order->amount * ($adminPercentage / 100));
+        }
+
+        $totalSubmission = ProjectSubmit::where('designer_id', Auth::id())->count();
+
+        $totalEarningAmount =DesignerPayment::where('designer_id', Auth::id())->get()->sum('amount');
+
+        $totalProjectClient = Project::whereHas('projectSubmit', function ($q) {
+            $q->where('designer_id', Auth::id());
+        })->distinct('user_id')->count('user_id');
+
+        return view('frontend.seller.dashboard',compact('user','totalProduct','totalProductSales','totalProject','totalProjectSales','orderDuePayment', 'totalSubmission','totalEarningAmount','totalProjectClient'));
     }
 
     public function about()
@@ -49,10 +88,10 @@ class DesignerController extends Controller
 
     public function orders()
     {
-        $orderProjects = Project::with(['projectSubmits', 'uploads'])
+        $orderProjects = Project::with(['projectSubmit', 'uploads'])
             ->where('status', 1)
-            ->whereHas('projectSubmits', function ($q) {
-                $q->where('user_id', Auth::id());
+            ->whereHas('projectSubmit', function ($q) {
+                $q->where('designer_id', Auth::id());
             })
             ->whereHas('uploads', function ($upload) {
                 $upload->where('status', 1)
@@ -61,7 +100,7 @@ class DesignerController extends Controller
                         $sub->select('id')
                             ->from('project_submits')
                             ->whereColumn('project_submits.project_id', 'projects.id')
-                            ->where('project_submits.user_id', Auth::id());
+                            ->where('project_submits.designer_id', Auth::id());
                     });
             })
             ->orderBy('created_at', 'desc')
@@ -73,8 +112,8 @@ class DesignerController extends Controller
     public function orderDelivery($id)
     {
        $selectedImages = Upload::with('project')
-                           ->whereHas('projectSubmits', function ($q) {
-                               $q->where('user_id', Auth::id());
+                           ->whereHas('projectSubmit', function ($q) {
+                               $q->where('designer_id', Auth::id());
                            })
                            ->where('project_id', $id)->where('status',1)->get();
 
@@ -83,13 +122,13 @@ class DesignerController extends Controller
 
     public function orderHistory()
     {
-        $orderHistories = Project::with('projectSubmits','orderDetails')
+        $orderHistories = Project::with('projectSubmit','orderDetails')
             ->where('status', 2)
-            ->whereHas('projectSubmits', function ($q) {
-                $q->where('user_id', Auth::id());
+            ->whereHas('projectSubmit', function ($q) {
+                $q->where('designer_id', Auth::id());
             })
             ->whereHas('orderDetails', function ($d) {
-                $d->where('user_id', Auth::id());
+                $d->where('designer_id', Auth::id());
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -99,9 +138,9 @@ class DesignerController extends Controller
 
     public function submittedOrderFile($id)
     {
-        $orderSubmittedFiles = OrderDetails::with(['project','user'])
+        $orderSubmittedFiles = OrderDetails::with(['project','designer'])
             ->where('project_id', $id)
-            ->where('user_id', Auth::id())
+            ->where('designer_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
         return view('frontend.seller.order-submitted', compact('orderSubmittedFiles'));
@@ -153,7 +192,7 @@ class DesignerController extends Controller
                     OrderDetails::create([
                         'project_id' => $id,
                         'order_id' => $order->id,
-                        'user_id' => Auth::id(),
+                        'designer_id' => Auth::id(),
                         'file_path' => 'uploads/project/approved-file/' . $filename,
                         'file_name' => $filename,
                         'file_type' => $type,
@@ -171,10 +210,10 @@ class DesignerController extends Controller
 
     public function rejectedOrders()
     {
-        $rejectedOrders = Project::with(['projectSubmits', 'uploads'])
+        $rejectedOrders = Project::with(['projectSubmit', 'uploads'])
             ->where('status', 0)
-            ->whereHas('projectSubmits', function ($q) {
-                $q->where('user_id', Auth::id());
+            ->whereHas('projectSubmit', function ($q) {
+                $q->where('designer_id', Auth::id());
             })
             ->whereHas('uploads', function ($upload) {
                 $upload->where('status', 0)
@@ -183,7 +222,7 @@ class DesignerController extends Controller
                         $sub->select('id')
                             ->from('project_submits')
                             ->whereColumn('project_submits.project_id', 'projects.id')
-                            ->where('project_submits.user_id', Auth::id());
+                            ->where('project_submits.designer_id', Auth::id());
                     });
             })
             ->orderBy('created_at', 'desc')
@@ -194,10 +233,10 @@ class DesignerController extends Controller
 
     public function rejectedOrderFile($id)
     {
-        $orderRejectedFiles = Upload::with(['projectSubmits'])
+        $orderRejectedFiles = Upload::with(['projectSubmit'])
             ->where('project_id', $id)
-            ->whereHas('projectSubmits', function ($q) {
-                $q->where('user_id', Auth::id());
+            ->whereHas('projectSubmit', function ($q) {
+                $q->where('designer_id', Auth::id());
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -315,8 +354,10 @@ class DesignerController extends Controller
     }
 
 
-    public function salesHistory()
+    public function salesList()
     {
+        $adminPercentage = Setting::first()->admin_percentage;
+
         $designer_id = Auth::id();
 
         // 1. Direct Product Sales
@@ -324,6 +365,7 @@ class DesignerController extends Controller
             ->whereNull('order_id')
             ->whereNull('project_id')
             ->where('designer_id', $designer_id)
+            ->where('designer_paid_status', 0)
             ->get();
 
         // 2. Subscription Product Downloads
@@ -331,37 +373,52 @@ class DesignerController extends Controller
             ->whereHas('product', function ($q) use ($designer_id) {
                 $q->where('designer_id', $designer_id);
             })
+            ->where('designer_paid_status', 0)
             ->get();
-
         // Fetch user data for subscription downloads efficiently
         $subPurchaseIds = $downloadHistories->pluck('subscription_purchase_id')->unique();
         $subPurchases = SubscriptionPurchase::with('user')->whereIn('id', $subPurchaseIds)->get()->keyBy('id');
 
+        $paymentIds = $subPurchases->pluck('payment_id')->filter()->unique();
+        $payments = Payment::whereIn('id', $paymentIds)->get()->keyBy('id');
+
         $combinedSales = collect();
 
         foreach ($directSales as $sale) {
+            // Earning amount = Sale Amount - (Sale Amount * Admin Percentage / 100)
+            $earning_amount = $sale->amount - ($sale->amount * ($adminPercentage / 100));
+
             $combinedSales->push((object)[
                 'type' => 'direct',
                 'product' => $sale->product,
                 'user' => $sale->user,
                 'amount' => $sale->amount,
+                'earning_amount' => $earning_amount,
                 'card_type' => $sale->card_type,
                 'subscription_id' => $sale->subscription_id,
-                'created_at' => $sale->created_at,
+                'designer_paid_status' => $sale->designer_paid_status,
+                'created_at' =>  Carbon::parse($sale->created_at)->format('Y-m-d'),
             ]);
         }
 
         foreach ($downloadHistories as $download) {
             $subPurchase = $subPurchases->get($download->subscription_purchase_id);
+            $payment = $subPurchase ? $payments->get($subPurchase->payment_id) : null;
+            $cardType = $payment ? $payment->card_type : 'N/A';
+
+            $productPrice = $download->product->price ?? 0;
+            $earning_amount = $productPrice - ($productPrice * ($adminPercentage / 100));
 
             $combinedSales->push((object)[
-                'type' => 'subscription',
+                'type' => 'direct',
                 'product' => $download->product,
                 'user' => $subPurchase ? $subPurchase->user : null,
-                'amount' => null,
-                'card_type' => null,
-                'subscription_id' => 1, // Triggers standard UI "Subscription Package"
-                'created_at' => $download->created_at,
+                'amount' => $productPrice,
+                'earning_amount' => $earning_amount,
+                'card_type' => $cardType,
+                'subscription_id' => null,
+                'designer_paid_status' => $download->designer_paid_status,
+                'created_at' =>  Carbon::parse($download->created_at)->format('Y-m-d'),
             ]);
         }
 
@@ -372,7 +429,7 @@ class DesignerController extends Controller
         $page = request()->get('page', 1);
         $perPage = 10;
 
-        $productSalesHistories = new \Illuminate\Pagination\LengthAwarePaginator(
+        $productSaleslist = new \Illuminate\Pagination\LengthAwarePaginator(
             $combinedSales->forPage($page, $perPage)->values(),
             $combinedSales->count(),
             $perPage,
@@ -380,7 +437,19 @@ class DesignerController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('frontend.seller.product-sales-history', compact('productSalesHistories'));
+        return view('frontend.seller.product-sales-list', compact('productSaleslist'));
+    }
+
+
+    public function earningHistory()
+    {
+
+        $designerEarningQuery =DesignerPayment::with('payment','project','product','designer','user')
+                               ->where('designer_id', Auth::id())
+                               ->orderBy('id', 'desc');
+        $designerEarningHistories = $designerEarningQuery->paginate(10);
+
+        return view('frontend.seller.earning-history', compact('designerEarningHistories'));
     }
 
 
@@ -433,7 +502,23 @@ class DesignerController extends Controller
         return back()->with('success', 'Password updated successfully!');
     }
 
+    public function orderPaymentList()
+    {
+        $adminPercentage = Setting::first()->admin_percentage;
+        $orderDetailsQuery =OrderDetails::with('order','project','designer')
+        ->whereHas('order', function ($query){
+            $query->where('status', 0);
+        })
+        ->whereHas('project', function ($query){
+            $query->where('status', 2);
+        })
+        ->where('designer_id', Auth::id())
+        ->orderBy('id', 'desc');
+        $orderDetails = $orderDetailsQuery->paginate(10);
 
+        return view('frontend.seller.payment-project-list', compact('orderDetails','adminPercentage'));
+
+    }
 
 
 

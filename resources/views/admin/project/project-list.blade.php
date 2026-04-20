@@ -1,11 +1,6 @@
 @extends('layouts.admin')
 @section('content')
     <div class="content">
-        @if(session('success'))
-            <div class="alert alert-success" role="alert">
-                {{ session('success') }}
-            </div>
-        @endif
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
@@ -24,7 +19,7 @@
                                        Project Name
                                     </th>
                                     <th>
-                                        Image
+                                        Attachment
                                     </th>
                                     <th>
                                         Category
@@ -65,11 +60,26 @@
                                             {{ $project->name ?? '' }}
                                         </td>
 
-                                        @if($project->project_file)
-                                            <td><img src="{{ asset($project->project_file) }}" alt="Image" width="40"></td>
-                                        @else
-                                            <td><span class="badge badge-danger">No Logo Attached!</span></td>
-                                        @endif
+                                        <td>
+                                            @if($project->project_file)
+                                                @php
+                                                    $extension = pathinfo($project->project_file, PATHINFO_EXTENSION);
+                                                    $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+                                                @endphp
+
+                                                @if(in_array(strtolower($extension), $imageExtensions))
+                                                    <a target="_blank" href="{{ asset($project->project_file) }}">
+                                                        <img src="{{ asset($project->project_file) }}" alt="Attachment" height="60" width="auto" style="border-radius: 4px; border: 1px solid #ddd;">
+                                                    </a>
+                                                @else
+                                                    <a target="_blank" href="{{ asset($project->project_file) }}">
+                                                        <i class="fa fa-download"></i> View File
+                                                    </a>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">N/A</span>
+                                            @endif
+                                        </td>
 
                                         <td>
                                             {{ $project->category?->name ?? '' }}
@@ -110,7 +120,7 @@
                                         @endif
 
                                         <td>
-                                            <a class="btn btn-xs btn-info" href="{{ route('admin.project.details', $project->id) }}">
+                                            <a class="btn btn-xs btn-info" href="{{ route('admin.active-project.details', $project->id) }}">
                                                 <i class="fa fa-list"></i> Details
                                             </a>
 

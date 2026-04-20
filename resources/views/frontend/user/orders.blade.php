@@ -21,7 +21,7 @@
                                         <th>#</th>
                                         <th>Project Name</th>
                                         <th>Category</th>
-                                        <th>Image</th>
+                                        <th>Attachment</th>
                                         <th>Amount</th>
                                         <th>Publish Date</th>
                                         <th>Expire Date</th>
@@ -31,18 +31,32 @@
                                     </thead>
                                     <tbody>
                                     @foreach($orderProjects as $index => $orderProject)
-
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>
-                                                <a title="Details" href="{{ route('customize-details',$orderProject->id) }}">{{ $orderProject->name }}</a>
+                                                <a target="_blank" title="Details" href="{{ route('customize-details',$orderProject->id) }}">{{ $orderProject->name }}</a>
                                             </td>
                                             <td>{{ $orderProject->category?->name ?? 'N/A' }}</td>
-                                            @if($orderProject->project_file)
-                                                <td><img src="{{ asset($orderProject->project_file) }}" alt="Image" height="60" width="auto"></td>
-                                            @else
-                                                <td><span class="badge badge-danger">No Logo Attached!</span></td>
-                                            @endif
+                                            <td>
+                                                @if($orderProject->project_file)
+                                                    @php
+                                                        $extension = pathinfo($orderProject->project_file, PATHINFO_EXTENSION);
+                                                        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+                                                    @endphp
+
+                                                    @if(in_array(strtolower($extension), $imageExtensions))
+                                                        <a target="_blank" href="{{ asset($orderProject->project_file) }}">
+                                                            <img src="{{ asset($orderProject->project_file) }}" alt="Attachment" height="60" width="auto" style="border-radius: 4px; border: 1px solid #ddd;">
+                                                        </a>
+                                                    @else
+                                                        <a target="_blank" href="{{ asset($orderProject->project_file) }}">
+                                                            <i class="fa fa-download"></i> View File
+                                                        </a>
+                                                    @endif
+                                                @else
+                                                    <span class="text-muted">N/A</span>
+                                                @endif
+                                            </td>
                                             <td>{{ $orderProject?->order->amount }} TK.</td>
                                             <td>{{ \Carbon\Carbon::parse($orderProject->publish_date)->format('d-m-Y') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($orderProject->expire_date)->format('d-m-Y') }}</td>

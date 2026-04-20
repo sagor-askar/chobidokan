@@ -22,27 +22,26 @@ class ProjectController extends Controller
             'user',
             'order',
             'subscription',
-            'projectSubmits',
+            'projectSubmit',
             'uploads' => function($q) {
                 $q->latest()->take(6);
             }
         ])
             ->withCount([
-                'projectSubmits as total_designer' => function ($query) {
-                    $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                'projectSubmit as total_designer' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT designer_id)'));
                 },
                 'uploads as total_submitted_design'
             ])
             ->where('id', $id)
             ->first();
-
         return view('frontend.menu.customizeDetails',compact('project'));
     }
 
     public function submittedFileViewAll($id)
     {
         $allSubmittedFiles = Upload::with([
-            'projectSubmits',
+            'projectSubmit',
             'project'])->where('project_id', $id)->paginate(8);
         return view('frontend.menu.all-submitted-file',compact('allSubmittedFiles'));
     }
@@ -86,7 +85,7 @@ class ProjectController extends Controller
 
         $projectSubmit = ProjectSubmit::create([
             'project_id' => $id,
-            'user_id' => Auth::user()->id,
+            'designer_id' => Auth::user()->id,
             'title' => $request->title,
             'visibility' => $request->visibility,
             'stock' => $request->stock,
@@ -114,7 +113,7 @@ class ProjectController extends Controller
             }
         }
             DB::commit();
-        return back()->with('success', 'Project submitted successfully!');
+        return redirect()->route('customize-details',$id)->with('success', 'Project submitted successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
 

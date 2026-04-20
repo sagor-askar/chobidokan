@@ -20,7 +20,7 @@ return new class extends Migration
             $table->boolean('visibility')->default(1);
             $table->boolean('stock')->default(0);
             $table->date('submit_date')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('designer_id')->nullable();
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->timestamps();
         });

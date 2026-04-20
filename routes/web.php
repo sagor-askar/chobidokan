@@ -146,11 +146,28 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('info', 'SettingController@infoSetup')->name('info.setup');
     Route::post('info/store', 'SettingController@infoSetupStore')->name('info.setup.store');
 
-    // Project
+    // Active Project
     Route::get('project-list', 'ProjectController@projectList')->name('project.list');
-    Route::get('project-details/{id}', 'ProjectController@projectDetails')->name('project.details');
+    Route::get('active-project-details/{id}', 'ProjectController@activeProjectDetails')->name('active-project.details');
     Route::get('project-details/{project_id}/{designer_id}', 'ProjectController@designerSubmitDetails')->name('project.design-submit-show');
     Route::delete('project/delete/{id}', 'ProjectController@projectDelete')->name('project.delete');
+
+    // Completed Project list
+    Route::get('completed-project-list', 'ProjectController@completedProjectList')->name('completed-project.list');
+    Route::get('completed-project-details/{id}', 'ProjectController@completedProjectDetails')->name('completed-project.details');
+
+    // Rejected Project list
+    Route::get('rejected-project-list', 'ProjectController@rejectedProjectList')->name('rejected-project.list');
+    Route::get('rejected-project-details/{id}', 'ProjectController@rejectedProjectDetails')->name('rejected-project.details');
+
+
+
+    // Payment Project list
+    Route::get('payment-project-list', 'ProjectController@paymentProjectList')->name('payment-project.list');
+    Route::get('payment-product-list', 'ProjectController@paymentProductList')->name('payment-product.list');
+    Route::get('payment-refund-list', 'ProjectController@paymentRefundList')->name('payment-refund.list');
+    Route::get('designer-payment-history', 'ProjectController@designerPaymentHistory')->name('designer.payment-history');
+    Route::get('refund-payment-history', 'ProjectController@refundPaymentHistory')->name('refund.payment-history');
 
     // Upload Product
     Route::get('product-list', 'ProductController@productList')->name('products.list');
@@ -160,7 +177,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('product-delete/{id}', 'ProductController@productDelete')->name('product.delete');
 
     // designer payment
-    Route::post('project-designer-payment', 'DesignerPaymentController@designerPayment')->name('project.designer.payment');
+    Route::post('designer-product-payment', 'DesignerPaymentController@designerProductPayment')->name('designer.product.payment');
+    Route::post('designer-project-payment', 'DesignerPaymentController@designerProjectPayment')->name('designer.project.payment');
+    Route::post('refund-project-payment', 'DesignerPaymentController@refundProjectPayment')->name('refund.project.payment');
 
 });
 
@@ -170,7 +189,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
     Route::get('project/submitted-file-view-all/{id}', [ProjectController::class, 'submittedFileViewAll'])->name('submitted-file-view-all');
     Route::get('project/submitted-file-confirm/{id}', [ProjectController::class, 'submittedFileConfirm'])->name('project.submitted-file.confirm');
     Route::get('job-submission/{id}', [ProjectController::class, 'submission'])->name('job-submission');
-    Route::post('job-submission/{id}', [ProjectController::class, 'submit'])->name('job.submit');
+    Route::post('job-submit/{id}', [ProjectController::class, 'submit'])->name('job.submit');
 
     // add to wishlist
     Route::post('/wishlist/{id}', [WishlistController::class,'toggle'])->name('wishlist.toggle');
@@ -207,6 +226,10 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
 
         Route::get('/order-history', [DesignerController::class, 'orderHistory'])->name('order-history');
         Route::get('/order/submitted-file/{id}', [DesignerController::class, 'submittedOrderFile'])->name('order.submitted-file');
+
+
+        Route::get('/order-payment-list', [DesignerController::class, 'orderPaymentList'])->name('order-payment-list');
+
         Route::get('/submitted-works/{id}', [DesignerController::class, 'submittedWorks'])->name('submittedWorks');
         Route::get('/manage-profile', [DesignerController::class, 'manageProfile'])->name('manage.profile');
         Route::put('/profile-update', [DesignerController::class, 'updateProfile'])->name('profile.update');
@@ -222,7 +245,8 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::put('/product-update/{id}',  [DesignerController::class, 'productUpdate'])->name('products.update');
         Route::delete('/product-delete/{id}',  [DesignerController::class, 'productDelete'])->name('product.delete');
 
-        Route::get('/product-sales-history', [DesignerController::class, 'salesHistory'])->name('product-sales-history');
+        Route::get('/product-sales-list', [DesignerController::class, 'salesList'])->name('product-sales-list');
+        Route::get('/earning-history', [DesignerController::class, 'earningHistory'])->name('earning-history');
 
     });
 
@@ -238,6 +262,7 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
         Route::get('/submitted-works/{id}', [UserController::class, 'submittedWorks'])->name('submittedWorks');
 
         Route::get('/product-purchase-history', [UserController::class, 'productPurchaseHistory'])->name('product-purchase-history');
+        Route::get('/refund-payment-history', [UserController::class, 'refundPaymentHistory'])->name('refund-payment-history');
         Route::get('/subscription-wise-purchase-history/{id}', [UserController::class, 'subscriptionProductPurchaseHistory'])->name('subscription-wise-purchase-history');
 
 
@@ -256,10 +281,22 @@ Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
 
 });
 
-//admin-designer payment
-Route::match(['get', 'post'], 'designer/payment/success', [DesignerPaymentController::class,'designerPaymentSuccess'])->name('designer.payment.success');
-Route::match(['get', 'post'], 'designer/payment/fail', [DesignerPaymentController::class,'designerPaymentFail'])->name('designer.payment.fail');
-Route::match(['get', 'post'], 'designer/payment/cancel', [DesignerPaymentController::class,'designerPaymentCancel'])->name('designer.payment.cancel');
+//admin- Designer Product payment
+Route::match(['get', 'post'], 'designer/product/payment/success', [DesignerPaymentController::class,'designerProductPaymentSuccess'])->name('designer.product.payment.success');
+Route::match(['get', 'post'], 'designer/product/payment/fail', [DesignerPaymentController::class,'designerProductPaymentFail'])->name('designer.product.payment.fail');
+Route::match(['get', 'post'], 'designer/product/payment/cancel', [DesignerPaymentController::class,'designerProductPaymentCancel'])->name('designer.product.payment.cancel');
+
+
+//admin- Designer Project payment
+Route::match(['get', 'post'], 'designer/project/payment/success', [DesignerPaymentController::class,'designerProjectPaymentSuccess'])->name('designer.project.payment.success');
+Route::match(['get', 'post'], 'designer/project/payment/fail', [DesignerPaymentController::class,'designerProjectPaymentFail'])->name('designer.project.payment.fail');
+Route::match(['get', 'post'], 'designer/project/payment/cancel', [DesignerPaymentController::class,'designerProjectPaymentCancel'])->name('designer.project.payment.cancel');
+
+
+//admin- Designer Project payment
+Route::match(['get', 'post'], 'refund/project/payment/success', [DesignerPaymentController::class,'refundProjectPaymentSuccess'])->name('refund.project.payment.success');
+Route::match(['get', 'post'], 'refund/project/payment/fail', [DesignerPaymentController::class,'refundProjectPaymentFail'])->name('refund.project.payment.fail');
+Route::match(['get', 'post'], 'refund/project/payment/cancel', [DesignerPaymentController::class,'refundProjectPaymentCancel'])->name('refund.project.payment.cancel');
 
 // Customer
 Route::post('order/success', [PaymentController::class,'orderSuccess'])->name('order.success');

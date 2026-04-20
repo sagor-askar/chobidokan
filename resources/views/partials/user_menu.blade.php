@@ -42,6 +42,11 @@
             <i class="fa fa-shopping-bag mr-2"></i> Product Purchase History
         </a>
 
+        <a href="{{ route('user.refund-payment-history') }}"
+           class="list-group-item list-group-item-action d-flex align-items-center">
+            <i class="fa fa-shopping-bag mr-2"></i> Refund Payment History
+        </a>
+
         <a href="{{ route('user.manage.profile') }}"
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-cog mr-2"></i> Manage Profile

@@ -45,13 +45,22 @@
             <i class="fa fa-times-circle mr-2"></i>Rejected Orders
         </a>
 
+        <a href="{{ route('designer.order-payment-list') }}"
+           class="list-group-item list-group-item-action d-flex align-items-center">
+            <i class="fa fa-list-alt mr-2"></i>Order Payment List
+        </a>
+
         <a href="{{ route('designer.product-list') }}"
             class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="fa fa-list-alt mr-2"></i>Product List </a>
 
-        <a href="{{ route('designer.product-sales-history') }}"
+        <a href="{{ route('designer.product-sales-list') }}"
            class="list-group-item list-group-item-action d-flex align-items-center">
-            <i class="fa fa-list-alt mr-2"></i>Product Sales History </a>
+            <i class="fa fa-list-alt mr-2"></i>Product Sales List </a>
+
+        <a href="{{ route('designer.earning-history') }}"
+           class="list-group-item list-group-item-action d-flex align-items-center">
+            <i class="fa fa-shopping-bag mr-2"></i> Earning History </a>
 
         <a href="{{ route('designer.manage.profile') }}"
             class="list-group-item list-group-item-action d-flex align-items-center">

@@ -179,12 +179,27 @@
                     <li
                         class="{{ request()->is('admin/project') || request()->is('admin/project/*') ? 'active' : '' }}">
                         <a href="{{ route('admin.project.list') }}">
-                            <i class="fa-fw fas fa-unlock-alt">
-
-                            </i>
-                            <span>Project List</span>
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span> Active Project List</span>
                         </a>
                     </li>
+
+                    <li
+                        class="{{ request()->is('admin/completed-project') || request()->is('admin/completed-project/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.completed-project.list') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span> Completed Project List</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/rejected-project') || request()->is('admin/rejected-project/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.rejected-project.list') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span> Rejected Project List</span>
+                        </a>
+                    </li>
+
                 </ul>
             </li>
 
@@ -218,6 +233,62 @@
                     </li>
                 </ul>
             </li>
+
+
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa-fw fas fa-users">
+
+                    </i>
+                    <span>Payment Management</span>
+                    <span class="pull-right-container"><i class="fa fa-fw fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li
+                        class="{{ request()->is('admin/payment-project') || request()->is('admin/payment-project/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.payment-project.list') }}">
+                            <i class="fa-fw fas fa-unlock-alt" aria-hidden="true"></i>
+                            <span>  Project Payment List</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/payment-product') || request()->is('admin/payment-product/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.payment-product.list') }}">
+                            <i class="fa-fw fas fa-unlock-alt" aria-hidden="true"></i>
+                            <span>  Product Payment List</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/payment-refund') || request()->is('admin/payment-refund/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.payment-refund.list') }}">
+                            <i class="fa-fw fas fa-unlock-alt" aria-hidden="true"></i>
+                            <span>Payment Refund List</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/designer-payment-history') || request()->is('admin/designer-payment-history/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.designer.payment-history') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Designer Payment History</span>
+                        </a>
+                    </li>
+
+                    <li
+                        class="{{ request()->is('admin/refund-payment-history') || request()->is('admin/refund-payment-history/*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.refund.payment-history') }}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            <span>Refund Payment History</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+
 
             <li class="{{ request()->is('admin/settings') || request()->is('admin/settings/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.settings') }}">

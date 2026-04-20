@@ -14,21 +14,21 @@ class OrderDetails extends Model
         'created_at',
         'updated_at',
     ];
-    protected $fillable = ['file_path', 'file_name', 'file_type', 'project_id','order_id','user_id'];
+    protected $fillable = ['file_path', 'file_name', 'file_type', 'project_id','order_id','designer_id'];
 
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function projectSubmits()
+    public function projectSubmit()
     {
         return $this->belongsTo(ProjectSubmit::class, 'project_submit_id');
     }
 
-    public function user()
+    public function designer()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'designer_id');
     }
 
     public function order()

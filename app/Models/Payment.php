@@ -26,6 +26,7 @@ class Payment extends Model
         'card_type',
         'bank_txn',
         'is_counted',
+        'designer_paid_status',
         'created_at',
         'updated_at',
     ];

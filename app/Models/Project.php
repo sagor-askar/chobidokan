@@ -56,7 +56,7 @@ class Project extends Model
         );
     }
 
-    public function projectSubmits()
+    public function projectSubmit()
     {
         return $this->hasMany(ProjectSubmit::class, 'project_id');
     }

@@ -17,9 +17,17 @@ class VerifyCsrfToken extends Middleware
         'order/fail',
         'order/cancel',
 
-        'designer/payment/success',
-        'designer/payment/fail',
-        'designer/payment/cancel',
+        'designer/product/payment/success',
+        'designer/product/payment/fail',
+        'designer/product/payment/cancel',
+
+        'designer/project/payment/success',
+        'designer/project/payment/fail',
+        'designer/project/payment/cancel',
+
+        'refund/project/payment/success',
+        'refund/project/payment/fail',
+        'refund/project/payment/cancel',
 
         'purchase/success',
         'purchase/fail',

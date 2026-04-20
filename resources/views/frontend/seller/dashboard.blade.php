@@ -17,57 +17,132 @@
 
             <!-- Stats Cards -->
             <div class="row">
-                <!-- Projects Card -->
-                <div class="col-md-6 col-lg-3 mb-3">
+
+                <div class="col-md-4 col-lg-4 mb-3">
                     <div class="card shadow-sm border-left-primary h-100">
                         <div class="card-body d-flex align-items-center">
                             <i class="fa fa-project-diagram fa-2x text-primary mr-3"></i>
                             <div>
-                                <h5 class="mb-0 font-weight-bold">{{ $totalProjects ?? 0 }}</h5>
-                                <small class="text-muted">Projects</small>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $totalProduct ?? 0 }}</h5>
+                                <small class="text-muted">Total Product</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-primary h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-shopping-cart fa-2x text-success mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $totalProductSales->count() ?? 0 }}</h5>
+                                <small class="text-muted text-nowrap">Total Product Sales</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Spending Card -->
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-info h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-money-bill-wave fa-2x text-info mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold">৳ {{ number_format( $totalProductSales->sum('amount') ?? 0, 2) }}</h5>
+                                <small class="text-muted text-nowrap">Total Product Sales Amount</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-primary h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-project-diagram fa-2x text-primary mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $totalProject->count() ?? 0 }}</h5>
+                                <small class="text-muted">Total Project</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-primary h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-shopping-cart fa-2x text-success mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $totalProjectSales->count() ?? 0 }}</h5>
+                                <small class="text-muted text-nowrap">Total Project Sales</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-info h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-money-bill-wave fa-2x text-info mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold">৳ {{ number_format( $totalProjectSales->sum('amount') ?? 0, 2) }}</h5>
+                                <small class="text-muted text-nowrap">Total Project Sales Amount</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Submissions Card -->
-                <div class="col-md-6 col-lg-3 mb-3">
+                <div class="col-md-4 col-lg-4 mb-3">
                     <div class="card shadow-sm border-left-success h-100">
                         <div class="card-body d-flex align-items-center">
                             <i class="fa fa-upload fa-2x text-success mr-3"></i>
                             <div>
-                                <h5 class="mb-0 font-weight-bold">{{ $totalSubmit ?? 0 }}</h5>
-                                <small class="text-muted">Submissions</small>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $totalSubmission ?? 0 }}</h5>
+                                <small class="text-muted">Total Project Submissions</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-warning h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-money-bill-wave fa-2x text-warning mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold">৳ {{ number_format( $orderDuePayment ?? 0, 2) }}</h5>
+                                <small class="text-muted text-nowrap">Total Due Amount</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-success h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-money-bill-wave fa-2x text-success mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold">৳ {{ number_format( $totalEarningAmount ?? 0, 2) }}</h5>
+                                <small class="text-muted text-nowrap">Total Earning Amount</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Clients Card -->
-                <div class="col-md-6 col-lg-3 mb-3">
+                <div class="col-md-4 col-lg-4 mb-3">
                     <div class="card shadow-sm border-left-info h-100">
                         <div class="card-body d-flex align-items-center">
                             <i class="fa fa-users fa-2x text-info mr-3"></i>
                             <div>
-                                <h5 class="mb-0 font-weight-bold">56</h5>
-                                <small class="text-muted">Clients</small>
+                                <h5 class="mb-0 font-weight-bold">{{ $totalProjectClient }}</h5>
+                                <small class="text-muted"> Total Clients</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Earnings Card -->
-                <div class="col-md-6 col-lg-3 mb-3">
-                    <div class="card shadow-sm border-left-warning h-100">
-                        <div class="card-body d-flex align-items-center">
-                            <i class="fa fa-dollar-sign fa-2x text-warning mr-3"></i>
-                            <div>
-                                <h5 class="mb-0 font-weight-bold">$7,850</h5>
-                                <small class="text-muted">Earnings</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
         </div>

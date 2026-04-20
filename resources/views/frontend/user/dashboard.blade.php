@@ -17,57 +17,122 @@
 
             <!-- Stats Cards -->
             <div class="row">
-                <!-- Projects Card -->
-                <div class="col-md-6 col-lg-3 mb-3">
+                <!-- Product Purchases Card -->
+                <div class="col-md-4 col-lg-4 mb-3">
                     <div class="card shadow-sm border-left-primary h-100">
                         <div class="card-body d-flex align-items-center">
-                            <i class="fa fa-project-diagram fa-2x text-primary mr-3"></i>
+                            <i class="fa fa-shopping-cart fa-2x text-success mr-3"></i>
                             <div>
-                                <h5 class="mb-0 font-weight-bold">{{ $totalProjects ?? 0 }}</h5>
-                                <small class="text-muted">Projects</small>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $totalProductPurchase->count() ?? 0 }}</h5>
+                                <small class="text-muted text-nowrap">Total Product Purchase</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Submissions Card -->
-                <div class="col-md-6 col-lg-3 mb-3">
-                    <div class="card shadow-sm border-left-success h-100">
-                        <div class="card-body d-flex align-items-center">
-                            <i class="fa fa-upload fa-2x text-success mr-3"></i>
-                            <div>
-                                <h5 class="mb-0 font-weight-bold">{{ $totalSubmit ?? 0 }}</h5>
-                                <small class="text-muted">Submissions</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Clients Card -->
-                <div class="col-md-6 col-lg-3 mb-3">
+                <!-- Total Spending Card -->
+                <div class="col-md-4 col-lg-4 mb-3">
                     <div class="card shadow-sm border-left-info h-100">
                         <div class="card-body d-flex align-items-center">
-                            <i class="fa fa-users fa-2x text-info mr-3"></i>
+                            <i class="fa fa-money-bill-wave fa-2x text-info mr-3"></i>
                             <div>
-                                <h5 class="mb-0 font-weight-bold">56</h5>
-                                <small class="text-muted">Clients</small>
+                                <h5 class="mb-0 font-weight-bold">৳ {{ number_format( $totalProductPurchase->sum('amount') ?? 0, 2) }}</h5>
+                                <small class="text-muted text-nowrap">Total Product Purchase Amount</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Earnings Card -->
-                <div class="col-md-6 col-lg-3 mb-3">
-                    <div class="card shadow-sm border-left-warning h-100">
+                <!-- Project Orders Card -->
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-success h-100">
                         <div class="card-body d-flex align-items-center">
-                            <i class="fa fa-dollar-sign fa-2x text-warning mr-3"></i>
+                            <i class="fa fa-shopping-cart fa-2x text-success mr-3"></i>
                             <div>
-                                <h5 class="mb-0 font-weight-bold">$7,850</h5>
-                                <small class="text-muted">Earnings</small>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $totalProjectOrder->count() ?? 0 }}</h5>
+                                <small class="text-muted">Total Project Orders</small>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Total Spending Card -->
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-info h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-money-bill-wave fa-2x text-info mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold">৳ {{ number_format( $totalProjectOrder->sum('amount') ?? 0, 2) }}</h5>
+                                <small class="text-muted text-nowrap">Total Order Amount</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Spending Card -->
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-info h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-money-bill-wave fa-2x text-info mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold">৳ {{ number_format( ($totalProjectOrder->sum('amount') + $totalProductPurchase->sum('amount') ) ?? 0, 2) }}</h5>
+                                <small class="text-muted text-nowrap">Total Amount</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-info h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-money-bill-wave fa-2x text-info mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold">৳ {{ number_format( $refundPayment->sum('amount') ?? 0, 2) }}</h5>
+                                <small class="text-muted text-nowrap">Refund Amount </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Project Orders Card -->
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-success h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-shopping-cart fa-2x text-success mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $activeProject ?? 0 }}</h5>
+                                <small class="text-muted">Active Project</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-success h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-shopping-cart fa-2x text-success mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $completedProject ?? 0 }}</h5>
+                                <small class="text-muted"> Complete Project</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card shadow-sm border-left-success h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <i class="fa fa-shopping-cart fa-2x text-success mr-3"></i>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold text-center">{{ $rejectedProject ?? 0 }}</h5>
+                                <small class="text-muted"> Reject Project</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
         </div>

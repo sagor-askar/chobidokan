@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('project_id')->nullable();
             $table->unsignedBigInteger('order_id')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('designer_id')->nullable();
             $table->string('file_path')->nullable();
             $table->string('file_name')->nullable();
             $table->string('file_type')->nullable();

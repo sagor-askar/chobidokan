@@ -1,11 +1,6 @@
 @extends('layouts.designer_panel')
 @section('panel_content')
     <div class="content">
-        @if(session('success'))
-            <div class="alert alert-success" role="alert">
-                {{ session('success') }}
-            </div>
-        @endif
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
