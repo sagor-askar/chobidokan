@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\DesignerPayment;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Payment;
@@ -29,7 +30,44 @@ class DesignerController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
-        return view('frontend.seller.dashboard',compact('user'));
+        $totalProduct  = Product::where('designer_id',Auth::id())->count();
+        $totalProductSales  = DesignerPayment::where('product_id','!=',null)->where('designer_id',Auth::id())->get();
+        $totalProject = Project::with('projectSubmit','orderDetails')
+            ->where('status', 2)
+            ->whereHas('projectSubmit', function ($q) {
+                $q->where('designer_id', Auth::id());
+            })
+            ->whereHas('orderDetails', function ($d) {
+                $d->where('designer_id', Auth::id());
+            })->get();
+
+        $totalProjectSales  = DesignerPayment::where('project_id','!=',null)->where('designer_id',Auth::id())->get();
+
+
+       $orderDuePayment = 0;
+        $adminPercentage = Setting::first()->admin_percentage;
+        $orderDetails =OrderDetails::with('order','project','designer')
+            ->whereHas('order', function ($query){
+                $query->where('status', 0);
+            })
+            ->whereHas('project', function ($query){
+                $query->where('status', 2);
+            })
+            ->where('designer_id', Auth::id())->get();
+
+        foreach ($orderDetails->unique('order_id') as $orderDetail) {
+            $orderDuePayment += $orderDetail->order->amount - ($orderDetail->order->amount * ($adminPercentage / 100));
+        }
+
+        $totalSubmission = ProjectSubmit::where('designer_id', Auth::id())->count();
+
+        $totalEarningAmount =DesignerPayment::where('designer_id', Auth::id())->get()->sum('amount');
+
+        $totalProjectClient = Project::whereHas('projectSubmit', function ($q) {
+            $q->where('designer_id', Auth::id());
+        })->distinct('user_id')->count('user_id');
+
+        return view('frontend.seller.dashboard',compact('user','totalProduct','totalProductSales','totalProject','totalProjectSales','orderDuePayment', 'totalSubmission','totalEarningAmount','totalProjectClient'));
     }
 
     public function about()
@@ -316,7 +354,7 @@ class DesignerController extends Controller
     }
 
 
-    public function salesHistory()
+    public function salesList()
     {
         $adminPercentage = Setting::first()->admin_percentage;
 
@@ -327,6 +365,7 @@ class DesignerController extends Controller
             ->whereNull('order_id')
             ->whereNull('project_id')
             ->where('designer_id', $designer_id)
+            ->where('designer_paid_status', 0)
             ->get();
 
         // 2. Subscription Product Downloads
@@ -334,8 +373,8 @@ class DesignerController extends Controller
             ->whereHas('product', function ($q) use ($designer_id) {
                 $q->where('designer_id', $designer_id);
             })
+            ->where('designer_paid_status', 0)
             ->get();
-
         // Fetch user data for subscription downloads efficiently
         $subPurchaseIds = $downloadHistories->pluck('subscription_purchase_id')->unique();
         $subPurchases = SubscriptionPurchase::with('user')->whereIn('id', $subPurchaseIds)->get()->keyBy('id');
@@ -357,6 +396,7 @@ class DesignerController extends Controller
                 'earning_amount' => $earning_amount,
                 'card_type' => $sale->card_type,
                 'subscription_id' => $sale->subscription_id,
+                'designer_paid_status' => $sale->designer_paid_status,
                 'created_at' =>  Carbon::parse($sale->created_at)->format('Y-m-d'),
             ]);
         }
@@ -377,6 +417,7 @@ class DesignerController extends Controller
                 'earning_amount' => $earning_amount,
                 'card_type' => $cardType,
                 'subscription_id' => null,
+                'designer_paid_status' => $download->designer_paid_status,
                 'created_at' =>  Carbon::parse($download->created_at)->format('Y-m-d'),
             ]);
         }
@@ -388,7 +429,7 @@ class DesignerController extends Controller
         $page = request()->get('page', 1);
         $perPage = 10;
 
-        $productSalesHistories = new \Illuminate\Pagination\LengthAwarePaginator(
+        $productSaleslist = new \Illuminate\Pagination\LengthAwarePaginator(
             $combinedSales->forPage($page, $perPage)->values(),
             $combinedSales->count(),
             $perPage,
@@ -396,7 +437,19 @@ class DesignerController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('frontend.seller.product-sales-history', compact('productSalesHistories'));
+        return view('frontend.seller.product-sales-list', compact('productSaleslist'));
+    }
+
+
+    public function earningHistory()
+    {
+
+        $designerEarningQuery =DesignerPayment::with('payment','project','product','designer','user')
+                               ->where('designer_id', Auth::id())
+                               ->orderBy('id', 'desc');
+        $designerEarningHistories = $designerEarningQuery->paginate(10);
+
+        return view('frontend.seller.earning-history', compact('designerEarningHistories'));
     }
 
 
@@ -449,7 +502,23 @@ class DesignerController extends Controller
         return back()->with('success', 'Password updated successfully!');
     }
 
+    public function orderPaymentList()
+    {
+        $adminPercentage = Setting::first()->admin_percentage;
+        $orderDetailsQuery =OrderDetails::with('order','project','designer')
+        ->whereHas('order', function ($query){
+            $query->where('status', 0);
+        })
+        ->whereHas('project', function ($query){
+            $query->where('status', 2);
+        })
+        ->where('designer_id', Auth::id())
+        ->orderBy('id', 'desc');
+        $orderDetails = $orderDetailsQuery->paginate(10);
 
+        return view('frontend.seller.payment-project-list', compact('orderDetails','adminPercentage'));
+
+    }
 
 
 

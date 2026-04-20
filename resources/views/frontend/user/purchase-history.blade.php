@@ -132,7 +132,7 @@
                             </div>
                         @else
                             <div class="col-12 text-center py-4">
-                                <p class="mb-0 text-danger">No submissions available yet.</p>
+                                <p class="mb-0 text-danger">No Purchase available yet.</p>
                             </div>
                         @endif
                     </div>

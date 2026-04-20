@@ -40,6 +40,13 @@
                                     <input class="form-control" type="number" name="admin_percentage" id="admin_percentage" value="{{$settings->admin_percentage }}">
                                 </div>
 
+
+                                <div class="form-group">
+                                    <label for="title">Job Auto Approve (Days)</label>
+                                    <input class="form-control" type="number" name="job_auto_approve_days" id="job_auto_approve_days" value="{{$settings->job_auto_approve_days ?? '' }}">
+                                </div>
+
+
                                 <div class="form-group ">
                                     <label class="required" for="logo">Logo</label>
                                     <input type="file" class="form-control-file" id="photo-dropzone" value="{{$settings->logo ?? '' }}" name="logo">

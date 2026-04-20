@@ -5,7 +5,7 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                       Project List
+                      <h4> Rejected Project List </h4>
                     </div>
                     <div class="panel-body">
                         <div class="table-responsive">
@@ -16,7 +16,7 @@
 
                                     </th>
                                     <th>
-                                       Project Name
+                                        Project Name
                                     </th>
                                     <th>
                                         Attachment
@@ -43,7 +43,7 @@
                                         T.Submitted Design
                                     </th>
                                     <th>
-                                       Status
+                                        Status
                                     </th>
                                     <th>
                                         Action
@@ -115,12 +115,12 @@
                                             </td>
                                         @else
                                             <td>
-                                                <span class="badge badge-danger" style="background-color: red">Inactive</span>
+                                                <span class="badge badge-danger" style="background-color: red">Rejected</span>
                                             </td>
                                         @endif
 
                                         <td>
-                                            <a class="btn btn-xs btn-info" href="{{ route('admin.active-project.details', $project->id) }}">
+                                            <a class="btn btn-xs btn-info" href="{{ route('admin.rejected-project.details', $project->id) }}">
                                                 <i class="fa fa-list"></i> Details
                                             </a>
 

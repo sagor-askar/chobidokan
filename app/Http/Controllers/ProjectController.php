@@ -35,7 +35,6 @@ class ProjectController extends Controller
             ])
             ->where('id', $id)
             ->first();
-
         return view('frontend.menu.customizeDetails',compact('project'));
     }
 

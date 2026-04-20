@@ -18,6 +18,7 @@ class SubscriptionDownloadProduct extends Model
     protected $fillable = [
         'subscription_purchase_id',
         'product_id',
+        'designer_paid_status',
         'created_at',
         'updated_at',
     ];

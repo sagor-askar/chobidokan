@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Project;
+use App\Models\RefundPayment;
 use App\Models\SubscriptionDownloadProduct;
 use App\Models\SubscriptionPurchase;
 use App\Models\Upload;
@@ -22,7 +24,14 @@ class UserController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
-        return view('frontend.user.dashboard',compact('user'));
+
+        $totalProductPurchase = Payment::where('order_id', null)->where('project_id', null)->where('user_id', Auth::id())->get();
+        $totalProjectOrder =    Order::where('user_id', Auth::id())->get();
+        $refundPayment =    RefundPayment::where('user_id', Auth::id())->get();
+        $activeProject =    Project::where('user_id', Auth::id())->where('status',1)->count();
+        $completedProject =    Project::where('user_id', Auth::id())->where('status',2)->count();
+        $rejectedProject =    Project::where('user_id', Auth::id())->where('status',0)->count();
+        return view('frontend.user.dashboard',compact('user','totalProductPurchase','totalProjectOrder','refundPayment','activeProject','completedProject','rejectedProject'));
     }
 
     public function about()
@@ -120,6 +129,16 @@ class UserController extends Controller
         }
 
         return view('frontend.user.subscription-wise-purchase-history', compact('subcriptionPurchaseProductHistories'));
+    }
+
+
+    public function refundPaymentHistory()
+    {
+        $refundPaymentHistories = RefundPayment::with(['payment','project','order'])
+                            ->where('user_id', Auth::id())
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(10);
+        return view('frontend.user.refund-payment-history', compact('refundPaymentHistories'));
     }
 
     public function manageProfile()

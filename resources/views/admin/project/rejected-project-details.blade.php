@@ -31,7 +31,7 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                       <h4>Designer List</h4>
+                        <h4>Designer List</h4>
                     </div>
                     <div class="panel-body">
                         <div class="card-header text-center project-header">
@@ -65,7 +65,7 @@
                                     </th>
 
                                     <th>
-                                        Designer Payment Status
+                                        Designer Selection Status
                                     </th>
                                     <th>
                                         Action
@@ -75,31 +75,20 @@
                                 <tbody>
                                 @foreach($designers as $key => $designer)
                                     @php
+                                        $totalSubmit = \App\Models\ProjectSubmit::where('project_id', $designer->project_id)
+                                                         ->where('designer_id', $designer->designer_id)
+                                                         ->withCount('uploads')
+                                                         ->get()
+                                                         ->sum('uploads_count');
 
-                                   //  dd($designer);
-
-                                       $totalSubmit = \App\Models\ProjectSubmit::where('project_id', $designer->project_id)
-                                                        ->where('designer_id', $designer->designer_id)
-                                                        ->withCount('uploads')
-                                                        ->get()
-                                                        ->sum('uploads_count');
-
-                                       $order = \App\Models\Order::where('project_id',$designer->project_id)->first();
+                                        $order = \App\Models\Order::where('project_id',$designer->project_id)->first();
 
 
-                                       $orderDetailsStatus = \App\Models\OrderDetails::with('order')
-                                                       ->whereHas('project', function ($query){
-                                                      $query->where('status', 2);
-                                                       })
-                                                   ->where('project_id',$designer->project_id)->where('designer_id',$designer->designer_id)->first();
-
-                                        $orderDetails = \App\Models\OrderDetails::with('order')->whereHas('order', function ($query){
-                                                      $query->where('status', 0);
-                                                       })
-                                                       ->whereHas('project', function ($query){
-                                                      $query->where('status', 2);
-                                                       })
-                                                   ->where('project_id',$designer->project_id)->where('designer_id',$designer->designer_id)->first();
+                                        $orderDetailsStatus = \App\Models\OrderDetails::with('order')
+                                                             ->whereHas('project', function ($query){
+                                                               $query->where('status', 2);
+                                                              })
+                                                            ->where('project_id',$designer->project_id)->where('designer_id',$designer->designer_id)->first();
 
                                     @endphp
 
@@ -109,10 +98,10 @@
                                         </td>
 
                                         <td>
-                                           {{ $designer->designer?->name ?? '' }}
+                                            {{ $designer->designer?->name ?? '' }}
                                         </td>
                                         <td>
-                                          {{ $designer->designer?->email ?? '' }}
+                                            {{ $designer->designer?->email ?? '' }}
                                         </td>
                                         <td>
                                             {{ $designer->designer?->phone ?? '' }}
@@ -126,39 +115,21 @@
                                             {{ $totalSubmit}}
                                         </td>
 
+
+
                                         @if($orderDetailsStatus)
-                                            @if($orderDetailsStatus?->order?->status == 1)
-                                                <td>
-                                                    <span class="badge badge-success" style="background-color: green">Paid</span>
-                                                </td>
-                                            @else
-                                                <td>
-                                                    <span class="badge badge-danger" style="background-color: red">Unpaid</span>
-                                                </td>
-                                            @endif
+                                            <td>
+                                                <span class="badge badge-success" style="background-color: green">Selected</span>
+                                            </td>
                                         @else
                                             <td>
-
+                                                <span class="badge badge-success" style="background-color: red"> Not Selected</span>
                                             </td>
                                         @endif
-
                                         <td>
                                             <a class="btn btn-xs btn-primary" href="{{ route('admin.project.design-submit-show', [$designer->project_id,$designer->designer_id]) }}">
                                                 {{ trans('global.view') }}
                                             </a>
-
-                                          @if($orderDetails)
-                                                <form action="{{ route('admin.project.designer.payment') }}"
-                                                      method="POST"
-                                                      style="display:inline;">
-                                                    @csrf
-                                                    <input type="hidden" name="project_id" value="{{$designer->project_id}}">
-                                                    <input type="hidden" name="designer_id" value="{{$designer->designer_id}}">
-                                                    <button type="submit" class="btn btn-xs btn-success">
-                                                        Payment
-                                                    </button>
-                                                </form>
-                                            @endif
                                         </td>
 
                                     </tr>

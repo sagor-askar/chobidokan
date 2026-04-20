@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Payment extends Model
+class RefundPayment extends Model
 {
     use HasFactory;
-    public $table = 'payments';
+    public $table = 'refund_payments';
 
     protected $dates = [
         'created_at',
@@ -16,17 +16,13 @@ class Payment extends Model
     ];
 
     protected $fillable = [
+        'payment_id',
         'project_id',
         'order_id',
-        'subscription_id',
-        'product_id',
-        'designer_id',
         'user_id',
         'amount',
         'card_type',
         'bank_txn',
-        'is_counted',
-        'designer_paid_status',
         'created_at',
         'updated_at',
     ];
@@ -36,28 +32,18 @@ class Payment extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function designer()
-    {
-        return $this->belongsTo(User::class, 'designer_id');
-    }
-
-    public function order()
-    {
-        return $this->belongsTo(Order::class, 'order_id');
-    }
 
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function product()
+    public function order()
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo(Product::class, 'order_id');
     }
-
-    public function subscription()
+    public function payment()
     {
-        return $this->belongsTo(Subscription::class, 'subscription_id');
+        return $this->belongsTo(Payment::class, 'payment_id');
     }
 }

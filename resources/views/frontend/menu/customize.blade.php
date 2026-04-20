@@ -200,15 +200,16 @@
                                             <p class="sidebar-info"><i class="info-icon">&#x23F3;</i> Submit Time :
                                                 <strong>{{ $daysLeft }}</strong> days left</p>
                                         @endif
-                                        @if (count($subscriptions) > 0)
-                                            @foreach ($subscriptions as $val)
-                                                <p class="sidebar-info"><i class="info-icon">&#x1F5BC;</i>
-                                                    {{ $val }}</p>
-                                            @endforeach
-                                        @endif
-                                        <p class="sidebar-info"><i class="info-icon">&#x1F464;</i> Designer :
-                                            <strong>{{ $project->total_designer ?? '0' }}</strong> </p>
+
+                                        <p class="sidebar-info"><i class="info-icon">&#x1F464;</i> Total Designer :
+                                            <strong>{{ $project->subscription->designer ?? '0' }}</strong> </p>
                                         <p class="sidebar-info"> <i class="info-icon fa fa-file-image-o"></i>Total design :
+                                            <strong>{{ $project->subscription->design ?? '0' }}</strong></p>
+
+
+                                        <p class="sidebar-info"><i class="info-icon">&#x1F464;</i> Submitted Designer :
+                                            <strong>{{ $project->total_designer ?? '0' }}</strong> </p>
+                                        <p class="sidebar-info"> <i class="info-icon fa fa-file-image-o"></i>Submitted design :
                                             <strong>{{ $project->total_submitted_design ?? '0' }}</strong></p>
                                     </div>
                                 </div>

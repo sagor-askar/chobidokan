@@ -1,0 +1,221 @@
+@extends('layouts.admin')
+@section('content')
+
+    <style>
+        .project-header {
+            background-color: #f8f9fa; /* subtle light background */
+            padding: 20px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .project-header h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #343a40; /* professional dark color */
+            margin: 0;
+        }
+
+        .project-title {
+            color: #0d6efd; /* highlight project name with primary color */
+        }
+
+    </style>
+    <div class="content">
+        @if(session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                       <h4>Designer List</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="card-header text-center project-header">
+                            <h3>Project: <span class="project-title">{{ @$designers[0]->project?->name ?? 'N/A' }}</span></h3>
+                        </div>
+
+                        <br>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover datatable datatable-designer" id="designer-dataTable">
+                                <thead>
+                                <tr>
+                                    <th>
+
+                                    </th>
+                                    <th>
+                                        Designer Name
+                                    </th>
+                                    <th>
+                                        Email
+                                    </th>
+                                    <th>
+                                        Phone
+                                    </th>
+
+                                    <th>
+                                        Submit Date
+                                    </th>
+
+                                    <th>
+                                        Total Submitted Design
+                                    </th>
+
+                                    <th>
+                                        Designer Selection Status
+                                    </th>
+
+                                    <th>
+                                        Designer Payment Status
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($designers as $key => $designer)
+                                    @php
+                                       $totalSubmit = \App\Models\ProjectSubmit::where('project_id', $designer->project_id)
+                                                        ->where('designer_id', $designer->designer_id)
+                                                        ->withCount('uploads')
+                                                        ->get()
+                                                        ->sum('uploads_count');
+
+                                       $order = \App\Models\Order::where('project_id',$designer->project_id)->first();
+
+
+                                       $orderDetailsStatus = \App\Models\OrderDetails::with('order')
+                                                            ->whereHas('project', function ($query){
+                                                              $query->where('status', 2);
+                                                             })
+                                                           ->where('project_id',$designer->project_id)->where('designer_id',$designer->designer_id)->first();
+
+
+                                        $orderDetails = \App\Models\OrderDetails::with('order')->whereHas('order', function ($query){
+                                                      $query->where('status', 0);
+                                                       })
+                                                       ->whereHas('project', function ($query){
+                                                      $query->where('status', 2);
+                                                       })
+                                                   ->where('project_id',$designer->project_id)->where('designer_id',$designer->designer_id)->first();
+
+                                    @endphp
+
+                                    <tr data-entry-id="{{ $designer->id }}">
+                                        <td>
+
+                                        </td>
+
+                                        <td>
+                                           {{ $designer->designer?->name ?? '' }}
+                                        </td>
+                                        <td>
+                                          {{ $designer->designer?->email ?? '' }}
+                                        </td>
+                                        <td>
+                                            {{ $designer->designer?->phone ?? '' }}
+                                        </td>
+
+
+                                        <td class="{{ \Carbon\Carbon::parse($designer->submit_date)->isPast() ? 'text-danger' : 'text-success' }}">
+                                            {{ \Carbon\Carbon::parse($designer->submit_date)->format('d-m-Y') }}
+                                        </td>
+                                        <td>
+                                            {{ $totalSubmit}}
+                                        </td>
+
+
+
+                                        @if($orderDetailsStatus)
+                                            <td>
+                                                <span class="badge badge-success" style="background-color: green">Selected</span>
+                                            </td>
+                                          @else
+                                            <td>
+
+                                            </td>
+                                         @endif
+
+
+                                        @if($orderDetailsStatus)
+                                            @if($orderDetailsStatus?->order?->status == 1)
+                                                <td>
+                                                    <span class="badge badge-success" style="background-color: green">Paid</span>
+                                                </td>
+                                            @else
+                                                <td>
+                                                    <span class="badge badge-danger" style="background-color: red">Unpaid</span>
+                                                </td>
+                                            @endif
+                                        @else
+                                            <td>
+
+                                            </td>
+                                        @endif
+
+                                        <td>
+                                            <a class="btn btn-xs btn-primary" href="{{ route('admin.project.design-submit-show', [$designer->project_id,$designer->designer_id]) }}">
+                                                {{ trans('global.view') }}
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+@endsection
+@section('scripts')
+    @parent
+    <script>
+        $(function () {
+            let dtButtons = $.extend(true, [], defaultButtons);
+            @can('user_delete')
+            let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
+            let deleteButton = {
+                text: deleteButtonTrans,
+                url: "{{ route('admin.users.massDestroy') }}",
+                className: 'btn-danger',
+                action: function (e, dt, node, config) {
+                    var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
+                        return $(entry).data('entry-id')
+                    });
+
+                    if (ids.length === 0) {
+                        alert('{{ trans('global.datatables.zero_selected') }}')
+
+                        return
+                    }
+
+                    if (confirm('{{ trans('global.areYouSure') }}')) {
+                        $.ajax({
+                            headers: {'x-csrf-token': _token},
+                            method: 'POST',
+                            url: config.url,
+                            data: { ids: ids, _method: 'DELETE' }})
+                            .done(function () { location.reload() })
+                    }
+                }
+            }
+            dtButtons.push(deleteButton)
+            @endcan
+
+            initDataTable('#designer-dataTable', dtButtons);
+
+        });
+
+    </script>
+@endsection

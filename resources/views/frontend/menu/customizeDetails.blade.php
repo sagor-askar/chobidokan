@@ -11,18 +11,91 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
         }
 
-        .watermark-text {
+        /* Repeating Watermark Pattern over image - higher visibility */
+        .watermark-overlay {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-25deg);
-            font-size: 1rem;
-            font-weight: bold;
-            color: rgba(255, 255, 255, 0.2);
-            text-transform: uppercase;
+            inset: 0;
             pointer-events: none;
-            user-select: none;
-            white-space: nowrap;
+            z-index: 10;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="350" height="250"><g transform="translate(175, 125) rotate(-25) translate(-175, -125)"><text x="175" y="125" font-size="30" font-family="Arial, sans-serif" font-weight="600" fill="rgba(255,255,255,0.7)" text-anchor="middle" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.5);">CHOBIDOKAN</text></g></svg>');
+            background-repeat: repeat;
+        }
+
+        /* Custom Popup matching ImageDetails zoom exactly */
+        .image-popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 90vw;
+            height: 90vh;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            background: #ffffff; /* transparent PNG fix */
+        }
+        .popup-image-container {
+            position: relative;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAOElEQVQYV2N89erVfwY0ICYmxhhgxKphGAWjYEwB5y5dumSEcRmN7u7uRjTNKF4YZoGwi+DqkAIA1z8kR+H/TngAAAAASUVORK5CYII='), #ffffff;
+            background-repeat: repeat;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        .popup-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .popup-footer {
+            background: #2a2c31;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .popup-footer .brand {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+        .popup-footer .image-id {
+            text-align: right;
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+        .popup-footer .image-id span {
+            color: #9ba0a9;
+            font-weight: normal;
+        }
+        .popup-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 32px;
+            font-weight: lighter;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.2s;
+            z-index: 10000;
+        }
+        .popup-close:hover {
+            color: #ff3b3f;
         }
     </style>
     <!-- JavaScript Bundle with Popper -->
@@ -58,6 +131,7 @@
                     @php
                         $subscriptions = json_decode($project->subscription?->points);
                         $subscriptionDesigner = $project->subscription->designer;
+                        $subscriptionDesign = $project->subscription->design;
 
                         $expireDate = \Carbon\Carbon::parse($project->expire_date)->startOfDay();
                         $today = \Carbon\Carbon::now()->startOfDay();
@@ -65,7 +139,23 @@
 
                         $expireSubmitDate = \Carbon\Carbon::parse($project->expire_date);
                         $currentDate = \Carbon\Carbon::now();
+                        $isParticipatingDesigner = false;
+                        $userUploadsCount = 0;
+                        $maxPerDesigner = 0;
+
                         $authUser = \Illuminate\Support\Facades\Auth::user();
+
+                        if ($authUser) {
+                            $isParticipatingDesigner = $project->projectSubmit->contains('designer_id', $authUser->id);
+
+                            if ($subscriptionDesigner > 0) {
+                                $maxPerDesigner = floor($subscriptionDesign / $subscriptionDesigner);
+                                $userUploadsCount = \App\Models\Upload::whereHas('projectSubmit', function($q) use ($project, $authUser) {
+                                    $q->where('project_id', $project->id)
+                                      ->where('designer_id', $authUser->id);
+                                })->count();
+                            }
+                        }
                     @endphp
 
                     <div class="card">
@@ -83,6 +173,12 @@
 
                                 <span>Total Designers: <b>{{ $project->subscription->designer ?? '0' }}</b></span>
                                 <span>Total Designs: <b>{{ $project->subscription->design ?? '0' }}</b></span>
+
+
+                                <span class="sidebar-info">Submitted Designer :
+                                    <strong>{{ $project->total_designer ?? '0' }}</strong> </span>
+                                <span class="sidebar-info"> Submitted design :
+                                    <strong>{{ $project->total_submitted_design ?? '0' }}</strong></span>
                             </div>
                         </div>
                     </div>
@@ -116,8 +212,18 @@
                                 View all ({{ $project->uploads->count() }})
                             </a>
 
-                            @if ($authUser->role_id == 2)
-                                @if ($currentDate->lte($expireSubmitDate) && $subscriptionDesigner > $project->total_designer)
+                            @if ($authUser && $authUser->role_id == 2)
+                                @php
+                                    $hasTimeLeft = $currentDate->lte($expireSubmitDate);
+                                    $hasDesignSlots = $subscriptionDesign > $project->total_submitted_design;
+                                    $hasDesignerSlots = $subscriptionDesigner > $project->total_designer;
+
+                                    // Make sure individual designer does not exceed their allotted limit (e.g. 6 limit / 2 designers = 3 max per designer)
+                                    $hasUserDesignSlots = $userUploadsCount < $maxPerDesigner;
+
+                                    $canSubmit = $hasTimeLeft && $hasDesignSlots && $hasUserDesignSlots && ($isParticipatingDesigner || $hasDesignerSlots);
+                                @endphp
+                                @if ($canSubmit)
                                     <div>
                                         <a href="{{ route('job-submission', $project->id) }}"
                                             class="btn btn-sm btn-primary">
@@ -140,8 +246,26 @@
 
                     <!-- Body -->
                     <div class="card-body mt-2">
-                        <div class="row g-3">
+                        @if ($authUser && $authUser->role_id == 2)
+                            @php
+                                $uploadsLeft = max(0, $maxPerDesigner - $userUploadsCount);
+                                $alertClass = $uploadsLeft > 0 ? 'alert-info' : 'alert-danger';
+                                $iconClass = $uploadsLeft > 0 ? 'bi-info-circle-fill' : 'bi-exclamation-triangle-fill';
+                            @endphp
+                            <div class="alert {{ $alertClass }} d-flex align-items-center shadow-sm mb-4" role="alert" style="border-left: 4px solid {{ $uploadsLeft > 0 ? '#0dcaf0' : '#dc3545' }};">
+                                <i class="bi {{ $iconClass }} me-3 fs-4"></i>
+                                <div>
+                                    <strong>Designer Quota:</strong> You have submitted <b>{{ $userUploadsCount }}</b> out of your max <b>{{ $maxPerDesigner }}</b> allowed designs. 
+                                    @if($uploadsLeft > 0)
+                                        You can still upload <b class="text-primary">{{ $uploadsLeft }}</b> more.
+                                    @else
+                                        Your upload limit for this project is <b class="text-danger">Full</b>.
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
 
+                        <div class="row g-3">
 
                             @if (count($project->uploads) > 0)
                                 @foreach ($project->uploads as $key => $uploadData)
@@ -150,18 +274,21 @@
 
                                             <!-- Image + Overlay -->
                                             <div class="position-relative">
+                                                <!-- Watermark Overlay added here -->
+                                                <div class="watermark-overlay" style="border-radius: 0.5rem;"></div>
+
                                                 <div class="card-body p-2 d-flex justify-content-center align-items-center bg-light"
-                                                    style="height: 200px; overflow: hidden;">
+                                                    style="height: 200px; overflow: hidden; position: relative;">
                                                     <img src="{{ asset($uploadData->file_path) }}" alt="Request Image"
                                                         class="img-fluid rounded-3"
-                                                        style="max-height: 180px; object-fit: cover;">
+                                                        style="max-height: 180px; object-fit: cover;" oncontextmenu="return false" draggable="false">
                                                 </div>
 
                                                 <!-- Center Overlay Icon -->
                                                 <button
                                                     class="btn btn-light rounded-circle shadow position-absolute top-50 start-50 translate-middle"
-                                                    style="color: #0d6efd; font-size: 1.5rem;" data-bs-toggle="modal"
-                                                    data-bs-target="#imageModal{{ $key }}">
+                                                    style="color: #0d6efd; font-size: 1.5rem; z-index: 20;"
+                                                    onclick="openCustomImageModal('{{ asset($uploadData->file_path) }}', '{{ addslashes($uploadData->projectSubmit?->designer?->name) }}')">
                                                     <i class="bi bi-arrows-fullscreen"></i>
                                                 </button>
                                             </div>
@@ -190,31 +317,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="imageModal{{ $key }}" tabindex="-1"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-xl"> <!-- বড় modal -->
-                                            <div class="modal-content bg-dark rounded-0">
-                                                <div class="modal-header border-0">
-                                                    <h5 class="modal-title text-white">Preview</h5>
-                                                    <button type="button" class="btn-close btn-close-white"
-                                                        data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body d-flex justify-content-center align-items-center p-0 position-relative"
-                                                    style="max-height: 100vh; overflow:hidden;">
-
-                                                    <!-- Image -->
-                                                    <img src="{{ asset($uploadData->file_path) }}" class="img-fluid"
-                                                        style="max-height: 100vh; max-width: 100%; object-fit: contain;"
-                                                        alt="Preview">
-
-                                                    <!-- Watermark Overlay -->
-                                                    <div class="watermark-text">Chobi Dokan</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 @endforeach
                             @else
                                 <div class="col-12 text-center py-4">
@@ -230,4 +332,47 @@
 
 
 
+    <!-- Fullscreen Custom popup matching imageDetails zoom -->
+    <div id="customImagePopup" class="image-popup p-0 m-0">
+        <span class="popup-close" onclick="closeCustomImageModal()"><i class="fa fa-times"></i></span>
+
+        <div class="popup-content-wrapper">
+            <div class="popup-image-container">
+                <img id="popupImageElement" src="" alt="Preview" class="popup-image" oncontextmenu="return false" draggable="false">
+                <div class="watermark-overlay"></div>
+            </div>
+
+            <div class="popup-footer">
+                <div class="brand">chobidokan</div>
+                <div class="image-id">
+                    Submitted by: <span id="popupSubmitterName" style="color: #ffffff; font-weight: bold;"></span><br>
+                    <span style="color: #9ba0a9; font-weight: normal;">www.chobidokan.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openCustomImageModal(imageSrc, submitterName) {
+            document.getElementById('popupImageElement').src = imageSrc;
+            document.getElementById('popupSubmitterName').innerText = submitterName;
+
+            let popup = document.getElementById('customImagePopup');
+            popup.style.display = "flex";
+            document.body.style.overflow = "hidden"; // prevent background scrolling
+        }
+
+        function closeCustomImageModal() {
+            let popup = document.getElementById('customImagePopup');
+            popup.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        // Close when clicking outside content
+        document.getElementById('customImagePopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCustomImageModal();
+            }
+        });
+    </script>
 @endsection

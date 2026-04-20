@@ -5,7 +5,7 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                       Project List
+                        Project List
                     </div>
                     <div class="panel-body">
                         <div class="table-responsive">
@@ -16,7 +16,7 @@
 
                                     </th>
                                     <th>
-                                       Project Name
+                                        Project Name
                                     </th>
                                     <th>
                                         Attachment
@@ -43,7 +43,7 @@
                                         T.Submitted Design
                                     </th>
                                     <th>
-                                       Status
+                                        Status
                                     </th>
                                     <th>
                                         Action
@@ -120,7 +120,7 @@
                                         @endif
 
                                         <td>
-                                            <a class="btn btn-xs btn-info" href="{{ route('admin.active-project.details', $project->id) }}">
+                                            <a class="btn btn-xs btn-info" href="{{ route('admin.completed-project.details', $project->id) }}">
                                                 <i class="fa fa-list"></i> Details
                                             </a>
 
