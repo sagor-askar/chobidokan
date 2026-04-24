@@ -22,6 +22,9 @@ return new class extends Migration
             $table->integer('total_purchase')->default(0);
             $table->date('expire_date')->nullable();
             $table->integer('status')->default(1)->comment('0=>Terminated, 1=>Active');
+
+            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
+            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
             $table->timestamps();
         });
     }

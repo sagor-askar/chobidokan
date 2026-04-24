@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('card_type')->nullable();
             $table->string('bank_txn')->nullable();
             $table->integer('status')->default(0)->comment('0=>Inproggress, 1=>Approved,2=Rejected');
+
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->timestamps();
         });
     }

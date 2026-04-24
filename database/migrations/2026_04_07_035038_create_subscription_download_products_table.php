@@ -17,6 +17,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('subscription_purchase_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
+            $table->integer('designer_paid_status')->default(0)->comment("0=Unpaid,1= Paid");
+
+            $table->foreign('subscription_purchase_id')->references('id')->on('subscription_purchases')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->timestamps();
         });
     }

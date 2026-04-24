@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('project_id')->nullable();
+            $table->unsignedBigInteger('subscription_id')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
             $table->unsignedBigInteger('designer_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
@@ -24,6 +25,9 @@ return new class extends Migration
             $table->string('card_type')->nullable();
             $table->string('bank_txn')->nullable();
             $table->string('is_counted')->default(0);
+            $table->integer('designer_paid_status')->default(0)->comment("0=Unpaid,1= Paid");
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->timestamps();
         });
     }
