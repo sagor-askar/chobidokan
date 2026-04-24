@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('file_path')->nullable();
             $table->string('file_name')->nullable();
             $table->string('file_type')->nullable();
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->timestamps();
         });

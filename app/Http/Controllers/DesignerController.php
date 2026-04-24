@@ -346,9 +346,14 @@ class DesignerController extends Controller
     public function productDelete($id)
     {
         $product = Product::findOrFail($id);
-        if ($product->file_path && file_exists(public_path($product->file_path))) {
-            unlink(public_path($product->file_path));
+        
+        if ($product->file_path) {
+            $oldPath = storage_path('app/' . $product->file_path);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
         }
+        
         $product->delete();
         return redirect()->back()->with('success', 'Product deleted successfully!');
     }

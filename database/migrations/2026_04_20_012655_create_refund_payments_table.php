@@ -22,6 +22,11 @@ return new class extends Migration
             $table->integer('amount')->default(0);
             $table->string('card_type')->nullable();
             $table->string('bank_txn')->nullable();
+
+            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
