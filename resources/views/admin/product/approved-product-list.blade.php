@@ -171,10 +171,6 @@
                                                     <input type="submit" class="btn btn-xs btn-danger"
                                                         value="{{ __('global.delete') }}">
                                                 </form>
-                                                <a class="btn btn-xs btn-info"
-                                                    href="{{ route('admin.project.details', $product->id) }}">
-                                                    <i class="fa fa-list"></i> Details
-                                                </a>
 
                                             </td>
 
