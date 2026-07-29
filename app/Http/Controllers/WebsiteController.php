@@ -135,17 +135,42 @@ class WebsiteController extends Controller
     public function designerProfile($id)
     {
         $user = User::findOrFail($id);
+
+        $imageProducts = Product::where('designer_id', $id)
+            ->where('type', 1)
+            ->latest()
+            ->paginate(8, ['*'], 'images_page');
+
+        $videoProducts = Product::where('designer_id', $id)
+            ->where('type', 2)
+            ->latest()
+            ->paginate(8, ['*'], 'videos_page');
+
         $uploads = Upload::with(['projectSubmit', 'project'])
             ->whereHas('projectSubmit', function ($q) use ($id) {
                 $q->where('designer_id', $id);
             })
-            ->paginate(6);
-        $totalSubmit = $uploads->total();
+            ->latest()
+            ->paginate(8, ['*'], 'uploads_page');
+
         $totalProject = ProjectSubmit::where('designer_id', $id)
             ->distinct('project_id')
             ->count('project_id');
 
-        return view('frontend.profiles.designerProfile', compact(   'user','uploads','totalProject','totalSubmit'));
+        $totalSubmit = $uploads->total();
+        $totalImages = $imageProducts->total();
+        $totalVideos = $videoProducts->total();
+
+        return view('frontend.profiles.designerProfile', compact(
+            'user',
+            'imageProducts',
+            'videoProducts',
+            'uploads',
+            'totalProject',
+            'totalSubmit',
+            'totalImages',
+            'totalVideos'
+        ));
     }
 
 
@@ -458,7 +483,7 @@ class WebsiteController extends Controller
                                 ->where('status', 1)
                                 ->first();
         }
-        $hasAccess = ($isPayment !== null) || ($isActiveSubscription !== null);
+        $hasAccess = ($product->is_free == 1 && Auth::check()) || ($isPayment !== null) || ($isActiveSubscription !== null);
 
         if ($product->type == 1) {
             return view('frontend.menu.imageDetails',compact('hasAccess','isPayment','isActiveSubscription','subscriptions','category','product','uniqueTags','similarProducts'));
@@ -495,8 +520,6 @@ class WebsiteController extends Controller
 
         $product = Product::findOrFail($id);
 
-
-          $hasAccess = false;
           $payment = Payment::where('product_id', $id)
             ->where('user_id', auth()->id())
             ->first();
@@ -504,40 +527,60 @@ class WebsiteController extends Controller
             $isActiveSubscription = SubscriptionPurchase::where('user_id', auth()->id())
                 ->where('status', 1)
                 ->first();
-        $hasAccess = ($payment !== null) || ($isActiveSubscription !== null);
+        $hasAccess = ($product->is_free == 1) || ($payment !== null) || ($isActiveSubscription !== null);
 
         if (!$hasAccess) {
             abort(403, 'You did not purchase this product.');
         }
 
         // Count only once
-         if ($payment !== null){
-             if ($payment->is_counted == 0) {
-                $payment->update(['is_counted' => 1]);
-                $product->increment('total_download');
-              }
-         }
-          if ($isActiveSubscription !== null){
-              $subscriptionDownloadProduct = SubscriptionDownloadProduct::where('subscription_purchase_id', $isActiveSubscription->id)->where('product_id', $id)->first();
-               $paymentData = Payment::findOrFail($isActiveSubscription->payment_id);
-              if ($subscriptionDownloadProduct == null) {
-                  if ($paymentData->is_counted == 0) {
-                      $paymentData->update(['is_counted' => 1]);
+        if ($product->is_free == 1) {
+            $product->increment('total_download');
+        } else {
+            if ($payment !== null){
+                if ($payment->is_counted == 0) {
+                    $payment->update(['is_counted' => 1]);
+                    $product->increment('total_download');
+                }
+            }
+            if ($isActiveSubscription !== null){
+                $subscriptionDownloadProduct = SubscriptionDownloadProduct::where('subscription_purchase_id', $isActiveSubscription->id)->where('product_id', $id)->first();
+                $paymentData = Payment::findOrFail($isActiveSubscription->payment_id);
+                if ($subscriptionDownloadProduct == null) {
+                    if ($paymentData->is_counted == 0) {
+                        $paymentData->update(['is_counted' => 1]);
 
-                  }
-                  if ($isActiveSubscription->total_purchase < $isActiveSubscription->total_image) {
-                       SubscriptionDownloadProduct::create([
-                          'product_id'      => $product->id,
-                          'subscription_purchase_id' => $isActiveSubscription->id,
-                      ]);
-                      $isActiveSubscription->increment('total_purchase');
-                      $product->increment('total_download');
-                  }
-                  if ($isActiveSubscription->total_purchase == $isActiveSubscription->total_image) {
-                      $isActiveSubscription->update(['status' => 0]);
-                  }
-              }
-         }
+                    }
+                    if ($isActiveSubscription->total_purchase < $isActiveSubscription->total_image) {
+                        SubscriptionDownloadProduct::create([
+                            'product_id'      => $product->id,
+                            'subscription_purchase_id' => $isActiveSubscription->id,
+                        ]);
+                        $isActiveSubscription->increment('total_purchase');
+                        $product->increment('total_download');
+
+                        $designer = User::find($product->designer_id);
+                        if ($designer) {
+                            $setting = Setting::first();
+                            $adminPercentage = $setting ? $setting->admin_percentage : 0;
+                            $productPrice = $product->price ?? 0;
+                            $earningAmount = $productPrice - ($productPrice * ($adminPercentage / 100));
+
+                            send_custom_email($designer->email, 'Congratulations! Your Product Has Been Purchased', 'emails.designer_sale_notification', [
+                                'designer' => $designer,
+                                'product' => $product,
+                                'amount' => $productPrice,
+                                'earning_amount' => $earningAmount,
+                                'admin_percentage' => $adminPercentage
+                            ]);
+                        }
+                    }
+                    if ($isActiveSubscription->total_purchase == $isActiveSubscription->total_image) {
+                        $isActiveSubscription->update(['status' => 0]);
+                    }
+                }
+            }
+        }
 
         $filePath = storage_path('app/' . $product->file_path);
 
@@ -577,7 +620,6 @@ class WebsiteController extends Controller
         }
         $product = Product::findOrFail($id);
 
-        $hasAccess = false;
         $payment = Payment::where('product_id', $id)
             ->where('user_id', auth()->id())
             ->first();
@@ -585,37 +627,58 @@ class WebsiteController extends Controller
         $isActiveSubscription = SubscriptionPurchase::where('user_id', auth()->id())
             ->where('status', 1)
             ->first();
-        $hasAccess = ($payment !== null) || ($isActiveSubscription !== null);
+
+        $hasAccess = ($product->is_free == 1) || ($payment !== null) || ($isActiveSubscription !== null);
 
         if (!$hasAccess) {
             abort(403, 'You did not purchase this product.');
         }
 
         // Count only once
-        if ($payment !== null){
-            if ($payment->is_counted == 0) {
-                $payment->update(['is_counted' => 1]);
-                $product->increment('total_download');
-            }
-        }
-        if ($isActiveSubscription !== null){
-            $subscriptionDownloadProduct = SubscriptionDownloadProduct::where('subscription_purchase_id', $isActiveSubscription->id)->where('product_id', $id)->first();
-            $paymentData = Payment::findOrFail($isActiveSubscription->payment_id);
-            if ($subscriptionDownloadProduct == null) {
-                if ($paymentData->is_counted == 0) {
-                    $paymentData->update(['is_counted' => 1]);
-
-                }
-                if ($isActiveSubscription->total_purchase < $isActiveSubscription->total_image) {
-                    SubscriptionDownloadProduct::create([
-                        'product_id'      => $product->id,
-                        'subscription_purchase_id' => $isActiveSubscription->id,
-                    ]);
-                    $isActiveSubscription->increment('total_purchase');
+        if ($product->is_free == 1) {
+            $product->increment('total_download');
+        } else {
+            if ($payment !== null){
+                if ($payment->is_counted == 0) {
+                    $payment->update(['is_counted' => 1]);
                     $product->increment('total_download');
                 }
-                if ($isActiveSubscription->total_purchase == $isActiveSubscription->total_image) {
-                    $isActiveSubscription->update(['status' => 0]);
+            }
+            if ($isActiveSubscription !== null){
+                $subscriptionDownloadProduct = SubscriptionDownloadProduct::where('subscription_purchase_id', $isActiveSubscription->id)->where('product_id', $id)->first();
+                $paymentData = Payment::findOrFail($isActiveSubscription->payment_id);
+                if ($subscriptionDownloadProduct == null) {
+                    if ($paymentData->is_counted == 0) {
+                        $paymentData->update(['is_counted' => 1]);
+
+                    }
+                    if ($isActiveSubscription->total_purchase < $isActiveSubscription->total_image) {
+                        SubscriptionDownloadProduct::create([
+                            'product_id'      => $product->id,
+                            'subscription_purchase_id' => $isActiveSubscription->id,
+                        ]);
+                        $isActiveSubscription->increment('total_purchase');
+                        $product->increment('total_download');
+
+                        $designer = User::find($product->designer_id);
+                        if ($designer) {
+                            $setting = Setting::first();
+                            $adminPercentage = $setting ? $setting->admin_percentage : 0;
+                            $productPrice = $product->price ?? 0;
+                            $earningAmount = $productPrice - ($productPrice * ($adminPercentage / 100));
+
+                            send_custom_email($designer->email, 'Congratulations! Your Product Has Been Purchased', 'emails.designer_sale_notification', [
+                                'designer' => $designer,
+                                'product' => $product,
+                                'amount' => $productPrice,
+                                'earning_amount' => $earningAmount,
+                                'admin_percentage' => $adminPercentage
+                            ]);
+                        }
+                    }
+                    if ($isActiveSubscription->total_purchase == $isActiveSubscription->total_image) {
+                        $isActiveSubscription->update(['status' => 0]);
+                    }
                 }
             }
         }

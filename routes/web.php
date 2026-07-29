@@ -77,6 +77,11 @@ Route::post('/user/register', 'Auth\RegisterController@userRegister')->name('use
 Route::post('/user-login', 'Auth\LoginController@customLogin')->name('customLogin');
 Route::post('/seller/register', 'Auth\RegisterController@sellerRegister')->name('seller.register');
 
+// Email Verification Routes
+Route::get('/verify-email', 'Auth\RegisterController@verifyEmailPage')->name('verify.email.page');
+Route::post('/verify-email', 'Auth\RegisterController@verifyEmail')->name('verify.email');
+Route::post('/verify-email/resend', 'Auth\RegisterController@resendVerificationCode')->name('verify.email.resend');
+
 Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
@@ -184,6 +189,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 });
 
 Route::group(['middleware' => ['custom_auth','is_unbanned']], function () {
+    Route::get('/notifications/{id}/read', function ($id) {
+        $notification = \App\Models\Notification::where('user_id', auth()->id())->findOrFail($id);
+        $notification->is_read = true;
+        $notification->save();
+        return redirect($notification->click_url ?? '/');
+    })->name('notifications.read');
+
     Route::get('/custom-request', [WebsiteController::class, 'customRequest'])->name('custom-request');
     Route::get('customize-details/{id}', [ProjectController::class, 'customizationDetail'])->name('customize-details');
     Route::get('project/submitted-file-view-all/{id}', [ProjectController::class, 'submittedFileViewAll'])->name('submitted-file-view-all');

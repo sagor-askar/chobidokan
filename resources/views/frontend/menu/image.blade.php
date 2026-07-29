@@ -60,6 +60,11 @@
 
   .gallery-item:hover .overlay {
       opacity: 1 !important;
+  }
+
+  .overlay-top-right,
+  .overlay-bottom-left,
+  .overlay-bottom-right {
       pointer-events: auto;
   }
 
@@ -317,7 +322,10 @@
                               <i class="fa fa-clone"></i>
                           </a>
 
-                          <a href="{{ route('product-details',$product->id) }}" class="action-btn" title="View">
+                          <a href="{{ route('product-details',$product->id) }}" target="_blank" class="action-btn eyeball-view-btn" title="View"
+                             data-file="{{ route('product.file.view', $product->id) }}"
+                             data-type="{{ $product->type }}"
+                             data-asset-id="{{ $product->asset_id ?? '' }}">
                               <i class="fa fa-eye"></i>
                           </a>
                       </div>
@@ -343,20 +351,32 @@
                               </div>
                           </div>
 
-                          <!-- Download / Buy -->
-                          @if($isPayment)
-                              <a href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}" class="action-btn" title="Download">
-                                  <i class="fa fa-download"></i>
-                              </a>
-                          @else
-                              <form action="{{ route('product.purchase') }}" method="POST" class="cart-btn-form">
-                                  @csrf
-                                  <input type="hidden" name="product_id" value="{{$product->id}}">
-                                  <button type="submit" class="action-btn" title="Buy">
-                                      <i class="fa fa-download"></i>
-                                  </button>
-                              </form>
-                          @endif
+                           <!-- Download / Buy -->
+                           @if(auth()->check())
+                               @if($product->is_free == 1)
+                                   <a href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}" class="action-btn" title="Download">
+                                       <i class="fa fa-download"></i>
+                                   </a>
+                               @else
+                                   @if($isPayment)
+                                       <a href="{{ route('product.image-download', ['id' => base64_encode($product->id)]) }}" class="action-btn" title="Download">
+                                           <i class="fa fa-download"></i>
+                                       </a>
+                                   @else
+                                       <form action="{{ route('product.purchase') }}" method="POST" class="cart-btn-form">
+                                           @csrf
+                                           <input type="hidden" name="product_id" value="{{$product->id}}">
+                                           <button type="submit" class="action-btn" title="Buy">
+                                               <i class="fa fa-download"></i>
+                                           </button>
+                                       </form>
+                                   @endif
+                               @endif
+                           @else
+                               <a href="{{ route('signin') }}" class="action-btn">
+                                   <i class="fa fa-cart-plus"></i>
+                               </a>
+                           @endif
                       </div>
                   </div>
               </div>

@@ -143,11 +143,11 @@
         });
     </script>
 
-{{--    <script>--}}
-{{--        document.addEventListener('contextmenu', function(e) {--}}
-{{--            e.preventDefault();--}}
-{{--        });--}}
-{{--    </script>--}}
+    <script>
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    </script>
 
 
 
@@ -200,6 +200,168 @@
                     }
                 });
         }
+    </script>
+
+    <!-- Global Fullscreen Custom Popup Modal -->
+    <style>
+        .global-image-popup {
+            display: none;
+            position: fixed;
+            z-index: 99999;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+        }
+        .global-popup-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 90vw;
+            height: 90vh;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            background: #111;
+            position: relative;
+        }
+        .global-popup-media-container {
+            position: relative;
+            background: #111;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        .global-popup-media {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .global-popup-footer {
+            background: #2a2c31;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .global-popup-footer .brand {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+        .global-popup-footer .media-id {
+            text-align: right;
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+        .global-popup-footer .media-id span {
+            color: #9ba0a9;
+            font-weight: normal;
+        }
+        .global-popup-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 32px;
+            font-weight: lighter;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.2s;
+            z-index: 100000;
+        }
+        .global-popup-close:hover {
+            color: #ff3b3f;
+        }
+        /* Repeating Watermark Pattern over image */
+        .global-watermark-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="350" height="250"><g transform="translate(175, 125) rotate(-25) translate(-175, -125)"><text x="175" y="125" font-size="28" font-family="Arial, sans-serif" font-weight="300" fill="rgba(255,255,255,0.3)" text-anchor="middle" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">CHOBIDOKAN</text></g></svg>');
+            background-repeat: repeat;
+        }
+    </style>
+
+    <div id="globalImagePopup" class="global-image-popup mb-0 p-0">
+        <span class="global-popup-close" onclick="closeGlobalPopup()"><i class="fa fa-times"></i></span>
+
+        <div class="global-popup-content-wrapper">
+            <div class="global-popup-media-container">
+                <img id="globalPopupImg" src="" alt="Preview" class="global-popup-media" style="display: none;">
+                <video id="globalPopupVid" src="" class="global-popup-media" style="display: none;" controls controlsList="nodownload" oncontextmenu="return false;" autoplay playsinline loop></video>
+                <div class="global-watermark-overlay"></div>
+            </div>
+
+            <div class="global-popup-footer">
+                <div class="brand">chobidokan</div>
+                <div class="media-id" id="globalPopupMediaId">
+                    IMAGE ID: <span id="globalPopupAssetId"></span><br>
+                    <span>www.chobidokan.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openGlobalPopup(element) {
+            const file = $(element).data('file');
+            const assetId = $(element).data('asset-id') || '';
+            const type = $(element).data('type'); // 1 = image, 2 = video
+
+            const $img = $('#globalPopupImg');
+            const $vid = $('#globalPopupVid');
+            const $mediaIdContainer = $('#globalPopupMediaId');
+
+            $img.hide();
+            $vid.hide();
+            $vid[0].pause();
+            $vid[0].src = '';
+
+            if (type == 2) {
+                $vid[0].src = file;
+                $vid.show();
+                $vid[0].play().catch(e => console.log('Video play failed or blocked', e));
+                $mediaIdContainer.html('VIDEO ID: ' + assetId + '<br><span>www.chobidokan.com</span>');
+            } else {
+                $img[0].src = file;
+                $img.show();
+                $mediaIdContainer.html('IMAGE ID: ' + assetId + '<br><span>www.chobidokan.com</span>');
+            }
+
+            $('#globalImagePopup').css('display', 'flex');
+            $('body').css('overflow', 'hidden'); // prevent background scrolling
+        }
+
+        function closeGlobalPopup() {
+            $('#globalImagePopup').css('display', 'none');
+            $('body').css('overflow', 'auto');
+            const $vid = $('#globalPopupVid');
+            $vid[0].pause();
+            $vid[0].src = '';
+        }
+
+        // Close when clicking outside content wrapper
+        $(document).ready(function() {
+            $('#globalImagePopup').on('click', function(e) {
+                if (e.target === this) {
+                    closeGlobalPopup();
+                }
+            });
+
+            // Bind click event on eyeball-view-btn globally
+            $(document).on('click', '.eyeball-view-btn', function(e) {
+                e.preventDefault();
+                openGlobalPopup(this);
+            });
+        });
     </script>
 
 </body>

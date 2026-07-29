@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->tinyInteger('type')->default(1)->after('name')->comment("1= Image,2= Custom Design");
-            $table->integer('total_image')->nullable()->after('price');
+        Schema::table('settings', function (Blueprint $table) {
+            $table->string('logo_icon')->after('logo');
+
         });
     }
 
@@ -26,9 +26,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropColumn('type');
-            $table->dropColumn('total_image');
+        Schema::table('settings', function (Blueprint $table) {
+            $table->integer('logo_icon');
         });
     }
 };

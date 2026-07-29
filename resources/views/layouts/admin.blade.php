@@ -46,10 +46,25 @@
 
 <body class="sidebar-mini skin-purple" style="height: auto; min-height: 100%;">
     <div class="wrapper" style="height: auto; min-height: 100%;">
+        @php
+            $adminSiteSettings = \App\Models\Setting::first();
+        @endphp
         <header class="main-header">
             <a href="#" class="logo">
-                <span class="logo-mini"><b>{{ trans('panel.site_title') }}</b></span>
-                <span class="logo-lg">{{ trans('panel.site_title') }}</span>
+                <span class="logo-mini">
+                    @if(!empty($adminSiteSettings->logo_icon))
+                        <img src="{{ asset($adminSiteSettings->logo_icon) }}" alt="logo" style="max-height: 30px; width: auto;">
+                    @else
+                        <b>{{ trans('panel.site_title') }}</b>
+                    @endif
+                </span>
+                <span class="logo-lg">
+                    @if(!empty($adminSiteSettings->logo))
+                        <img src="{{ asset($adminSiteSettings->logo) }}" alt="{{ $adminSiteSettings->site_title ?? trans('panel.site_title') }}" style="max-height: 36px; width: auto;">
+                    @else
+                        {{ trans('panel.site_title') }}
+                    @endif
+                </span>
             </a>
 
             <nav class="navbar navbar-static-top">

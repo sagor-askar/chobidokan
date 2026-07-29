@@ -9,9 +9,11 @@ use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Project;
+use App\Models\Setting;
 use App\Models\Subscription;
 use App\Models\SubscriptionPurchase;
 use App\Models\TempPayment;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -99,7 +101,7 @@ class PaymentController extends Controller
     {
         $project_id = $request->opt_a;
         $subscription_id = $request->opt_b;
-        $project = Project::find($project_id);
+        $project = Project::with('category')->find($project_id);
         $subscription = Subscription::find($subscription_id);
         if (!$project) {
             return redirect()->route('customize')->with('error', 'Your Order Failed !');
@@ -114,19 +116,17 @@ class PaymentController extends Controller
             'bank_txn'       => $request->bank_txn ?? null,
         ]);
 
-//        if ($order->email) {
-//            $mail_data = [
-//                'name' => $order->name,
-//                'email' => $order->email,
-//                'address' => $order->address,
-//                'order_date' => Carbon::parse($order->created_at)->format('d-m-Y'),
-//                'amount' => $order->total_amount,
-//                'payment_type' =>$request->card_type,
-//                'site_url' => "https://muktokowlom.com/",
-//                'admin_email' => "support@muktokowlom.com",
-//            ];
-//            Mail::to($mail_data['email'])->send(new BookOrderEmail($mail_data));
-//        }
+        $user = $project->user;
+        if ($user) {
+            send_custom_email($user->email, 'Custom Project Request Placed Successfully', 'emails.custom_project_success', [
+                'user' => $user,
+                'project' => $project,
+                'subscription' => $subscription,
+                'amount' => $request->amount ?? ($subscription ? $subscription->price : 0),
+                'txn_id' => $request->bank_txn ?? 'N/A'
+            ]);
+        }
+
         return redirect()->route('customize')->with('success', 'Your payment was successful!');
     }
 
@@ -217,7 +217,7 @@ class PaymentController extends Controller
             $transaction_id = (string) Str::uuid();
             $product = Product::find($request->product_id);
             $user = Auth::user();
-            $amount = $request->price;
+            $amount = $product->price;
             $subscription_id = $request->subscription_id;
 
             session(['product_id' => $product->id]);
@@ -317,6 +317,46 @@ class PaymentController extends Controller
             }
 
             Auth::loginUsingId($user_id);
+
+            $user = User::find($user_id);
+            if ($user) {
+                if ($subscription_id !== null) {
+                    $subscription = Subscription::find($subscription_id);
+                    $expiry_date = Carbon::now()->addDays($subscription->days)->format('Y-m-d');
+                    send_custom_email($user->email, 'Subscription Activated Successfully', 'emails.subscription_success', [
+                        'user' => $user,
+                        'subscription' => $subscription,
+                        'amount' => $request->amount,
+                        'txn_id' => $request->bank_txn ?? 'N/A',
+                        'expiry_date' => $expiry_date
+                    ]);
+                } else {
+                    send_custom_email($user->email, 'Product Purchase Successful', 'emails.purchase_confirmation', [
+                        'user' => $user,
+                        'type' => 'product',
+                        'item_name' => $product->title,
+                        'amount' => $request->amount,
+                        'txn_id' => $request->bank_txn ?? 'N/A'
+                    ]);
+                }
+            }
+
+            if ($subscription_id === null) {
+                $designer = User::find($product->designer_id);
+                if ($designer) {
+                    $setting = Setting::first();
+                    $adminPercentage = $setting ? $setting->admin_percentage : 0;
+                    $earningAmount = $request->amount - ($request->amount * ($adminPercentage / 100));
+
+                    send_custom_email($designer->email, 'Congratulations! Your Product Has Been Purchased', 'emails.designer_sale_notification', [
+                        'designer' => $designer,
+                        'product' => $product,
+                        'amount' => $request->amount,
+                        'earning_amount' => $earningAmount,
+                        'admin_percentage' => $adminPercentage
+                    ]);
+                }
+            }
 
             DB::commit();
 
@@ -450,9 +490,35 @@ class PaymentController extends Controller
                         'bank_txn'    => $request->bank_txn,
                         'is_counted'  => 0,
                     ]);
+
+                    $designer = User::find($product->designer_id);
+                    if ($designer) {
+                        $setting = Setting::first();
+                        $adminPercentage = $setting ? $setting->admin_percentage : 0;
+                        $earningAmount = $product->price - ($product->price * ($adminPercentage / 100));
+
+                        send_custom_email($designer->email, 'Congratulations! Your Product Has Been Purchased', 'emails.designer_sale_notification', [
+                            'designer' => $designer,
+                            'product' => $product,
+                            'amount' => $product->price,
+                            'earning_amount' => $earningAmount,
+                            'admin_percentage' => $adminPercentage
+                        ]);
+                    }
                 }
 
                 $download_files[] = storage_path('app/' . $product->file_path);
+            }
+
+            $user = User::find($user_id);
+            if ($user) {
+                send_custom_email($user->email, 'Cart Purchase Successful', 'emails.purchase_confirmation', [
+                    'user' => $user,
+                    'type' => 'cart',
+                    'items' => $cart_products,
+                    'amount' => $tempPayment->total_amount,
+                    'txn_id' => $request->bank_txn ?? 'N/A'
+                ]);
             }
 
             Cart::where('user_id', $user_id)->delete();
@@ -583,6 +649,19 @@ class PaymentController extends Controller
                     'expire_date'     => Carbon::now()->addDays($subscription->days)->format('Y-m-d'),
                 ]);
             Auth::loginUsingId($user_id);
+
+            $user = User::find($user_id);
+            if ($user) {
+                $expiry_date = Carbon::now()->addDays($subscription->days)->format('Y-m-d');
+                send_custom_email($user->email, 'Subscription Activated Successfully', 'emails.subscription_success', [
+                    'user' => $user,
+                    'subscription' => $subscription,
+                    'amount' => $request->amount,
+                    'txn_id' => $request->bank_txn ?? 'N/A',
+                    'expiry_date' => $expiry_date
+                ]);
+            }
+
             DB::commit();
             // Pass download product_id to Blade
             return redirect()->route('welcome')->with('success', 'Payment Successfully Done .');

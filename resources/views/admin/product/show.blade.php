@@ -95,7 +95,7 @@
                                     </th>
 
                                     <td>
-                                        {{ $product->user->name ?? '' }}
+                                        {{ $product->designer->name ?? '' }}
                                     </td>
 
                                 </tr>
