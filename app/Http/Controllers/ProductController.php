@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,8 @@ class ProductController extends Controller
     public function uploadProduct()
     {
         $categories = Category::where("type",1)->where('status',1)->get();
-        return view('frontend.menu.fileUpload',compact('categories'));
+        $settings = Setting::first();
+        return view('frontend.menu.fileUpload',compact('categories','settings'));
     }
 
     public function addCategory(Request $request)
@@ -38,11 +40,12 @@ class ProductController extends Controller
         $request->validate([
             'title'       => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'price'       => 'required|numeric|min:1',
+            'price'       => $request->has('is_free') ? 'nullable|numeric|min:0' : 'required|numeric|min:0',
             'file'        => 'required|file',
             'type'        => 'required|in:1,2', // 1=image, 2=video
             'description' => 'nullable|string',
-            'tags' => 'nullable',
+            'tags'        => 'nullable',
+            'is_free'     => 'nullable|in:1',
         ]);
 
         if ($request->tags) {
@@ -50,6 +53,9 @@ class ProductController extends Controller
         }else{
             $tags = NULL;
         }
+
+        $isFree = $request->has('is_free') ? 1 : 0;
+        $price = $isFree ? 0 : $request->price;
 
         $assetId = mt_rand(100000000, 999999999);
 
@@ -78,10 +84,11 @@ class ProductController extends Controller
 
         Product::create([
             'title'       => $request->title,
-            'asset_id' => $assetId,
+            'asset_id'    => $assetId,
             'category_id' => $request->category_id,
-            'designer_id'     => Auth::id(),
-            'price'       => $request->price,
+            'designer_id' => Auth::id(),
+            'price'       => $price,
+            'is_free'     => $isFree,
             'type'        => $request->type,
             'tags'        => $tags,
             'description' => $request->description,

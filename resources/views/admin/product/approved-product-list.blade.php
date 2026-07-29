@@ -122,8 +122,8 @@
                                             </td>
 
                                             <td>
-                                                <p style="color:steelblue "><b>{{ $product->user?->name ?? '' }}</b></p>
-                                                <p style="color:lightseagreen ">{{ $product->user?->email ?? '' }}</p>
+                                                <p style="color:steelblue "><b>{{ $product->designer?->name ?? '' }}</b></p>
+                                                <p style="color:lightseagreen ">{{ $product->designer?->email ?? '' }}</p>
                                             </td>
 
                                             <td>

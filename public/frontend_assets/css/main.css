@@ -149,17 +149,25 @@ h6 {
 
 .header .logo {
     line-height: 1;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 !important;
 }
 
 .header .logo img {
     max-height: 36px;
-    margin-right: 8px;
+    margin: 0;
+}
+
+.header .navmenu {
+    margin-left: auto;
 }
 
 .header .logo h1 {
     font-size: 30px;
     margin: 0;
-    margin-left: 300px;
     font-weight: 700;
     color: var(--heading-color);
 }
@@ -184,11 +192,13 @@ h6 {
 
 @media (max-width: 1200px) {
     .header .logo {
-        order: 1;
+        position: static;
+        transform: none;
+        order: 2;
     }
 
     .header .btn-getstarted {
-        order: 2;
+        order: 1;
         margin: 0 15px 0 0;
         padding: 6px 15px;
     }
@@ -821,7 +831,8 @@ section,
 .hero {
     width: 100%;
     position: relative;
-    padding: 130px 0 10px 0; /* Huge top padding to clear fixed header, tight bottom padding to stay near premium section */
+    padding: 130px 0 10px 0;
+    /* Huge top padding to clear fixed header, tight bottom padding to stay near premium section */
     display: flex;
     align-items: center;
     background-size: cover;

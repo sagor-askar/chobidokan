@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->tinyInteger('type')->default(1)->comment('1= Image/video,2= Custom design');
             $table->string('logo')->nullable();
             $table->longText('description')->nullable();
             $table->integer('status')->default(1)->comment('1=>Active, 0=>Inactive');

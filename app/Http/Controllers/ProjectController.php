@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ProjectSubmit;
 use App\Models\Upload;
+use App\Models\Notification;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -52,6 +53,26 @@ class ProjectController extends Controller
           $submittedFile = Upload::find($uploadId);
            $submittedFile->status = 1;
            $submittedFile->save();
+
+           if ($submittedFile->projectSubmit && $submittedFile->projectSubmit->designer) {
+               $designer = $submittedFile->projectSubmit->designer;
+               $project = $submittedFile->project;
+               send_custom_email($designer->email, 'Your Submitted Design has been Confirmed!', 'emails.design_confirmed', [
+                   'designer' => $designer,
+                   'project' => $project,
+                   'upload' => $submittedFile
+               ]);
+
+               Notification::create([
+                   'user_id' => $designer->id,
+                   'sender_id' => Auth::id(),
+                   'project_id' => $project->id,
+                   'type' => 'design_confirmation',
+                   'message' => 'Great news! Your design submission for "' . $project->name . '" has been confirmed by the client.',
+                   'click_url' => route('designer.orders'),
+               ]);
+           }
+
         return redirect()->route('user.dashboard')->with('success', 'Your Order has been confirmed !');
 
     }
@@ -112,6 +133,19 @@ class ProjectController extends Controller
                 ]);
             }
         }
+
+        $project = Project::find($id);
+        if ($project) {
+            Notification::create([
+                'user_id' => $project->user_id,
+                'sender_id' => Auth::id(),
+                'project_id' => $project->id,
+                'type' => 'design_submission',
+                'message' => 'A new design has been submitted for your project "' . $project->name . '". Please review it at your earliest convenience.',
+                'click_url' => route('customize-details', $project->id),
+            ]);
+        }
+
             DB::commit();
         return redirect()->route('customize-details',$id)->with('success', 'Project submitted successfully!');
         } catch (\Exception $e) {

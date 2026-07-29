@@ -21,6 +21,7 @@ return new class extends Migration
             $table->longText('logo_description')->nullable();
             $table->string('project_file')->nullable();
             $table->date('publish_date')->nullable();
+            $table->date('expire_date')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->integer('status')->default(1)->comment('1=>Active, 0=>Inactive,2=Completed');
             $table->timestamps();

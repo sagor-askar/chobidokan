@@ -25,6 +25,11 @@ return new class extends Migration
             $table->string('instagram')->nullable();
             $table->string('linkedin')->nullable();
             $table->string('logo')->nullable();
+            $table->string('logo_icon')->nullable();
+            $table->integer('admin_percentage')->default(0);
+            $table->integer('job_auto_approve_days')->nullable();
+            $table->integer('image_price')->default(0);
+            $table->integer('video_price')->default(0);
             $table->timestamps();
         });
     }

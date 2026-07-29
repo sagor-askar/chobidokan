@@ -48,8 +48,21 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
+        if ($user->is_verified == 0 && $user->role_id != 1) {
+            if (!$user->verification_code) {
+                $user->verification_code = random_int(100000, 999999);
+                $user->save();
+                send_custom_email($user->email, 'Verify Your Email Address', 'emails.signup_verification', [
+                    'user' => $user,
+                    'code' => $user->verification_code
+                ]);
+            }
+            Auth::logout();
+            session(['verify_email' => $user->email]);
+            return redirect()->route('verify.email.page')->with('warning', 'Please verify your email address to continue.');
+        }
 
-        if ($user->role_id ==1) {
+        if ($user->role_id == 1) {
             // Redirect to the admin dashboard
             return redirect()->route('admin.home');
         }
@@ -83,6 +96,20 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+
+            if ($user->is_verified == 0 && $user->role_id != 1) {
+                if (!$user->verification_code) {
+                    $user->verification_code = random_int(100000, 999999);
+                    $user->save();
+                    send_custom_email($user->email, 'Verify Your Email Address', 'emails.signup_verification', [
+                        'user' => $user,
+                        'code' => $user->verification_code
+                    ]);
+                }
+                Auth::logout();
+                session(['verify_email' => $user->email]);
+                return redirect()->route('verify.email.page')->with('warning', 'Please verify your email address to continue.');
+            }
 
             if ($user->role_id == 2) {
                 return redirect()->intended('/')

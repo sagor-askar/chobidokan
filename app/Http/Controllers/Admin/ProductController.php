@@ -28,6 +28,12 @@ class ProductController extends Controller
         $product->save();
 
         if ($product->status == 1) {
+            if ($product->designer) {
+                send_custom_email($product->designer->email, 'Your Product Approved & Live!', 'emails.product_approved', [
+                    'designer' => $product->designer,
+                    'product' => $product
+                ]);
+            }
           return redirect()->route('admin.approved.products.list')->with('success', 'Status Changed successfully.');
         }else{
             return redirect()->route('admin.products.list')->with('success', 'Status Changed successfully.');

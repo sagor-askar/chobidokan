@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DesignerPayment;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Project;
 use App\Models\RefundPayment;
 use App\Models\Subscription;
@@ -144,6 +145,20 @@ class DesignerPaymentController extends Controller
                        $payment->save();
                    }
               }
+            $designer = User::find($designerId);
+            $product = Product::find($productId);
+            if ($designer && $product) {
+                send_custom_email($designer->email, 'Payout Processed Successfully - Chobi Dokan', 'emails.designer_payout_notification', [
+                    'designer' => $designer,
+                    'payout_type' => 'Product Sale Payout',
+                    'item_name' => $product->title,
+                    'payment_method' => $request->card_type ?? 'Aamarpay',
+                    'txn_id' => $request->bank_txn ?? 'N/A',
+                    'date' => date('Y-m-d'),
+                    'amount' => $request->amount,
+                ]);
+            }
+
             if ($adminId) {
                 Auth::loginUsingId($adminId);
             }
@@ -306,6 +321,20 @@ class DesignerPaymentController extends Controller
                $order->status = 1;
                $order->save();
            }
+
+            $designer = User::find($designerId);
+            $project = Project::find($projectId);
+            if ($designer && $project) {
+                send_custom_email($designer->email, 'Payout Processed Successfully - Chobi Dokan', 'emails.designer_payout_notification', [
+                    'designer' => $designer,
+                    'payout_type' => 'Project Work Payout',
+                    'item_name' => $project->name,
+                    'payment_method' => $request->card_type ?? 'Aamarpay',
+                    'txn_id' => $request->bank_txn ?? 'N/A',
+                    'date' => date('Y-m-d'),
+                    'amount' => $request->amount,
+                ]);
+            }
 
             if ($adminId) {
                 Auth::loginUsingId($adminId);

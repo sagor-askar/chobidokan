@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Payment;
@@ -75,6 +76,25 @@ class UserController extends Controller
         $project = Project::find($id);
         $project->status = 2;
         $project->save();
+
+        $orderDetail = $project->orderDetails()->first();
+        if ($orderDetail && $orderDetail->designer) {
+            $designer = $orderDetail->designer;
+            send_custom_email($designer->email, 'Your Submitted Design has been Approved!', 'emails.design_approved', [
+                'designer' => $designer,
+                'project' => $project
+            ]);
+
+            Notification::create([
+                'user_id' => $designer->id,
+                'sender_id' => Auth::id(),
+                'project_id' => $project->id,
+                'type' => 'design_approval',
+                'message' => 'Congratulations! Your final files for "' . $project->name . '" have been approved by the client.',
+                'click_url' => route('designer.orders'),
+            ]);
+        }
+
         return redirect()->back()->with('success', ' Order Successfully Completed!');
     }
 

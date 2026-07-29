@@ -1,328 +1,553 @@
 @extends('includes.master')
 @section('content')
 <style>
-    .sidebar {
-        background-color: #fff;
-        border-left: 2px solid #ddd;
-        padding: 14px;
+    :root {
+        --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        --primary-hover: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+        --card-border: #e2e8f0;
+        --input-focus: rgba(99, 102, 241, 0.15);
     }
 
-    .tag-line {
+    .upload-page-wrapper {
+        background-color: #f8fafc;
+        min-height: 100vh;
+        padding-top: 1rem;
+        padding-bottom: 3rem;
+    }
+
+    .upload-card {
+        background: #ffffff;
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .section-header {
+        border-bottom: 2px dashed #edf2f7;
+        padding-bottom: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-title-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: var(--primary-gradient);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 1.25rem;
-        margin-top: 20px;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
     }
 
-    .requirement-title {
+    .form-label {
         font-weight: 600;
         font-size: 0.9rem;
-        margin-top: 0px;
+        color: #334155;
+        margin-bottom: 0.5rem;
     }
 
-    .upload-btn {
-        margin-top: 20px;
+    .form-control, .form-select {
+        border: 1.5px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 0.65rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.2s ease-in-out;
+        color: #1e293b;
     }
 
-    .topbar {
-        border-bottom: 1px solid black;
+    .form-control:focus, .form-select:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px var(--input-focus);
+        outline: none;
     }
 
-    .tags-input {
+    /* Custom Switch Styling */
+    .free-toggle-wrapper {
+        background: #f8fafc;
+        padding: 0.6rem 1rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1.5px solid #cbd5e1;
+        min-height: 48px;
+    }
+
+    .form-check-input {
+        width: 2.6rem;
+        height: 1.4rem;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: #ea580c;
+        border-color: #ea580c;
+    }
+
+    .badge-status {
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        transition: all 0.2s;
+    }
+
+    /* Free badge Orange/Red color */
+    .badge-free {
+        background-color: #ffedd5;
+        color: #c2410c;
+        border: 1px solid #fed7aa;
+    }
+
+    .badge-paid {
+        background-color: #dbeafe;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+
+    /* Dropzone Styling */
+    .dropzone-box {
+        border: 2px dashed #a5b4fc;
+        border-radius: 16px;
+        background: #f8fafc;
+        padding: 2.25rem 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .dropzone-box:hover, .dropzone-box.dragover {
+        border-color: #6366f1;
+        background: #eef2ff;
+    }
+
+    .dropzone-icon {
+        font-size: 2.5rem;
+        color: #6366f1;
+        margin-bottom: 0.5rem;
+        transition: transform 0.2s ease;
+    }
+
+    .dropzone-box:hover .dropzone-icon {
+        transform: translateY(-4px);
+    }
+
+    .file-preview-info {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+        padding: 0.65rem 1rem;
+        background: #ffffff;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #334155;
+    }
+
+    /* Tags Input Styling */
+    .tags-input-container {
+        border: 1.5px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 0.5rem;
+        min-height: 48px;
+        background-color: #ffffff;
         display: flex;
         flex-wrap: wrap;
-        border: 1px solid #ced4da;
-        padding: 5px;
-        border-radius: 5px;
+        gap: 0.5rem;
+        align-items: center;
         cursor: text;
+        transition: all 0.2s;
     }
 
-    .tags-input input {
-        border: none;
-        outline: none;
-        flex: 1;
-        min-width: 100px;
+    .tags-input-container:focus-within {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px var(--input-focus);
     }
 
-    .tag {
-        background-color: #5bc0de;
+    .tag-badge {
+        background: var(--primary-gradient);
         color: white;
-        padding: 5px 10px;
-        margin: 2px;
+        padding: 0.35rem 0.8rem;
         border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
         display: inline-flex;
         align-items: center;
+        gap: 0.4rem;
+        box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
     }
 
-    .tag i {
-        margin-left: 8px;
-        font-weight: bold;
+    .tag-badge i {
         cursor: pointer;
-        color: white;
+        font-size: 0.9rem;
+        opacity: 0.85;
+        transition: opacity 0.2s;
     }
 
-    .tag i:hover {
-        color: #d9534f;
+    .tag-badge i:hover {
+        opacity: 1;
+        color: #fecaca;
     }
 
-    @media (min-width: 992px) {
-        .sidebar {
-            height: 80vh;
-            overflow-y: auto;
-            position: sticky;
-            top: 0;
-            margin-top: 1.5rem;
-        }
+    /* Sidebar Styling */
+    .sidebar-card {
+        background: #ffffff;
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     }
 
-    @media (max-width: 500px) {
-        .topbar {
-            margin-top: 20px;
-            flex-direction: column !important;
-            align-items: center !important;
-            text-align: center;
-        }
-        .topbar .d-flex {
-            justify-content: center !important;
-        }
-        .requirement-title {
-            font-size: 0.95rem;
-        }
-        .sidebar ul {
-            padding-left: 18px;
-        }
-        .btn-sm {
-            font-size: 0.8rem;
-            padding: 6px 10px;
-        }
-        .d-flex.justify-content-between {
-            flex-direction: column;
-            align-items: flex-start !important;
-            gap: 1rem;
-        }
+    .sidebar-header {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 1rem;
     }
-     .ck-editor__editable {
-         min-height: 150px;
-     }
 
-    .modal {
-        z-index: 2000 !important;
+    .req-item-card {
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .req-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #334155;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .req-list {
+        padding-left: 1.25rem;
+        margin-bottom: 0;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .req-list li {
+        margin-bottom: 0.35rem;
+    }
+
+    /* Button Gradient Styling */
+    .btn-submit-gradient {
+        background: var(--primary-gradient);
+        color: #ffffff;
+        border: none;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.85rem 2.25rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-submit-gradient:hover {
+        background: var(--primary-hover);
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45);
+    }
+
+    .ck-editor__editable {
+        min-height: 140px;
+        border-bottom-left-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
+    }
+
+    /* Modal z-index fix */
+    #addCategoryModal {
+        z-index: 2050 !important;
     }
 
     .modal-backdrop {
-        z-index: 1990 !important;
+        z-index: 2040 !important;
     }
 
-    .modal-dialog {
-        pointer-events: auto;
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     }
 
-    .modal-dialog {
-        margin: 1.75rem auto;
-    }
-
-    @media (max-width: 576px) {
-        .modal-dialog {
-            margin: 10px;
+    @media (min-width: 992px) {
+        .sticky-sidebar {
+            position: sticky;
+            top: 2rem;
         }
     }
-
-
 </style>
 
-<div class="container mt-4">
-    <div class="container-fluid p-3 p-md-5">
-        <div class="row">
+<div class="upload-page-wrapper">
+    <div class="container py-4 mt-4">
+        <div class="row g-2">
             <!-- Main Content -->
-            <div class="col-lg-9 p-3 p-md-5">
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap topbar">
-                    <h3 class="mb-2 mb-md-0">Upload Your Design</h3>
-                    <hr>
-                </div>
-                <!-- Upload Form (Hidden initially) -->
-                <div class="container" id="uploadForm">
-                    <div class="card shadow p-4">
-                        <h4>Upload Design</h4>
-                        <hr>
-                        <form action="{{ route('designer.products.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="row">
-                                <!-- Title -->
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="designTitle" class="form-label">Design Title</label>
-                                        <input type="text" class="form-control @error('title') is-invalid @enderror"
-                                               id="designTitle" name="title" value="{{ old('title') }}" placeholder="Enter Design Title" required>
-                                        @error('title')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Category -->
-                                <div class="col-md-6">
-                                    <div class="mb-3 form-group position-relative">
-                                        <label for="category-select" class="form-label d-flex justify-content-between">
-                                            <span>Category</span>
-
-                                            <!-- Add Category Button -->
-                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                                                <i class="bi bi-plus"></i>
-                                            </button>
-                                        </label>
-
-                                        <select id="category-select" name="category_id"
-                                                class="form-control @error('category_id') is-invalid @enderror" required>
-                                            <option selected disabled>Select Category</option>
-
-                                            @foreach($categories as $category)
-                                                <option value="{{ $category->id }}">
-                                                    {{ $category->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-
-                                        @error('category_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                         </div>
-
-                         <div class="row">
-                                <!-- Type -->
-                                <div class="col-md-6">
-                                    <div class="mb-3 form-group position-relative">
-                                        <label for="type-select" class="form-label">Type</label>
-                                        <select id="type-select" name="type" class="form-control @error('type') is-invalid @enderror" required>
-                                            <option selected disabled>Select Type</option>
-                                            <option value="1" {{ old('type',) == 1 ? 'selected' : '' }}>Image</option>
-                                            <option value="2" {{ old('type') == 2 ? 'selected' : '' }}>Video</option>
-                                        </select>
-                                        @error('type')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        <i class="fa fa-chevron-down position-absolute" style="top: 40px; right: 20px; pointer-events: none; color: #aaa;"></i>
-                                    </div>
-                                </div>
-
-                             <div class="col-md-6">
-                                 <div class="mb-3">
-                                     <label for="designPrice" class="form-label">Price</label>
-                                     <input type="number" class="form-control @error('price') is-invalid @enderror"
-                                            id="designPrice" name="price" value="{{ old('price') }}" placeholder="Enter Design Price" required>
-                                     @error('price')
-                                     <div class="invalid-feedback">{{ $message }}</div>
-                                     @enderror
-                                 </div>
-                             </div>
+            <div class="col-lg-8 col-xl-9">
+                <div class="upload-card" id="uploadForm">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <div class="section-title-icon">
+                                <i class="bi bi-cloud-upload-fill"></i>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label for="tag-input-field" class="form-label">
-                                            Tags
-                                            <small class="text-muted ms-1">(Press 'Enter' or ',' to add)</small>
-                                        </label>
-
-                                        <div class="tags-input border rounded px-2 py-2" id="tags-input" style="min-height: 45px;">
-                                            <input type="text" id="tag-input-field" class="form-control border-0 shadow-none p-0" placeholder="Type and press Enter" >
-                                        </div>
-                                    </div>
-                                </div>
+                            <div>
+                                <h4 class="mb-1 font-weight-bold" style="color: #0f172a;">Upload Your Asset</h4>
+                                <p class="text-muted small mb-0">Share your image or video artwork with our global creative community.</p>
                             </div>
-                            <br>
-                            <!-- Description -->
-                          <div class="row">
+                        </div>
+                    </div>
+
+                    <form action="{{ route('designer.products.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="row">
+                            <!-- Title -->
                             <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label for="description" class="form-label">Description (Optional)</label>
+                                    <label for="designTitle" class="form-label">Design Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control @error('title') is-invalid @enderror"
+                                           id="designTitle" name="title" value="{{ old('title') }}" placeholder="Enter the title" required>
+                                    @error('title')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Category -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="category-select" class="form-label mb-0">Category <span class="text-danger">*</span></label>
+                                        <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill" style="font-size: 0.78rem;" data-bs-toggle="modal" data-bs-target="#addCategoryModal" data-toggle="modal" data-target="#addCategoryModal">
+                                            <i class="bi bi-plus-lg me-1"></i>Add Category
+                                        </button>
+                                    </div>
+                                    <select id="category-select" name="category_id"
+                                            class="form-select @error('category_id') is-invalid @enderror" required>
+                                        <option value="" selected disabled>Select Category</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('category_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Type -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="type-select" class="form-label">Media Type <span class="text-danger">*</span></label>
+                                    <select id="type-select" name="type" class="form-select @error('type') is-invalid @enderror" required>
+                                        <option value="" selected disabled>Select Type</option>
+                                        <option value="1" {{ old('type') == 1 ? 'selected' : '' }}>🖼️ Image</option>
+                                        <option value="2" {{ old('type') == 2 ? 'selected' : '' }}>🎥 Video</option>
+                                    </select>
+                                    @error('type')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Pricing Section -->
+                            <div class="col-md-6">
+
+                                        <label class="form-label">Is Free</label>
+                                        <div class="free-toggle-wrapper">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="form-check form-switch mb-0">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="is_free" name="is_free" value="1" {{ (old('_token') ? old('is_free') == '1' : true) ? 'checked' : '' }}>
+                                                </div>
+                                            </div>
+                                            <span id="badge-status-text" class="badge-status badge-free">
+                                                🔥 Free
+                                            </span>
+                                        </div>
+                                        @error('is_free')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3" id="price-container" style="display: none;">
+                                <label for="price-select" class="form-label">Standard Price</label>
+                                <div class="position-relative">
+                                    <select id="price-select" class="form-select @error('price') is-invalid @enderror" disabled style="background-color: #e9ecef; cursor: not-allowed;">
+                                        <option value="" selected disabled>Select Price</option>
+                                        <option value="{{ $settings->image_price ?? 0 }}">Image Price - {{ $settings->image_price ?? 0 }}</option>
+                                        <option value="{{ $settings->video_price ?? 0 }}">Video Price - {{ $settings->video_price ?? 0 }}</option>
+                                    </select>
+                                    <input type="hidden" name="price" id="price-hidden" value="{{ old('price', '0') }}">
+                                </div>
+                                @error('price')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Tags -->
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="tag-input-field" class="form-label">
+                                        Tags / Keywords
+                                        <span class="text-muted fw-normal ms-1" style="font-size: 0.82rem;">(Press 'Enter' or ',' to add tags)</span>
+                                    </label>
+                                    <div class="tags-input-container" id="tags-input">
+                                        <input type="text" id="tag-input-field" class="border-0 shadow-none p-0 flex-grow-1" style="outline: none; min-width: 140px;" placeholder="e.g. vector, wallpaper, 3d">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description <span class="text-muted fw-normal">(Optional)</span></label>
                                     <textarea class="form-control @error('description') is-invalid @enderror"
-                                              id="description" name="description" rows="3" placeholder="Type Design Description">{{ old('description') }}</textarea>
+                                              id="description" name="description" rows="3" placeholder="Provide a brief overview of your design...">{{ old('description') }}</textarea>
                                     @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
-                          </div>
 
-                            <div class="row">
-                                <!-- File Upload -->
-                                <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label for="designFile" class="form-label">Upload File</label>
-                                        <input type="file" class="form-control @error('file') is-invalid @enderror"
+                            <!-- File Upload Area -->
+                            <div class="col-12">
+                                <div class="mb-4">
+                                    <label class="form-label">Upload File <span class="text-danger">*</span></label>
+                                    <div class="dropzone-box" onclick="document.getElementById('designFile').click();">
+                                        <div class="dropzone-icon">
+                                            <i class="bi bi-cloud-arrow-up"></i>
+                                        </div>
+                                        <h6 class="fw-bold mb-1" style="color: #1e293b;">Click to upload or drag & drop file</h6>
+                                        <p class="text-muted small mb-2">Supported formats: Images (JPG, PNG, GIF) or Videos (MP4, MOV)</p>
+                                        <span class="badge bg-light text-secondary border px-3 py-1">Max File Size: 250MB</span>
+                                        <input type="file" class="d-none @error('file') is-invalid @enderror"
                                                id="designFile" name="file" accept="image/*,video/*" required>
-                                        <div class="form-text">Accepted: Image / Video</div>
-                                        @error('file')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
                                     </div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-success">Submit Design</button>
-                        </form>
-
-
-
-                        <!-- Add Category Modal -->
-                        <div class="modal fade" id="addCategoryModal" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Add New Category</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div class="file-preview-info" id="file-preview-box">
+                                        <i class="bi bi-file-earmark-check-fill text-success fs-5"></i>
+                                        <span id="file-name-text">No file selected</span>
+                                        <span class="badge bg-success ms-auto">Ready to upload</span>
                                     </div>
-
-                                    <div class="modal-body">
-                                        <form id="categoryForm">
-                                            @csrf
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Category Name</label>
-                                                <input type="text" name="name" id="categoryName"
-                                                       class="form-control"
-                                                       placeholder="Enter Category Name"
-                                                       required>
-                                            </div>
-
-                                            <button type="submit" class="btn btn-success w-100">
-                                                Save Category
-                                            </button>
-
-                                        </form>
-                                    </div>
-
+                                    @error('file')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
 
-                    </div>
+                        <div class="d-flex justify-content-end pt-2">
+                            <button type="submit" class="btn btn-submit-gradient">
+                                <i class="bi bi-rocket-takeoff-fill"></i> Submit Asset
+                            </button>
+                        </div>
+                    </form>
+
                 </div>
             </div>
 
-
-
             <!-- Sidebar -->
-            <div class="col-lg-3 sidebar">
-                <h6><i class="bi bi-list"></i> Technical Requirements</h6>
-                <hr>
-                <div class="requirement-title">Photos (JPG)</div>
-                <ul class="small">
-                    <li>Format: JPG</li>
-                    <li>File size: 1.5MB – 250MB</li>
-                    <li>Preview resolution: 4MP – 100MP</li>
-                    <li>Color mode: sRGB, Adobe RGB, ProPhoto RGB</li>
-                </ul>
+            <div class="col-lg-4 col-xl-3">
+                <div class="sidebar-card sticky-sidebar">
+                    <div class="sidebar-header">
+                        <i class="bi bi-shield-check text-primary fs-5"></i>
+                        <span>Technical Guidelines</span>
+                    </div>
 
-                <div class="requirement-title">Videos</div>
-                <ul class="small">
-                    <li>Must include a JPG preview file</li>
-                    <li>Format: PSD</li>
-                    <li>File size: 1.5MB – 250MB </li>
-                    <li>Preview: JPG 4MP – 100MP </li>
-                    <li>Color mode: sRGB, Adobe RGB, ProPhoto RGB or P3</li>
-                </ul>
+                    <div class="req-item-card">
+                        <div class="req-title">
+                            <i class="bi bi-image text-indigo fs-6"></i> Photos & Images
+                        </div>
+                        <ul class="req-list">
+                            <li>Format: JPG, PNG</li>
+                            <li>File size: 1.5MB – 250MB</li>
+                            <li>Resolution: 4MP – 100MP</li>
+                            <li>Color mode: sRGB, Adobe RGB</li>
+                        </ul>
+                    </div>
+
+                    <div class="req-item-card">
+                        <div class="req-title">
+                            <i class="bi bi-camera-video text-purple fs-6"></i> Video Footage
+                        </div>
+                        <ul class="req-list">
+                            <li>Format: MP4, MOV, PSD</li>
+                            <li>Include preview JPG image</li>
+                            <li>File size: 1.5MB – 250MB</li>
+                            <li>Color mode: sRGB or P3</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-3 rounded-3 bg-light border border-info-subtle">
+                        <div class="d-flex gap-2">
+                            <i class="bi bi-lightbulb-fill text-warning fs-5"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1" style="font-size: 0.88rem;">Creator Tip</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.8rem; line-height: 1.4;">Adding relevant tags and detailed titles helps buyers find your artwork faster!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Category Modal (Placed at root level outside wrapper) -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title font-weight-bold" id="addCategoryModalLabel">Add New Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-3">
+                <form id="categoryForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+                        <input type="text" name="name" id="categoryName"
+                               class="form-control"
+                               placeholder="e.g. 3D Illustrations"
+                               required>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-light border px-3" data-bs-dismiss="modal" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-submit-gradient">
+                            Save Category
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -330,6 +555,7 @@
 
 <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+
 <script>
     ClassicEditor
         .create(document.querySelector('#description'))
@@ -337,7 +563,9 @@
             console.error(error);
         });
 </script>
+
 <script>
+    // Tags Input Handling
     const tagsInput = document.getElementById('tags-input');
     const inputField = document.getElementById('tag-input-field');
 
@@ -354,8 +582,8 @@
 
     function createTag(text) {
         const tag = document.createElement('span');
-        tag.classList.add('tag');
-        tag.innerHTML = `${text} <i class="bi bi-x"></i>`;
+        tag.classList.add('tag-badge');
+        tag.innerHTML = `${text} <i class="bi bi-x-circle-fill"></i>`;
 
         const hiddenInput = document.createElement('input');
         hiddenInput.type = 'hidden';
@@ -366,18 +594,32 @@
         const closeButton = tag.querySelector('i');
         closeButton.addEventListener('click', () => {
             tag.remove();
-            hiddenInput.remove(); // Remove hidden input when tag is deleted
+            hiddenInput.remove();
         });
         tagsInput.insertBefore(tag, inputField);
     }
-
 </script>
 
-
-
-<!-- designer add category -->
-
 <script>
+    // Add Category Modal AJAX & Reliable Dismiss Function
+    function hideCategoryModal() {
+        const modalEl = document.getElementById('addCategoryModal');
+        if (window.bootstrap && bootstrap.Modal) {
+            const instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            if (instance) instance.hide();
+        }
+        if (typeof $ !== 'undefined' && $.fn.modal) {
+            $('#addCategoryModal').modal('hide');
+        }
+        modalEl.classList.remove('show');
+        modalEl.style.display = 'none';
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) backdrop.remove();
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    }
+
     document.getElementById('categoryForm').addEventListener('submit', function(e) {
         e.preventDefault();
         let name = document.getElementById('categoryName').value;
@@ -391,31 +633,90 @@
                 name: name
             })
         })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success){
-
-                    // add category to dropdown
-                    let select = document.getElementById('category-select');
-
-                    let option = document.createElement("option");
-                    option.value = data.category.id;
-                    option.text = data.category.name;
-                    option.selected = true;
-                    select.appendChild(option);
-                    document.getElementById('categoryForm').reset();
-                    let modal = bootstrap.Modal.getInstance(document.getElementById('addCategoryModal'));
-                    modal.hide();
-                    Swal.fire({
-                        icon:'success',
-                        title:'Category Added',
-                        text:'New category created successfully'
-                    });
-                }
-            });
-
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                let select = document.getElementById('category-select');
+                let option = document.createElement("option");
+                option.value = data.category.id;
+                option.text = data.category.name;
+                option.selected = true;
+                select.appendChild(option);
+                document.getElementById('categoryForm').reset();
+                hideCategoryModal();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Category Added',
+                    text: 'New category created successfully',
+                    confirmColor: '#4f46e5'
+                });
+            }
+        });
     });
 </script>
 
+<script>
+    // Is Free & Price Logic + File Upload Preview
+    document.addEventListener('DOMContentLoaded', function () {
+        const isFreeCheckbox = document.getElementById('is_free');
+        const badgeStatusText = document.getElementById('badge-status-text');
+        const priceContainer = document.getElementById('price-container');
+        const priceSelect = document.getElementById('price-select');
+        const priceHidden = document.getElementById('price-hidden');
+        const typeSelect = document.getElementById('type-select');
 
+        const imagePrice = "{{ $settings->image_price ?? 0 }}";
+        const videoPrice = "{{ $settings->video_price ?? 0 }}";
+
+        function updatePriceState() {
+            if (isFreeCheckbox.checked) {
+                priceContainer.style.display = 'none';
+                priceHidden.value = '0';
+                priceSelect.value = '';
+                badgeStatusText.className = 'badge-status badge-free';
+                badgeStatusText.innerHTML = '🔥 Free';
+            } else {
+                priceContainer.style.display = 'block';
+                badgeStatusText.className = 'badge-status badge-paid';
+                badgeStatusText.innerHTML = '💎 Paid';
+                autoSelectPrice();
+            }
+        }
+
+        function autoSelectPrice() {
+            if (isFreeCheckbox.checked) return;
+
+            const selectedType = typeSelect.value;
+            if (selectedType === '1') {
+                priceSelect.value = imagePrice;
+                priceHidden.value = imagePrice;
+            } else if (selectedType === '2') {
+                priceSelect.value = videoPrice;
+                priceHidden.value = videoPrice;
+            } else {
+                priceSelect.value = '';
+                priceHidden.value = '';
+            }
+        }
+
+        isFreeCheckbox.addEventListener('change', updatePriceState);
+        typeSelect.addEventListener('change', autoSelectPrice);
+
+        updatePriceState();
+
+        // File Selection Drag & Drop Preview
+        const fileInput = document.getElementById('designFile');
+        const filePreviewBox = document.getElementById('file-preview-box');
+        const fileNameText = document.getElementById('file-name-text');
+
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                fileNameText.textContent = `${file.name} (${sizeInMB} MB)`;
+                filePreviewBox.style.display = 'flex';
+            }
+        });
+    });
+</script>
 @endsection

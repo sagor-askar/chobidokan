@@ -52,6 +52,12 @@
                                     <input type="file" class="form-control-file" id="photo-dropzone" value="{{$settings->logo ?? '' }}" name="logo">
                                     <img src="{{asset($settings->logo ?? ' ')}}" alt="" height="100" width="auto">
                                 </div>
+
+                                <div class="form-group ">
+                                    <label class="required" for="logo">Logo Icon</label>
+                                    <input type="file" class="form-control-file" id="photo-dropzone" value="{{$settings->logo_icon ?? '' }}" name="logo_icon">
+                                    <img src="{{asset($settings->logo_icon ?? ' ')}}" alt="" height="100" width="auto">
+                                </div>
                             </div>
 
                             {{-- right side --}}
@@ -101,6 +107,18 @@
                                         LinkedIn Link</label>
                                     <input type="url" class="form-control" id="linkedin" name="linkedin" value="{{$settings->linkedin ?? '' }}" placeholder="LinkedIn URL">
                                 </div>
+
+
+                                <div class="form-group">
+                                    <label for="title">Image Rate (TK.)</label>
+                                    <input class="form-control" type="number" name="image_price" id="image_price" value="{{$settings->image_price }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="title">Video Rate (TK.)</label>
+                                    <input class="form-control" type="number" name="video_price" id="video_price" value="{{$settings->video_price }}">
+                                </div>
+
                             </div>
                         </div>
                         <div class="form-group" style="float:left;">

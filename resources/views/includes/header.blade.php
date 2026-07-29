@@ -97,8 +97,114 @@
     }
 </style>
 
+<style>
+    .notification-icon {
+        position: relative;
+        font-size: 22px;
+        color: #333;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .notification-icon:hover {
+        transform: scale(1.1);
+    }
+    .notification-badge {
+        position: absolute;
+        top: -6px;
+        right: -10px;
+        background: #dc3545;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 6px;
+        border-radius: 50px;
+        min-width: 18px;
+        text-align: center;
+    }
+    #notificationDropdown {
+        display: none;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        left: auto;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 320px;
+        max-height: 400px;
+        overflow-y: auto;
+        z-index: 1000;
+        border-radius: 6px;
+    }
+    #notificationDropdown .notification-item {
+        display: block;
+        padding: 10px 14px;
+        text-decoration: none;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        font-size: 13px;
+        white-space: normal;
+    }
+    #notificationDropdown .notification-item:last-child {
+        border-bottom: none;
+    }
+    #notificationDropdown .notification-item.unread {
+        background-color: #f5f8ff;
+    }
+    #notificationDropdown .notification-item:hover {
+        background-color: #eef1f5;
+    }
+    #notificationDropdown .notification-time {
+        display: block;
+        font-size: 11px;
+        color: #888;
+        margin-top: 4px;
+    }
+    #notificationDropdown .notification-empty {
+        padding: 14px;
+        text-align: center;
+        color: #888;
+        font-size: 13px;
+    }
+
+    @media (max-width: 1200px) {
+        .wishlist-icon,
+        .cart-icon,
+        .notification-icon {
+            font-size: 16px;
+        }
+
+        .wishlist-badge,
+        .cart-badge,
+        .notification-badge {
+            font-size: 9px;
+            padding: 2px 5px;
+            top: -4px;
+            right: -8px;
+        }
+
+        .wishlist-wrapper {
+            margin-right: 8px !important;
+            margin-left: 8px !important;
+        }
+
+        .cart-wrapper {
+            margin-right: 8px !important;
+        }
+
+        .header .logo.logo-compact img {
+            max-height: 22px !important;
+        }
+
+        .header .logo.logo-compact .sitename {
+            font-size: 18px !important;
+        }
+    }
+</style>
+
     @php
      $categories = \App\Models\Category::where('type',1)->where('status',1)->get();
+     $siteSettings = \App\Models\Setting::first();
     @endphp
 
 <div id="mySidenav" class="sidenav">
@@ -112,16 +218,26 @@
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
         <!-- sidenav logo -->
-        <h2 class="sidenav-logo" onclick="openNav()" style="cursor: pointer;"><i class="fa fa-camera"></i></h2>
+        <h2 class="sidenav-logo" onclick="openNav()" style="cursor: pointer;">
+            @if(!empty($siteSettings->logo_icon))
+                <img src="{{ asset($siteSettings->logo_icon) }}" alt="logo icon" style="height: 30px; width: auto;">
+            @else
+                <i class="fa fa-camera"></i>
+            @endif
+        </h2>
 
-        <a href="{{ route('welcome') }}" class="logo d-flex align-items-center me-auto">
-            <h1 class="sitename">Chobi Dokan</h1>
+        <a href="{{ route('welcome') }}" class="logo d-flex align-items-center me-auto @if(Auth::check()) logo-compact @endif">
+            @if(!empty($siteSettings->logo))
+                <img src="{{ asset($siteSettings->logo) }}" alt="{{ $siteSettings->site_title ?? 'Chobi Dokan' }}" style="max-height: 36px; width: auto;">
+            @else
+                <h1 class="sitename">Chobi Dokan</h1>
+            @endif
         </a>
 
         <nav id="navmenu" class="navmenu">
             <ul>
                 <li><a href="{{ route('info') }}">Info</a></li>
-                <li><a href="{{ route('customize') }}">Customize Jobs</a></li>
+                <li><a href="{{ route('customize') }}">Jobs</a></li>
                 @if (Auth::check())
                     @if(Auth::user()->role_id == 2)
                         <li><a href="{{ route('designer.upload') }}">Upload</a></li>
@@ -156,6 +272,33 @@
             </span>
                     @endif
                 </a>
+            </div>
+
+            <div style="position: relative; margin-right: 12px;">
+                @php
+                    $recentNotifications = \App\Models\Notification::where('user_id', auth()->id())
+                        ->latest()
+                        ->take(10)
+                        ->get();
+                    $unreadNotificationCount = $recentNotifications->where('is_read', false)->count();
+                @endphp
+                <a href="#" onclick="toggleNotificationDropdown(event)" class="notification-icon">
+                    <i class="fa fa-bell"></i>
+                    @if($unreadNotificationCount > 0)
+                        <span class="notification-badge">{{ $unreadNotificationCount }}</span>
+                    @endif
+                </a>
+
+                <div id="notificationDropdown">
+                    @forelse($recentNotifications as $notification)
+                        <a href="{{ route('notifications.read', $notification->id) }}" class="notification-item {{ $notification->is_read ? '' : 'unread' }}">
+                            {{ $notification->message }}
+                            <span class="notification-time">{{ $notification->created_at->diffForHumans() }}</span>
+                        </a>
+                    @empty
+                        <div class="notification-empty">No notifications yet</div>
+                    @endforelse
+                </div>
             </div>
 
         @endif
@@ -213,6 +356,22 @@
             }
         });
 
+    </script>
+
+    {{-- notification dropdown script --}}
+    <script>
+        function toggleNotificationDropdown(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('notificationDropdown');
+            if (dropdown && !event.target.closest('#notificationDropdown') && !event.target.closest('.notification-icon')) {
+                dropdown.style.display = 'none';
+            }
+        });
     </script>
 
     {{-- cart script --}}

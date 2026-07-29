@@ -27,8 +27,11 @@ class Setting extends Model
         'instagram',
         'linkedin',
         'logo',
+        'logo_icon',
         'admin_percentage',
         'job_auto_approve_days',
+        'image_price',
+        'video_price',
         'created_at',
         'updated_at',
     ];

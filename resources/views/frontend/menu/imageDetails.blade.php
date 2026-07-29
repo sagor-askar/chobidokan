@@ -436,6 +436,11 @@
 
         .gallery-item:hover .overlay {
             opacity: 1 !important;
+        }
+
+        .overlay-top-right,
+        .overlay-bottom-left,
+        .overlay-bottom-right {
             pointer-events: auto;
         }
 
@@ -1028,7 +1033,7 @@
                     @endphp
                     <div class="col-6 col-md-4 col-lg-3 mb-4">
                         <div class="gallery-item">
-                            <a href="{{ route('product-details', $similarProduct->id) }}">
+                            <a href="{{ route('product-details', $similarProduct->id) }}" target="_blank">
                                 <img src="{{ route('product.file.view', $similarProduct->id) }}" alt="{{ $similarProduct->file_name }}" oncontextmenu="return false" draggable="false">
                             </a>
                             <div class="watermark">CHOBIDOKAN</div>
@@ -1077,7 +1082,7 @@
                                             <i class="fa fa-clone"></i>
                                         </a>
 
-                                        <a href="{{ route('product-details', $similarProduct->id) }}" class="action-btn" title="View">
+                                        <a href="{{ route('product-details', $similarProduct->id) }}" target="_blank" class="action-btn" title="View">
                                             <i class="fa fa-eye"></i>
                                         </a>
                                     </div>
@@ -1102,18 +1107,30 @@
                                         </div>
 
                                         <!-- Download / Buy -->
-                                        @if($isSimilarPayment)
-                                            <a href="{{ route('product.image-download', ['id' => base64_encode($similarProduct->id)]) }}" class="action-btn" title="Download">
-                                                <i class="fa fa-download"></i>
-                                            </a>
-                                        @else
-                                            <form action="{{ route('product.purchase') }}" method="POST" class="cart-btn-form">
-                                                @csrf
-                                                <input type="hidden" name="product_id" value="{{ $similarProduct->id }}">
-                                                <button type="submit" class="action-btn" title="Buy">
+                                        @if(auth()->check())
+                                            @if($similarProduct->is_free == 1)
+                                                <a href="{{ route('product.image-download', ['id' => base64_encode($similarProduct->id)]) }}" class="action-btn" title="Download">
                                                     <i class="fa fa-download"></i>
-                                                </button>
-                                            </form>
+                                                </a>
+                                            @else
+                                                @if($isSimilarPayment)
+                                                    <a href="{{ route('product.image-download', ['id' => base64_encode($similarProduct->id)]) }}" class="action-btn" title="Download">
+                                                        <i class="fa fa-download"></i>
+                                                    </a>
+                                                @else
+                                                    <form action="{{ route('product.purchase') }}" method="POST" class="cart-btn-form">
+                                                        @csrf
+                                                        <input type="hidden" name="product_id" value="{{ $similarProduct->id }}">
+                                                        <button type="submit" class="action-btn" title="Buy">
+                                                            <i class="fa fa-download"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endif
+                                        @else
+                                            <a href="{{ route('signin') }}" class="action-btn">
+                                                <i class="fa fa-cart-plus"></i>
+                                            </a>
                                         @endif
                                     </div>
                                 </div>

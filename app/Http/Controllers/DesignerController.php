@@ -11,6 +11,7 @@ use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\ProjectSubmit;
+use App\Models\Notification;
 use App\Models\Setting;
 use App\Models\SubscriptionDownloadProduct;
 use App\Models\SubscriptionPurchase;
@@ -200,6 +201,18 @@ class DesignerController extends Controller
                 }
             }
 
+            $project = Project::find($id);
+            if ($project) {
+                Notification::create([
+                    'user_id' => $project->user_id,
+                    'sender_id' => Auth::id(),
+                    'project_id' => $project->id,
+                    'type' => 'final_file_submission',
+                    'message' => 'The final files for your project "' . $project->name . '" have been delivered. Please review and approve them.',
+                    'click_url' => route('user.order.submitted-file', $project->id),
+                ]);
+            }
+
             DB::commit();
             return back()->with('success', 'Order Submitted Successfully!');
         } catch (\Exception $e) {
@@ -256,7 +269,8 @@ class DesignerController extends Controller
     {
         $categories = Category::where('status',1)->get();
         $product = Product::find($id);
-        return view('frontend.seller.upload-product-edit', compact('product','categories'));
+        $settings = Setting::first();
+        return view('frontend.seller.upload-product-edit', compact('product','categories','settings'));
     }
 
 
@@ -267,12 +281,16 @@ class DesignerController extends Controller
         $request->validate([
             'title'       => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'price'       => 'required|numeric|min:1',
+            'price'       => $request->has('is_free') ? 'nullable|numeric|min:0' : 'required|numeric|min:0',
             'file'        => 'nullable|file',
             'type'        => 'required|in:1,2', // 1=image, 2=video
             'description' => 'nullable|string',
             'tags'        => 'nullable',
+            'is_free'     => 'nullable|in:1',
         ]);
+
+        $isFree = $request->has('is_free') ? 1 : 0;
+        $price = $isFree ? 0 : $request->price;
 
         $tags = $request->tags ? json_encode($request->tags) : $product->tags;
 
@@ -280,10 +298,12 @@ class DesignerController extends Controller
             'title'       => $request->title,
             'category_id' => $request->category_id,
             'designer_id' => $product->designer_id,
-            'price'       => $request->price,
+            'price'       => $price,
+            'is_free'     => $isFree,
             'type'        => $request->type,
             'tags'        => $tags,
             'description' => $request->description,
+            'status'      => 0,
         ];
 
         // ================= FILE UPDATE =================
@@ -346,14 +366,14 @@ class DesignerController extends Controller
     public function productDelete($id)
     {
         $product = Product::findOrFail($id);
-        
+
         if ($product->file_path) {
             $oldPath = storage_path('app/' . $product->file_path);
             if (file_exists($oldPath)) {
                 unlink($oldPath);
             }
         }
-        
+
         $product->delete();
         return redirect()->back()->with('success', 'Product deleted successfully!');
     }

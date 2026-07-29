@@ -70,7 +70,17 @@ class User extends Authenticatable
 
     public function setEmailVerifiedAtAttribute($value)
     {
-        $this->attributes['email_verified_at'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
+        if ($value instanceof \DateTimeInterface) {
+            $this->attributes['email_verified_at'] = $value->format('Y-m-d H:i:s');
+        } elseif (is_string($value) && $value !== '') {
+            try {
+                $this->attributes['email_verified_at'] = Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s');
+            } catch (\Exception $e) {
+                $this->attributes['email_verified_at'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+            }
+        } else {
+            $this->attributes['email_verified_at'] = null;
+        }
     }
 
     public function setPasswordAttribute($input)

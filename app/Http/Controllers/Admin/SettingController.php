@@ -41,9 +41,28 @@ class SettingController extends Controller
             $image = $request->file('logo');
             $imageName = time() . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
             $imagePath = public_path('uploads/settings/' . $imageName);
-            // Save Original Image
-            Image::make($image)->resize(1825, 953)->save($imagePath);
+            // Resize down only if larger than 1000px wide, keep original aspect ratio (no stretching)
+            Image::make($image)->resize(1000, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save($imagePath);
             $setting->logo = 'uploads/settings/' . $imageName;
+            $setting->save();
+        }
+
+         if ($request->hasFile('logo_icon')) {
+            if (file_exists(public_path($setting->logo_icon))) {
+                unlink(public_path($setting->logo_icon));
+            }
+            $image = $request->file('logo_icon');
+            $imageName = time() . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+            $imagePath = public_path('uploads/settings/' . $imageName);
+            // Resize down only if larger than 300px wide, keep original aspect ratio (no stretching)
+            Image::make($image)->resize(300, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save($imagePath);
+            $setting->logo_icon = 'uploads/settings/' . $imageName;
             $setting->save();
         }
         return redirect()->back()->with('success', 'Settings Updated Successfully.');
